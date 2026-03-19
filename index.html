@@ -51,7 +51,7 @@
     a:hover { opacity: 0.55; }
 
     /* ── Layout ── */
-    .container { max-width: 800px; margin: 0 auto; padding: 0 40px; }
+    .container { max-width: 1020px; margin: 0 auto; padding: 0 40px; }
     section { padding: 80px 0; }
     section + section { border-top: 1px solid var(--border-light); }
 
@@ -63,7 +63,7 @@
       border-bottom: 1px solid var(--border-light);
     }
     .nav-inner {
-      max-width: 800px; margin: 0 auto; padding: 0 40px;
+      max-width: 1020px; margin: 0 auto; padding: 0 40px;
       display: flex; align-items: center; justify-content: space-between;
       height: 58px;
     }
@@ -278,43 +278,6 @@
     footer { border-top: 1px solid var(--border-light); padding: 28px 0; text-align: center; }
     .footer-text { font-size: 13px; font-weight: 300; color: var(--ink-faint); letter-spacing: 0.06em; }
 
-    /* ── Side Paintings ── */
-    .side-painting {
-      display: none;
-      position: fixed;
-      top: 0;
-      width: 90px;
-      height: 100vh;
-      z-index: 2;
-      overflow: hidden;
-      box-shadow: 2px 0 16px rgba(0,0,0,0.08);
-    }
-    .side-painting--left  { left: 0; }
-    .side-painting--right { right: 0; box-shadow: -2px 0 16px rgba(0,0,0,0.08); }
-    /* outer frame */
-    .side-painting::before {
-      content: '';
-      position: absolute; inset: 0;
-      border: 2px solid #8B7355;
-      z-index: 3; pointer-events: none;
-    }
-    /* mat line */
-    .side-painting::after {
-      content: '';
-      position: absolute; inset: 6px;
-      border: 1px solid rgba(139,115,85,0.45);
-      z-index: 3; pointer-events: none;
-    }
-    .side-painting img {
-      width: 100%; height: 100%;
-      object-fit: cover;
-      opacity: 0.93;
-      filter: sepia(12%) contrast(0.95);
-    }
-    .side-painting--left  img { object-position: 30% top; }
-    .side-painting--right img { object-position: 70% top; }
-    @media (min-width: 1120px) { .side-painting { display: block; } }
-
     /* ── Animations ── */
     .fade-in { opacity: 0; transform: translateY(16px); transition: opacity 0.7s ease, transform 0.7s ease; }
     .fade-in.visible { opacity: 1; transform: translateY(0); }
@@ -333,14 +296,6 @@
   </style>
 </head>
 <body>
-
-<!-- ── Side Paintings ── -->
-<div class="side-painting side-painting--left">
-  <img src="https://images.metmuseum.org/CRDImages/as/original/DP165244.jpg" alt="Chinese Landscape">
-</div>
-<div class="side-painting side-painting--right">
-  <img src="https://images.metmuseum.org/CRDImages/as/original/DP165244.jpg" alt="Chinese Landscape">
-</div>
 
 <!-- ── Nav ── -->
 <nav>
