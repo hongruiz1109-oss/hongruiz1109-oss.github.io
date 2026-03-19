@@ -282,17 +282,15 @@
     .side-painting {
       display: none;
       position: fixed;
-      top: 50%;
-      transform: translateY(-50%);
+      top: 0;
       width: 90px;
-      height: 68vh;
-      max-height: 580px;
+      height: 100vh;
       z-index: 2;
       overflow: hidden;
-      box-shadow: 4px 0 20px rgba(0,0,0,0.10), -4px 0 20px rgba(0,0,0,0.10);
+      box-shadow: 2px 0 16px rgba(0,0,0,0.08);
     }
-    .side-painting--left  { left: calc(50% - 480px); }
-    .side-painting--right { right: calc(50% - 480px); }
+    .side-painting--left  { left: 0; }
+    .side-painting--right { right: 0; box-shadow: -2px 0 16px rgba(0,0,0,0.08); }
     /* outer frame */
     .side-painting::before {
       content: '';
@@ -310,7 +308,7 @@
     .side-painting img {
       width: 100%; height: 100%;
       object-fit: cover;
-      opacity: 0.82;
+      opacity: 0.93;
       filter: sepia(12%) contrast(0.95);
     }
     .side-painting--left  img { object-position: 30% top; }
