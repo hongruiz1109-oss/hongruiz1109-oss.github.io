@@ -278,6 +278,45 @@
     footer { border-top: 1px solid var(--border-light); padding: 28px 0; text-align: center; }
     .footer-text { font-size: 13px; font-weight: 300; color: var(--ink-faint); letter-spacing: 0.06em; }
 
+    /* ── Side Paintings ── */
+    .side-painting {
+      display: none;
+      position: fixed;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 90px;
+      height: 68vh;
+      max-height: 580px;
+      z-index: 2;
+      overflow: hidden;
+      box-shadow: 4px 0 20px rgba(0,0,0,0.10), -4px 0 20px rgba(0,0,0,0.10);
+    }
+    .side-painting--left  { left: calc(50% - 480px); }
+    .side-painting--right { right: calc(50% - 480px); }
+    /* outer frame */
+    .side-painting::before {
+      content: '';
+      position: absolute; inset: 0;
+      border: 2px solid #8B7355;
+      z-index: 3; pointer-events: none;
+    }
+    /* mat line */
+    .side-painting::after {
+      content: '';
+      position: absolute; inset: 6px;
+      border: 1px solid rgba(139,115,85,0.45);
+      z-index: 3; pointer-events: none;
+    }
+    .side-painting img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      opacity: 0.82;
+      filter: sepia(12%) contrast(0.95);
+    }
+    .side-painting--left  img { object-position: 30% top; }
+    .side-painting--right img { object-position: 70% top; }
+    @media (min-width: 1120px) { .side-painting { display: block; } }
+
     /* ── Animations ── */
     .fade-in { opacity: 0; transform: translateY(16px); transition: opacity 0.7s ease, transform 0.7s ease; }
     .fade-in.visible { opacity: 1; transform: translateY(0); }
@@ -296,6 +335,14 @@
   </style>
 </head>
 <body>
+
+<!-- ── Side Paintings ── -->
+<div class="side-painting side-painting--left">
+  <img src="https://images.metmuseum.org/CRDImages/as/original/DP165244.jpg" alt="Chinese Landscape">
+</div>
+<div class="side-painting side-painting--right">
+  <img src="https://images.metmuseum.org/CRDImages/as/original/DP165244.jpg" alt="Chinese Landscape">
+</div>
 
 <!-- ── Nav ── -->
 <nav>
