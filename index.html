@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -21,7 +21,6 @@
       --ink-faint:   #6B5E4E;
       --brown:       #3D2E1E;
       --brown-mid:   #6B5440;
-      --brown-light: rgba(61,46,30,0.07);
       --ff-serif:    'EB Garamond', 'Georgia', serif;
       --ff-sans:     'IBM Plex Sans', 'Helvetica Neue', sans-serif;
     }
@@ -39,7 +38,6 @@
       overflow-x: hidden;
     }
 
-    /* Subtle grain texture */
     body::after {
       content: '';
       position: fixed; inset: 0;
@@ -60,23 +58,23 @@
     /* ── Nav ── */
     nav {
       position: sticky; top: 0; z-index: 100;
-      background: rgba(244, 239, 230, 0.92);
+      background: rgba(244,239,230,0.92);
       backdrop-filter: blur(10px);
       border-bottom: 1px solid var(--border-light);
     }
     .nav-inner {
       max-width: 800px; margin: 0 auto; padding: 0 40px;
       display: flex; align-items: center; justify-content: space-between;
-      height: 56px;
+      height: 58px;
     }
     .nav-logo {
       font-family: var(--ff-serif);
-      font-size: 15px; font-weight: 400; letter-spacing: 0.08em;
+      font-size: 18px; font-weight: 400; letter-spacing: 0.06em;
       color: var(--ink); text-transform: uppercase;
     }
     .nav-links { display: flex; gap: 32px; list-style: none; }
     .nav-links a {
-      font-size: 13px; font-weight: 400; letter-spacing: 0.1em;
+      font-size: 14px; font-weight: 400; letter-spacing: 0.08em;
       text-transform: uppercase; color: var(--ink-light);
       transition: color 0.2s;
     }
@@ -85,75 +83,64 @@
     /* ── Hero ── */
     #hero { padding: 100px 0 88px; border-top: none; }
     .hero-eyebrow {
-      font-size: 14px; font-weight: 400; letter-spacing: 0.14em;
+      font-size: 15px; font-weight: 400; letter-spacing: 0.14em;
       text-transform: uppercase; color: var(--ink-light);
       margin-bottom: 28px;
     }
     h1.hero-name {
       font-family: var(--ff-serif);
-      font-size: clamp(52px, 9vw, 82px);
-      font-weight: 300; line-height: 1.0;
+      font-size: clamp(54px, 9vw, 84px);
+      font-weight: 400; line-height: 1.0;
       letter-spacing: 0.01em; color: var(--ink);
       margin-bottom: 6px;
     }
-    h1.hero-name em {
-      font-style: italic; font-weight: 300;
-      color: var(--brown-mid);
-    }
+    h1.hero-name em { font-style: italic; color: var(--brown-mid); }
     .hero-title {
-      font-size: 14px; font-weight: 400; letter-spacing: 0.08em;
+      font-size: 16px; font-weight: 400; letter-spacing: 0.06em;
       color: var(--ink-light);
       margin-bottom: 40px; line-height: 2;
       display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
     }
-    .hero-title img {
-      height: 28px; width: auto; opacity: 0.85; vertical-align: middle;
-    }
-    .hero-divider {
-      width: 40px; height: 1px; background: var(--border);
-      margin-bottom: 36px;
-    }
+    .hero-title img { height: 28px; width: auto; opacity: 0.85; }
+    .hero-divider { width: 40px; height: 1px; background: var(--border); margin-bottom: 36px; }
     .hero-bio {
-      font-size: 17.5px; font-weight: 400;
-      color: var(--ink-mid); max-width: 580px;
+      font-size: 19px; font-weight: 400;
+      color: var(--ink-mid); max-width: 600px;
       line-height: 1.85; margin-bottom: 44px;
     }
-    .hero-bio strong { color: var(--ink); font-weight: 400; }
-
+    .hero-bio strong { color: var(--ink); }
     .social-links { display: flex; flex-wrap: wrap; gap: 0; }
     .social-link {
-      font-size: 11px; font-weight: 400; letter-spacing: 0.1em;
+      font-size: 13px; font-weight: 400; letter-spacing: 0.08em;
       text-transform: uppercase; color: var(--ink-light);
-      padding: 10px 20px; border: 1px solid var(--border);
+      padding: 11px 22px; border: 1px solid var(--border);
       transition: all 0.2s; margin-right: -1px;
       display: flex; align-items: center; gap: 7px;
     }
-    .social-link:first-child { border-radius: 0; }
     .social-link:hover { background: var(--brown); color: var(--cream); border-color: var(--brown); opacity: 1; z-index: 1; }
-    .social-link svg { width: 12px; height: 12px; }
+    .social-link svg { width: 13px; height: 13px; }
 
     /* ── Section heading ── */
     .section-header { margin-bottom: 48px; }
     .section-eyebrow {
-      font-size: 10px; font-weight: 400; letter-spacing: 0.18em;
-      text-transform: uppercase; color: var(--ink-faint);
-      margin-bottom: 10px;
+      font-size: 12px; font-weight: 400; letter-spacing: 0.18em;
+      text-transform: uppercase; color: var(--ink-faint); margin-bottom: 10px;
     }
     h2.section-title {
       font-family: var(--ff-serif);
-      font-size: 36px; font-weight: 300;
+      font-size: 40px; font-weight: 400;
       color: var(--ink); letter-spacing: 0.01em;
     }
     .section-rule { width: 32px; height: 1px; background: var(--border); margin-top: 16px; }
 
     /* ── About ── */
-    .about-text { font-size: 16.5px; font-weight: 400; line-height: 1.9; color: var(--ink-mid); }
+    .about-text { font-size: 18px; font-weight: 400; line-height: 1.9; color: var(--ink-mid); }
     .about-text p + p { margin-top: 18px; }
-    .about-text strong { color: var(--ink); font-weight: 400; }
-    .about-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 28px; }
+    .about-text strong { color: var(--ink); }
+    .about-tags { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 30px; }
     .tag {
-      font-size: 10px; font-weight: 400; letter-spacing: 0.1em;
-      text-transform: uppercase; padding: 5px 12px;
+      font-size: 12px; font-weight: 400; letter-spacing: 0.08em;
+      text-transform: uppercase; padding: 6px 14px;
       border: 1px solid var(--border); color: var(--ink-light);
       transition: all 0.2s;
     }
@@ -161,68 +148,61 @@
 
     /* ── Research ── */
     .research-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border-light); border: 1px solid var(--border-light); }
-    .research-card {
-      background: var(--cream); padding: 32px 26px;
-      transition: background 0.25s;
-    }
+    .research-card { background: var(--cream); padding: 34px 28px; transition: background 0.25s; }
     .research-card:hover { background: var(--cream-dark); }
     .card-icon { font-size: 18px; margin-bottom: 16px; display: block; }
-    .card-title { font-family: var(--ff-serif); font-size: 19px; font-weight: 400; color: var(--ink); margin-bottom: 10px; line-height: 1.3; }
-    .card-desc { font-size: 14.5px; font-weight: 400; color: var(--ink-light); line-height: 1.7; }
+    .card-title { font-family: var(--ff-serif); font-size: 22px; font-weight: 400; color: var(--ink); margin-bottom: 10px; line-height: 1.3; }
+    .card-desc { font-size: 16px; font-weight: 400; color: var(--ink-light); line-height: 1.7; }
 
     /* ── Papers ── */
     .paper-item { padding: 40px 0; border-bottom: 1px solid var(--border-light); }
     .paper-item:first-child { padding-top: 0; }
     .paper-item:last-child { border-bottom: none; }
-    .paper-meta {
-      display: flex; align-items: center; gap: 16px; margin-bottom: 14px;
-    }
+    .paper-meta { display: flex; align-items: center; gap: 16px; margin-bottom: 14px; }
     .paper-status {
-      font-size: 10px; font-weight: 400; letter-spacing: 0.1em;
-      text-transform: uppercase; padding: 4px 10px;
-      border: 1px solid var(--border);
-      color: var(--ink-light);
+      font-size: 12px; font-weight: 400; letter-spacing: 0.08em;
+      text-transform: uppercase; padding: 4px 12px;
+      border: 1px solid var(--border); color: var(--ink-light);
     }
-    .paper-status.wip   { border-color: var(--brown-mid); color: var(--brown-mid); }
+    .paper-status.wip    { border-color: var(--brown-mid); color: var(--brown-mid); }
     .paper-status.review { border-color: #7A8B6E; color: #5A6B4E; }
     .paper-title {
-      font-family: var(--ff-serif); font-size: 22px; font-weight: 400;
+      font-family: var(--ff-serif); font-size: 25px; font-weight: 400;
       color: var(--ink); line-height: 1.3; margin-bottom: 4px;
     }
     .paper-subtitle {
-      font-family: var(--ff-serif); font-size: 15px; font-weight: 300;
+      font-family: var(--ff-serif); font-size: 17px; font-weight: 400;
       font-style: italic; color: var(--ink-light); margin-bottom: 24px;
     }
-    .paper-blocks { display: flex; flex-direction: column; gap: 0; border: 1px solid var(--border-light); margin-bottom: 20px; }
-    .paper-block { padding: 14px 20px; border-bottom: 1px solid var(--border-light); }
+    .paper-blocks { display: flex; flex-direction: column; border: 1px solid var(--border-light); margin-bottom: 22px; }
+    .paper-block { padding: 16px 22px; border-bottom: 1px solid var(--border-light); }
     .paper-block:last-child { border-bottom: none; }
     .paper-block-label {
-      font-size: 10px; font-weight: 400; letter-spacing: 0.12em;
-      text-transform: uppercase; color: var(--ink-faint); margin-bottom: 5px;
+      font-size: 12px; font-weight: 400; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--ink-faint); margin-bottom: 6px;
     }
-    .paper-block-text { font-size: 15px; font-weight: 400; color: var(--ink-mid); line-height: 1.65; }
-    .paper-links { display: flex; gap: 20px; }
+    .paper-block-text { font-size: 16px; font-weight: 400; color: var(--ink-mid); line-height: 1.65; }
+    .paper-links { display: flex; gap: 22px; }
     .paper-link {
-      font-size: 11px; font-weight: 400; letter-spacing: 0.1em;
+      font-size: 13px; font-weight: 400; letter-spacing: 0.08em;
       text-transform: uppercase; color: var(--ink-light);
-      border-bottom: 1px solid var(--border);
-      padding-bottom: 1px; transition: all 0.2s;
+      border-bottom: 1px solid var(--border); padding-bottom: 1px; transition: all 0.2s;
     }
     .paper-link:hover { color: var(--brown); border-bottom-color: var(--brown); opacity: 1; }
     .paper-link.em { color: var(--brown-mid); border-bottom-color: var(--brown-mid); }
 
     /* ── Agent Lab ── */
     #lab { background: var(--cream-dark); }
-    .lab-intro { font-size: 16px; font-weight: 400; color: var(--ink-mid); line-height: 1.85; margin-bottom: 36px; max-width: 600px; }
-    .lab-layout { display: grid; grid-template-columns: 200px 1fr; gap: 0; border: 1px solid var(--border); }
+    .lab-intro { font-size: 18px; font-weight: 400; color: var(--ink-mid); line-height: 1.85; margin-bottom: 36px; max-width: 620px; }
+    .lab-layout { display: grid; grid-template-columns: 210px 1fr; gap: 0; border: 1px solid var(--border); }
     .lab-controls { padding: 28px 24px; border-right: 1px solid var(--border); background: var(--cream); }
     .lab-controls-title {
-      font-size: 10px; font-weight: 400; letter-spacing: 0.15em;
+      font-size: 12px; font-weight: 400; letter-spacing: 0.15em;
       text-transform: uppercase; color: var(--ink-faint); margin-bottom: 28px;
     }
     .control-group { margin-bottom: 24px; }
     .control-label {
-      font-size: 11px; font-weight: 400; letter-spacing: 0.06em;
+      font-size: 13px; font-weight: 400; letter-spacing: 0.04em;
       color: var(--ink-mid); display: flex; justify-content: space-between; margin-bottom: 10px;
     }
     .control-val { color: var(--brown); }
@@ -231,76 +211,72 @@
       height: 1px; background: var(--border); outline: none; cursor: pointer;
     }
     input[type="range"]::-webkit-slider-thumb {
-      -webkit-appearance: none; appearance: none;
-      width: 12px; height: 12px; border-radius: 50%;
+      -webkit-appearance: none; width: 13px; height: 13px; border-radius: 50%;
       background: var(--brown); cursor: pointer;
     }
-    .control-hint { font-size: 10.5px; font-weight: 300; color: var(--ink-faint); margin-top: 7px; line-height: 1.5; }
+    .control-hint { font-size: 12px; font-weight: 300; color: var(--ink-faint); margin-top: 7px; line-height: 1.5; }
     #simulation-chart { padding: 8px; min-height: 300px; }
     .lab-insight {
-      grid-column: 1 / -1; padding: 24px 28px;
+      grid-column: 1 / -1; padding: 26px 30px;
       border-top: 1px solid var(--border); background: var(--cream);
     }
     .lab-insight-title {
-      font-size: 10px; font-weight: 400; letter-spacing: 0.15em;
-      text-transform: uppercase; color: var(--ink-faint); margin-bottom: 10px;
+      font-size: 12px; font-weight: 400; letter-spacing: 0.15em;
+      text-transform: uppercase; color: var(--ink-faint); margin-bottom: 12px;
     }
-    .lab-insight-text { font-size: 15px; font-weight: 400; color: var(--ink-mid); line-height: 1.75; }
-    .lab-insight-text strong { color: var(--ink); font-weight: 400; }
+    .lab-insight-text { font-size: 16px; font-weight: 400; color: var(--ink-mid); line-height: 1.8; }
+    .lab-insight-text strong { color: var(--ink); }
 
     /* ── Portfolio ── */
     .project-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border-light); border: 1px solid var(--border-light); }
-    .project-card { background: var(--cream); padding: 32px 28px; transition: background 0.2s; }
+    .project-card { background: var(--cream); padding: 34px 30px; transition: background 0.2s; }
     .project-card:hover { background: var(--cream-dark); }
     .project-icon { font-size: 20px; margin-bottom: 16px; }
-    .project-title { font-family: var(--ff-serif); font-size: 20px; font-weight: 400; color: var(--ink); margin-bottom: 6px; line-height: 1.3; }
-    .project-bg { font-size: 11px; font-weight: 300; letter-spacing: 0.06em; color: var(--ink-faint); margin-bottom: 16px; }
-    .project-insight { font-size: 14.5px; font-weight: 400; color: var(--ink-light); line-height: 1.7; padding-left: 14px; }
-    .project-insight li { padding: 2px 0; }
-    .project-insight strong { color: var(--ink-mid); font-weight: 400; }
-    .project-tools { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 16px; }
+    .project-title { font-family: var(--ff-serif); font-size: 22px; font-weight: 400; color: var(--ink); margin-bottom: 6px; line-height: 1.3; }
+    .project-bg { font-size: 13px; font-weight: 300; letter-spacing: 0.04em; color: var(--ink-faint); margin-bottom: 16px; }
+    .project-insight { font-size: 16px; font-weight: 400; color: var(--ink-light); line-height: 1.7; padding-left: 16px; }
+    .project-insight li { padding: 3px 0; }
+    .project-insight strong { color: var(--ink-mid); }
+    .project-tools { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 18px; }
     .project-tool {
-      font-size: 10px; font-weight: 400; letter-spacing: 0.08em;
-      text-transform: uppercase; padding: 3px 9px;
+      font-size: 12px; font-weight: 400; letter-spacing: 0.06em;
+      text-transform: uppercase; padding: 4px 10px;
       border: 1px solid var(--border-light); color: var(--ink-faint);
     }
 
     /* ── Education ── */
     .edu-item {
-      display: grid; grid-template-columns: 96px 1fr; gap: 32px;
+      display: grid; grid-template-columns: 100px 1fr; gap: 32px;
       padding: 28px 0; border-bottom: 1px solid var(--border-light); align-items: start;
     }
     .edu-item:last-child { border-bottom: none; }
-    .edu-year { font-size: 11px; font-weight: 300; color: var(--ink-faint); letter-spacing: 0.06em; padding-top: 4px; line-height: 1.8; }
-    .edu-degree { font-family: var(--ff-serif); font-size: 20px; font-weight: 400; color: var(--ink); margin-bottom: 4px; }
-    .edu-institution { font-size: 12px; font-weight: 400; letter-spacing: 0.08em; text-transform: uppercase; color: var(--brown-mid); margin-bottom: 5px; }
-    .edu-detail { font-size: 14.5px; font-weight: 400; color: var(--ink-light); }
+    .edu-year { font-size: 13px; font-weight: 300; color: var(--ink-faint); letter-spacing: 0.04em; padding-top: 4px; line-height: 1.8; }
+    .edu-degree { font-family: var(--ff-serif); font-size: 22px; font-weight: 400; color: var(--ink); margin-bottom: 4px; }
+    .edu-institution { font-size: 14px; font-weight: 400; letter-spacing: 0.06em; text-transform: uppercase; color: var(--brown-mid); margin-bottom: 6px; }
+    .edu-detail { font-size: 16px; font-weight: 400; color: var(--ink-light); }
 
     /* ── News ── */
     .news-item {
-      display: grid; grid-template-columns: 88px 1fr; gap: 28px;
-      padding: 16px 0; border-bottom: 1px solid var(--border-light);
+      display: grid; grid-template-columns: 96px 1fr; gap: 28px;
+      padding: 17px 0; border-bottom: 1px solid var(--border-light);
     }
     .news-item:last-child { border-bottom: none; }
-    .news-date { font-size: 11px; font-weight: 300; color: var(--ink-faint); letter-spacing: 0.04em; padding-top: 1px; }
-    .news-text { font-size: 15.5px; font-weight: 400; color: var(--ink-mid); line-height: 1.65; }
-    .news-text strong { color: var(--ink); font-weight: 400; }
+    .news-date { font-size: 13px; font-weight: 300; color: var(--ink-faint); letter-spacing: 0.04em; padding-top: 2px; }
+    .news-text { font-size: 17px; font-weight: 400; color: var(--ink-mid); line-height: 1.65; }
+    .news-text strong { color: var(--ink); }
 
     /* ── Contact ── */
     #contact { background: var(--cream-dark); }
-    .contact-note { font-size: 17px; font-weight: 400; color: var(--ink-mid); max-width: 480px; line-height: 1.85; margin-bottom: 28px; }
+    .contact-note { font-size: 19px; font-weight: 400; color: var(--ink-mid); max-width: 500px; line-height: 1.85; margin-bottom: 30px; }
     .contact-email {
-      font-family: var(--ff-serif); font-size: 28px; font-weight: 300;
+      font-family: var(--ff-serif); font-size: 32px; font-weight: 400;
       color: var(--ink); display: inline-block;
       border-bottom: 1px solid var(--border); padding-bottom: 3px; transition: all 0.2s;
     }
     .contact-email:hover { color: var(--brown); border-color: var(--brown); opacity: 1; }
 
-    footer {
-      border-top: 1px solid var(--border-light);
-      padding: 28px 0; text-align: center;
-    }
-    .footer-text { font-size: 11px; font-weight: 300; color: var(--ink-faint); letter-spacing: 0.08em; }
+    footer { border-top: 1px solid var(--border-light); padding: 28px 0; text-align: center; }
+    .footer-text { font-size: 13px; font-weight: 300; color: var(--ink-faint); letter-spacing: 0.06em; }
 
     /* ── Animations ── */
     .fade-in { opacity: 0; transform: translateY(16px); transition: opacity 0.7s ease, transform 0.7s ease; }
@@ -342,15 +318,15 @@
     <div class="hero-eyebrow">PhD Researcher · Industrial Economics</div>
     <h1 class="hero-name">Hongrui<br><em>Zhu</em></h1>
     <div class="hero-title">
-      产业经济学博士生 &nbsp;·&nbsp;
+      PhD Student in Industrial Economics &nbsp;·&nbsp;
       <img src="https://www.ucass.edu.cn/images/logo.png" alt="UCASS">
       UCASS &nbsp;·&nbsp; Beijing
     </div>
     <div class="hero-divider"></div>
     <p class="hero-bio">
-      我是一名<strong>产业经济学博士生</strong>，研究 AI 与经济学的交叉地带。
-      我将微观经济学理论转化为<strong>可运行的代码与智能体</strong>，
-      试图回答数字时代最棘手的商业与监管问题。
+      I am a <strong>PhD student in Industrial Economics</strong>, working at the intersection of AI and economic theory.
+      I translate microeconomic models into <strong>executable code and agents</strong> —
+      seeking answers to the hardest questions about markets, regulation, and competition in the digital age.
     </p>
     <div class="social-links">
       <a href="mailto:your@email.com" class="social-link">
@@ -383,13 +359,15 @@
     </div>
     <div class="about-text fade-in">
       <p>
-        我是 <strong>Hongrui ZHU</strong>，UCASS 产业经济学博士生，师从 [导师姓名]。
-        研究不局限于传统计量经济学，而是通过 <strong>AI 与经济学的交叉</strong>，
-        解决数字时代的复杂商业与监管问题。
+        I am <strong>Hongrui ZHU</strong>, a PhD student in Industrial Economics at UCASS, advised by [Advisor Name].
+        My research goes beyond traditional econometrics, applying <strong>AI and economic theory</strong>
+        to address complex business and regulatory challenges in the digital age.
       </p>
       <p>
-        核心问题是：当市场由算法和大语言模型主导，竞争、定价与消费者行为会呈现哪些经典理论未曾预见的新规律？
-        这要求同时具备<strong>严格的经济学直觉</strong>与<strong>可运行的计算工具</strong>。
+        The central question: when markets are governed by algorithms and large language models,
+        what new patterns of competition, pricing, and consumer behavior emerge that classical theory
+        never anticipated? Answering this demands both <strong>rigorous economic intuition</strong>
+        and <strong>executable computational tools</strong>.
       </p>
     </div>
     <div class="about-tags fade-in">
@@ -417,17 +395,17 @@
       <div class="research-card">
         <span class="card-icon">○</span>
         <div class="card-title">Algorithmic Pricing</div>
-        <p class="card-desc">当定价权交给强化学习算法，超竞争价格如何在无人干预下自发形成？对反垄断监管有何挑战？</p>
+        <p class="card-desc">How do supra-competitive prices emerge spontaneously when pricing is delegated to reinforcement learning algorithms — with no human intervention? What does this mean for antitrust enforcement?</p>
       </div>
       <div class="research-card">
         <span class="card-icon">○</span>
         <div class="card-title">LLM as Economic Agents</div>
-        <p class="card-desc">利用大语言模型构建异质性消费者智能体，重新估计需求曲线与支付意愿（WTP）。</p>
+        <p class="card-desc">Using large language models to construct heterogeneous consumer agents, enabling zero-shot estimation of demand curves and willingness-to-pay without traditional survey data.</p>
       </div>
       <div class="research-card">
         <span class="card-icon">○</span>
         <div class="card-title">Platform Economics</div>
-        <p class="card-desc">数字平台的双边市场结构、补贴竞争、市场集中度，以及机制设计在平台治理中的应用。</p>
+        <p class="card-desc">Two-sided market structures, subsidy competition, and market concentration in digital platforms — alongside the application of mechanism design to platform governance.</p>
       </div>
     </div>
   </div>
@@ -446,26 +424,26 @@
       <div class="paper-meta">
         <span class="paper-status wip">Work in Progress</span>
       </div>
-      <div class="paper-title">算法定价下的默契合谋行为模拟</div>
+      <div class="paper-title">Simulating Tacit Collusion Under Algorithmic Pricing</div>
       <div class="paper-subtitle">Algorithmic Collusion in Q-Learning Pricing Agents</div>
       <div class="paper-blocks">
         <div class="paper-block">
-          <div class="paper-block-label">核心问题</div>
-          <div class="paper-block-text">当市场由强化学习算法主导时，超竞争价格是如何在没有人类干预的情况下形成的？</div>
+          <div class="paper-block-label">Research Question</div>
+          <div class="paper-block-text">How do supra-competitive prices arise in markets dominated by reinforcement learning algorithms — without any explicit human coordination?</div>
         </div>
         <div class="paper-block">
-          <div class="paper-block-label">方法</div>
-          <div class="paper-block-text">构建基于 MARL 的寡头竞争沙盒，证明在特定探索率和折扣因子下，算法必然走向默契合谋。</div>
+          <div class="paper-block-label">Methodology</div>
+          <div class="paper-block-text">We build a MARL-based oligopoly sandbox and demonstrate that under specific exploration rates and discount factors, pricing algorithms inevitably converge toward tacit collusion.</div>
         </div>
         <div class="paper-block">
-          <div class="paper-block-label">政策价值</div>
-          <div class="paper-block-text">为反垄断监管机构（FTC、市场监管总局）提供审查算法合谋的定量工具。</div>
+          <div class="paper-block-label">Policy Relevance</div>
+          <div class="paper-block-text">Provides antitrust regulators (FTC, SAMR) with a quantitative toolkit for detecting and auditing algorithmic collusion in digital markets.</div>
         </div>
       </div>
       <div class="paper-links">
         <a href="#" class="paper-link">PDF</a>
         <a href="#" class="paper-link">SSRN</a>
-        <a href="#lab" class="paper-link em">→ 交互模拟</a>
+        <a href="#lab" class="paper-link em">→ Live Simulation</a>
       </div>
     </div>
 
@@ -473,20 +451,20 @@
       <div class="paper-meta">
         <span class="paper-status review">Under Review</span>
       </div>
-      <div class="paper-title">基于大语言模型的消费者需求估计</div>
+      <div class="paper-title">Consumer Demand Estimation with Large Language Model Agents</div>
       <div class="paper-subtitle">Estimating Consumer Demand via LLM Agents</div>
       <div class="paper-blocks">
         <div class="paper-block">
-          <div class="paper-block-label">核心问题</div>
-          <div class="paper-block-text">传统离散选择模型（Discrete Choice Model）难以捕捉消费者面对非结构化文本信息时的偏好。</div>
+          <div class="paper-block-label">Research Question</div>
+          <div class="paper-block-text">Traditional discrete choice models fail to capture consumer preferences when faced with unstructured textual product information. Can LLMs close this gap?</div>
         </div>
         <div class="paper-block">
-          <div class="paper-block-label">方法</div>
-          <div class="paper-block-text">利用 GPT-4 构建异质性消费者智能体群体，输入产品文本描述，重构需求曲线。</div>
+          <div class="paper-block-label">Methodology</div>
+          <div class="paper-block-text">We construct a population of heterogeneous consumer agents powered by GPT-4, feeding product text descriptions to reconstruct demand curves in a zero-shot setting.</div>
         </div>
         <div class="paper-block">
-          <div class="paper-block-label">应用价值</div>
-          <div class="paper-block-text">为电商平台和动态定价系统提供更真实的"零样本（Zero-shot）"市场测试环境。</div>
+          <div class="paper-block-label">Applications</div>
+          <div class="paper-block-text">Provides e-commerce platforms and dynamic pricing systems with more realistic zero-shot market testing environments, reducing reliance on costly field experiments.</div>
         </div>
       </div>
       <div class="paper-links">
@@ -507,38 +485,40 @@
       <div class="section-rule"></div>
     </div>
     <p class="lab-intro fade-in">
-      调整市场参数，观察基于强化学习（Q-Learning）的 AI 定价智能体如何进行市场博弈。
-      这是论文一的核心模拟——直接在浏览器里运行。
+      Adjust the market parameters and watch Q-Learning pricing agents compete in real time.
+      This is the core simulation from Paper 1 — running directly in your browser.
     </p>
     <div class="lab-layout fade-in">
       <div class="lab-controls">
-        <div class="lab-controls-title">调整参数</div>
+        <div class="lab-controls-title">Parameters</div>
         <div class="control-group">
-          <div class="control-label">寡头数量 (N) <span class="control-val" id="val-n">2</span></div>
+          <div class="control-label">Oligopolists (N) <span class="control-val" id="val-n">2</span></div>
           <input type="range" id="slider-n" min="2" max="10" value="2" step="1">
-          <div class="control-hint">市场中的竞争者数量</div>
+          <div class="control-hint">Number of competing firms in the market</div>
         </div>
         <div class="control-group">
-          <div class="control-label">学习率 (α) <span class="control-val" id="val-lr">0.10</span></div>
+          <div class="control-label">Learning Rate (α) <span class="control-val" id="val-lr">0.10</span></div>
           <input type="range" id="slider-lr" min="0.01" max="0.5" value="0.1" step="0.01">
-          <div class="control-hint">算法更新Q值的速度</div>
+          <div class="control-hint">Speed at which agents update Q-values</div>
         </div>
         <div class="control-group">
-          <div class="control-label">折扣因子 (δ) <span class="control-val" id="val-delta">0.95</span></div>
+          <div class="control-label">Discount Factor (δ) <span class="control-val" id="val-delta">0.95</span></div>
           <input type="range" id="slider-delta" min="0.5" max="0.99" value="0.95" step="0.01">
-          <div class="control-hint">智能体对未来利润的重视程度</div>
+          <div class="control-hint">Weight agents place on future profits</div>
         </div>
       </div>
       <div id="simulation-chart"></div>
       <div class="lab-insight">
         <div class="lab-insight-title">Economic Intuition</div>
         <div class="lab-insight-text">
-          模拟开始时，智能体为抢占市场份额，价格跌向<strong>纳什均衡（Bertrand 竞争价格）</strong>。
-          但若<strong>寡头少且折扣因子高</strong>，算法会自发学会<strong>默契合谋</strong>，
-          将价格推向垄断水平——没有任何显性协议，只是算法学会了报复策略。
+          At the start, agents undercut to capture market share, driving prices toward the
+          <strong>Nash equilibrium (Bertrand competitive price)</strong>.
+          But when there are few firms and the discount factor is high, algorithms spontaneously learn
+          <strong>tacit collusion</strong> — pushing prices toward the monopoly level.
+          No explicit agreement. Just algorithms learning to punish defectors.
           <br><br>
-          <strong>政策启示</strong>：在高度集中的数字市场中，即使算法之间没有通信，简单的定价算法也能达成"不言而喻的卡特尔"，
-          这对现行反垄断法提出了严峻挑战。
+          <strong>Policy implication:</strong> In highly concentrated digital markets, even without inter-firm communication,
+          simple pricing algorithms can reach an unspoken cartel — posing a severe challenge to existing antitrust law.
         </div>
       </div>
     </div>
@@ -556,11 +536,11 @@
     <div class="project-grid fade-in">
       <div class="project-card">
         <div class="project-icon">—</div>
-        <div class="project-title">外卖平台市场集中度分析</div>
-        <div class="project-bg">全国 50 个主要城市爬虫数据 · HHI 分析</div>
+        <div class="project-title">Food Delivery Platform Market Concentration</div>
+        <div class="project-bg">Web-scraped data · 50 major Chinese cities · HHI Analysis</div>
         <ul class="project-insight">
-          <li>赫芬达尔-赫希曼指数（HHI），发现部分下沉市场 HHI 高达 <strong>4500</strong>（极度寡头垄断）。</li>
-          <li><strong>双重差分（DID）</strong>模型验证平台补贴策略对商家入驻率的短期刺激作用。</li>
+          <li>Computed the Herfindahl-Hirschman Index (HHI); found HHI exceeding <strong>4,500</strong> in several lower-tier cities, indicating extreme oligopoly.</li>
+          <li><strong>Difference-in-Differences (DiD)</strong> model confirms platform subsidies significantly boosted merchant entry rates in the short run.</li>
         </ul>
         <div class="project-tools">
           <span class="project-tool">Python</span>
@@ -571,12 +551,12 @@
       </div>
       <div class="project-card">
         <div class="project-icon">—</div>
-        <div class="project-title">新能源汽车需求弹性估计</div>
-        <div class="project-bg">2020–2023 国内乘用车销量与价格数据 · BLP 模型</div>
+        <div class="project-title">EV Market Demand Elasticity Estimation</div>
+        <div class="project-bg">2020–2023 domestic passenger vehicle sales & price data · BLP Model</div>
         <ul class="project-insight">
-          <li><strong>BLP 随机系数 Logit</strong> 模型（Berry-Levinsohn-Pakes）。</li>
-          <li>测算特斯拉 vs 比亚迪之间的<strong>交叉价格弹性</strong>。</li>
-          <li>消费者对智能驾驶功能的<strong>支付意愿（WTP）</strong>在三年间显著上升。</li>
+          <li>Applied the <strong>BLP Random Coefficients Logit</strong> model (Berry-Levinsohn-Pakes).</li>
+          <li>Estimated cross-price elasticities between Tesla and BYD.</li>
+          <li>Consumer <strong>willingness-to-pay (WTP)</strong> for intelligent driving features rose significantly over three years.</li>
         </ul>
         <div class="project-tools">
           <span class="project-tool">Python</span>
@@ -601,16 +581,16 @@
         <div class="edu-year">20XX –<br>Present</div>
         <div>
           <div class="edu-degree">Ph.D. in Industrial Economics</div>
-          <div class="edu-institution">[你的学校]</div>
-          <div class="edu-detail">Advisor: Prof. [导师姓名]</div>
+          <div class="edu-institution">UCASS</div>
+          <div class="edu-detail">Advisor: Prof. [Advisor Name]</div>
         </div>
       </div>
       <div class="edu-item">
         <div class="edu-year">20XX –<br>20XX</div>
         <div>
-          <div class="edu-degree">[本科 / 硕士学位]</div>
-          <div class="edu-institution">[学校名]</div>
-          <div class="edu-detail">[专业方向]</div>
+          <div class="edu-degree">[B.A. / M.A. Degree]</div>
+          <div class="edu-institution">[University Name]</div>
+          <div class="edu-detail">[Field of Study]</div>
         </div>
       </div>
     </div>
@@ -628,11 +608,11 @@
     <div class="fade-in">
       <div class="news-item">
         <div class="news-date">Mar 2026</div>
-        <div class="news-text">个人网站上线。</div>
+        <div class="news-text">Personal website launched.</div>
       </div>
       <div class="news-item">
         <div class="news-date">——</div>
-        <div class="news-text"><strong>[在此添加近期动态]</strong>，如论文录用、会议、获奖等。</div>
+        <div class="news-text"><strong>[Add recent updates here]</strong> — paper acceptances, conference presentations, awards, etc.</div>
       </div>
     </div>
   </div>
@@ -648,7 +628,7 @@
     </div>
     <div class="fade-in">
       <p class="contact-note">
-        欢迎就研究、合作，或关于数字经济与 AI 的任何想法联系我。
+        I welcome conversations about research, collaboration, or any ideas at the intersection of digital economics and AI.
       </p>
       <a href="mailto:your@email.com" class="contact-email">your@email.com</a>
       <div class="social-links" style="margin-top:24px">
@@ -676,19 +656,10 @@ document.querySelectorAll('.fade-in').forEach((el, i) => {
 });
 
 /* ── Active nav ── */
-const sections = document.querySelectorAll('section[id]');
-const navLinks = document.querySelectorAll('.nav-links a');
-new IntersectionObserver(entries => {
-  entries.forEach(e => {
-    if (e.isIntersecting) navLinks.forEach(l => {
-      l.style.color = l.getAttribute('href') === `#${e.target.id}` ? 'var(--ink)' : '';
-    });
-  });
-}, { rootMargin: '-40% 0px -55% 0px' }).observe;
-sections.forEach(s => {
+document.querySelectorAll('section[id]').forEach(s => {
   new IntersectionObserver(entries => {
     entries.forEach(e => {
-      if (e.isIntersecting) navLinks.forEach(l => {
+      if (e.isIntersecting) document.querySelectorAll('.nav-links a').forEach(l => {
         l.style.color = l.getAttribute('href') === `#${e.target.id}` ? 'var(--ink)' : '';
       });
     });
@@ -715,20 +686,18 @@ function drawChart() {
   document.getElementById('val-n').textContent = n;
   document.getElementById('val-lr').textContent = lr.toFixed(2);
   document.getElementById('val-delta').textContent = delta.toFixed(2);
-
   const { eps, prices, nash, monopoly } = runSim(n, lr, delta);
-
   Plotly.react('simulation-chart', [
     { x: eps, y: prices, name: 'Agent Avg Price', mode: 'lines', line: { color: '#6B5440', width: 1.5 } },
     { x: [1,500], y: [nash,nash], name: 'Nash Equilibrium', mode: 'lines', line: { color: '#7A8B6E', width: 1, dash: 'dot' } },
     { x: [1,500], y: [monopoly,monopoly], name: 'Monopoly Price', mode: 'lines', line: { color: '#B87045', width: 1, dash: 'dot' } },
   ], {
     paper_bgcolor: 'transparent', plot_bgcolor: 'rgba(244,239,230,0.6)',
-    font: { family: "'Jost', sans-serif", color: '#7A7060', size: 11 },
-    title: { text: `Price Dynamics — ${n} Competing Agents`, font: { color: '#1C1812', size: 13, family: "'Cormorant Garamond', serif" }, x: 0.04 },
-    xaxis: { title: 'Iteration', gridcolor: '#DDD6C8', zerolinecolor: '#DDD6C8', color: '#A09480' },
-    yaxis: { title: 'Price', gridcolor: '#DDD6C8', zerolinecolor: '#DDD6C8', color: '#A09480', range: [7, 22] },
-    legend: { bgcolor: 'rgba(0,0,0,0)', font: { size: 11 } },
+    font: { family: "'IBM Plex Sans', sans-serif", color: '#6B5E4E', size: 12 },
+    title: { text: `Price Dynamics — ${n} Competing Agents`, font: { color: '#1C1812', size: 14, family: "'EB Garamond', serif" }, x: 0.04 },
+    xaxis: { title: 'Iteration', gridcolor: '#DDD6C8', zerolinecolor: '#DDD6C8', color: '#6B5E4E' },
+    yaxis: { title: 'Price', gridcolor: '#DDD6C8', zerolinecolor: '#DDD6C8', color: '#6B5E4E', range: [7, 22] },
+    legend: { bgcolor: 'rgba(0,0,0,0)', font: { size: 12 } },
     margin: { t: 44, r: 20, b: 44, l: 50 },
     hovermode: 'x unified',
   }, { responsive: true, displayModeBar: false });
