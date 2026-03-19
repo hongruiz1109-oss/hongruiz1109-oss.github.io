@@ -76,7 +76,7 @@
     }
     .nav-links { display: flex; gap: 32px; list-style: none; }
     .nav-links a {
-      font-size: 11px; font-weight: 400; letter-spacing: 0.12em;
+      font-size: 13px; font-weight: 400; letter-spacing: 0.1em;
       text-transform: uppercase; color: var(--ink-light);
       transition: color 0.2s;
     }
@@ -85,7 +85,7 @@
     /* ── Hero ── */
     #hero { padding: 100px 0 88px; border-top: none; }
     .hero-eyebrow {
-      font-size: 11px; font-weight: 400; letter-spacing: 0.18em;
+      font-size: 14px; font-weight: 400; letter-spacing: 0.14em;
       text-transform: uppercase; color: var(--ink-light);
       margin-bottom: 28px;
     }
@@ -101,9 +101,13 @@
       color: var(--brown-mid);
     }
     .hero-title {
-      font-size: 12px; font-weight: 400; letter-spacing: 0.1em;
-      text-transform: uppercase; color: var(--ink-faint);
+      font-size: 14px; font-weight: 400; letter-spacing: 0.08em;
+      color: var(--ink-light);
       margin-bottom: 40px; line-height: 2;
+      display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    }
+    .hero-title img {
+      height: 28px; width: auto; opacity: 0.85; vertical-align: middle;
     }
     .hero-divider {
       width: 40px; height: 1px; background: var(--border);
@@ -338,7 +342,9 @@
     <div class="hero-eyebrow">PhD Researcher · Industrial Economics</div>
     <h1 class="hero-name">Hongrui<br><em>Zhu</em></h1>
     <div class="hero-title">
-      产业经济学博士生 &nbsp;·&nbsp; [你的学校] &nbsp;·&nbsp; Beijing
+      产业经济学博士生 &nbsp;·&nbsp;
+      <img src="https://www.ucass.edu.cn/images/logo.png" alt="UCASS">
+      UCASS &nbsp;·&nbsp; Beijing
     </div>
     <div class="hero-divider"></div>
     <p class="hero-bio">
@@ -377,7 +383,7 @@
     </div>
     <div class="about-text fade-in">
       <p>
-        我是<strong>朱宏睿</strong>，[你的学校] 产业经济学博士生，师从 [导师姓名]。
+        我是 <strong>Hongrui ZHU</strong>，UCASS 产业经济学博士生，师从 [导师姓名]。
         研究不局限于传统计量经济学，而是通过 <strong>AI 与经济学的交叉</strong>，
         解决数字时代的复杂商业与监管问题。
       </p>
