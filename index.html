@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
   <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+  <script src="assets/js/viz_data.js"></script>
   <style>
     :root {
       --cream:       #F4EFE6;
@@ -380,6 +381,134 @@
       .lab-controls { border-right: none; border-bottom: 1px solid var(--border); }
       .edu-item, .news-item { grid-template-columns: 1fr; gap: 4px; }
     }
+
+    /* ── Experiment 1: Market Structure ── */
+    .exp1-card {
+      background: #faf8f4;
+      border: 1px solid #e8e0d4;
+      border-radius: 14px;
+      padding: 2.8rem;
+      box-shadow: 0 4px 24px rgba(60,40,20,.07);
+    }
+    .exp1-tag {
+      display: inline-block;
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: .7rem;
+      letter-spacing: .09em;
+      text-transform: uppercase;
+      color: #8b6f47;
+      background: #f0e8d8;
+      padding: .25rem .75rem;
+      border-radius: 20px;
+      margin-bottom: .9rem;
+    }
+    .exp1-title {
+      font-family: 'EB Garamond', Georgia, serif;
+      font-size: 1.7rem;
+      color: #2c1f0e;
+      margin: 0 0 .5rem;
+      line-height: 1.25;
+    }
+    .exp1-subtitle {
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: .9rem;
+      color: #6b5a44;
+      line-height: 1.65;
+      margin-bottom: 2rem;
+    }
+    .exp1-metrics {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: .9rem;
+      margin-bottom: 2rem;
+    }
+    .exp1-metric {
+      background: #fff;
+      border: 1px solid #e8e0d4;
+      border-radius: 10px;
+      padding: 1.1rem 1rem;
+      text-align: center;
+      transition: box-shadow .2s;
+    }
+    .exp1-metric:hover { box-shadow: 0 4px 14px rgba(139,111,71,.12); }
+    .exp1-metric-label {
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: .72rem;
+      color: #8b6f47;
+      letter-spacing: .04em;
+      margin-bottom: .4rem;
+    }
+    .exp1-metric-value {
+      font-family: 'EB Garamond', Georgia, serif;
+      font-size: 2rem;
+      font-weight: 600;
+      color: #2c1f0e;
+      line-height: 1;
+    }
+    .exp1-metric-sub {
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: .7rem;
+      color: #a0876a;
+      margin-top: .3rem;
+    }
+    .exp1-charts {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1.8rem;
+    }
+    .exp1-chart {
+      background: #fff;
+      border: 1px solid #e8e0d4;
+      border-radius: 10px;
+      height: 290px;
+    }
+    .exp1-finding {
+      background: #f5efe6;
+      border-left: 3px solid #8b6f47;
+      padding: 1.1rem 1.5rem;
+      border-radius: 0 8px 8px 0;
+      margin-bottom: 1.2rem;
+    }
+    .exp1-finding-label {
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: .72rem;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      color: #8b6f47;
+      margin-bottom: .4rem;
+    }
+    .exp1-finding p {
+      font-family: 'EB Garamond', Georgia, serif;
+      font-size: 1.05rem;
+      color: #3a2a1a;
+      line-height: 1.7;
+      margin: 0;
+    }
+    .exp1-method {
+      border-top: 1px solid #e8e0d4;
+      padding-top: 1.1rem;
+    }
+    .exp1-method summary {
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: .82rem;
+      color: #8b6f47;
+      font-weight: 500;
+      cursor: pointer;
+      user-select: none;
+    }
+    .exp1-method p {
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: .83rem;
+      color: #6b5a44;
+      line-height: 1.7;
+      margin: .7rem 0 0;
+    }
+    @media (max-width: 640px) {
+      .exp1-charts  { grid-template-columns: 1fr; }
+      .exp1-metrics { grid-template-columns: repeat(3, 1fr); }
+      .exp1-metric-value { font-size: 1.5rem; }
+    }
   </style>
 </head>
 <body>
@@ -393,6 +522,7 @@
       <li><a href="#research">Research</a></li>
       <li><a href="#papers">Insights</a></li>
       <li><a href="#lab">Lab</a></li>
+      <li><a href="#exp-market-structure">Exp. 1</a></li>
       <li><a href="#portfolio">Portfolio</a></li>
       <li><a href="#contact">Contact</a></li>
     </ul>
@@ -683,6 +813,42 @@
   </div>
 </section>
 
+<!-- ── Experiment 1: Market Structure & Algorithmic Collusion ── -->
+<section id="exp-market-structure" style="padding: 80px 0;">
+  <div class="container">
+    <div class="exp1-card fade-in">
+      <div class="exp1-tag">Extension · Calvano et al. (2020)</div>
+      <h3 class="exp1-title">Market Structure &amp; Algorithmic Collusion</h3>
+      <p class="exp1-subtitle">
+        Does the number of competing firms affect how well pricing algorithms
+        learn to tacitly collude? We extend the Q-learning framework of
+        Calvano et al. (2020, <em>AER</em>) across market structures.
+      </p>
+      <div class="exp1-metrics" id="exp1-metrics"></div>
+      <div class="exp1-charts">
+        <div class="exp1-chart" id="exp1-bar"></div>
+        <div class="exp1-chart" id="exp1-box"></div>
+      </div>
+      <div class="exp1-finding">
+        <div class="exp1-finding-label">Key Finding</div>
+        <p id="exp1-finding-text"></p>
+      </div>
+      <details class="exp1-method">
+        <summary>Methodology</summary>
+        <p>
+          We replicate the Q-learning duopoly model of Calvano et al. (2020, <em>AER</em>)
+          and vary the number of firms (<em>n</em> = 2, 3, 4), running
+          <span id="exp1-nsessions">50</span> independent sessions per configuration
+          (α = 0.15, β = 4×10⁻⁶, δ = 0.95, μ = 0.25, m = 15 price points).
+          Profit gain Δ = (π<sub>eq</sub> − π<sub>N</sub>) / (π<sub>M</sub> − π<sub>N</sub>)
+          measures collusion intensity relative to the competitive (Δ = 0)
+          and full-monopoly (Δ = 1) benchmarks.
+        </p>
+      </details>
+    </div>
+  </div>
+</section>
+
 <!-- ── Portfolio ── -->
 <section id="portfolio">
   <div class="container">
@@ -862,6 +1028,104 @@ function drawChart() {
 }
 ['slider-n','slider-lr','slider-delta'].forEach(id => document.getElementById(id).addEventListener('input', drawChart));
 drawChart();
+
+/* ── Experiment 1: Market Structure Viz ── */
+(function () {
+  function init() {
+    if (typeof COLLUSION_DATA === 'undefined' || typeof Plotly === 'undefined') {
+      setTimeout(init, 200);
+      return;
+    }
+    const res    = COLLUSION_DATA.results;
+    const ns     = [2, 3, 4];
+    const colors = ['#8b6f47', '#b8956a', '#d4b896'];
+    const colorA = ['rgba(139,111,71,.18)', 'rgba(184,149,106,.18)', 'rgba(212,184,150,.18)'];
+    const nsess = COLLUSION_DATA.n_sessions || res['2'].n_sessions;
+    document.getElementById('exp1-nsessions').textContent = nsess;
+    const metricsEl = document.getElementById('exp1-metrics');
+    ns.forEach((n, i) => {
+      const r   = res[String(n)];
+      const pct = (r.avg_delta * 100).toFixed(1);
+      const std = (r.std_delta * 100).toFixed(1);
+      metricsEl.innerHTML += `
+        <div class="exp1-metric">
+          <div class="exp1-metric-label">n = ${n} firms</div>
+          <div class="exp1-metric-value">${pct}%</div>
+          <div class="exp1-metric-sub">Avg Δ ± ${std}%</div>
+        </div>`;
+    });
+    const base = {
+      paper_bgcolor: 'rgba(0,0,0,0)',
+      plot_bgcolor:  'rgba(0,0,0,0)',
+      font: { family: "'IBM Plex Sans',sans-serif", color: '#3a2a1a', size: 11 },
+      margin: { t: 38, r: 16, b: 44, l: 50 },
+    };
+    const cfg = { responsive: true, displayModeBar: false };
+    const refShapes = [
+      { type:'line', x0:-.5, x1:2.5, y0:0, y1:0,
+        line:{ color:'#6ba3be', width:1.2, dash:'dot' } },
+      { type:'line', x0:-.5, x1:2.5, y0:1, y1:1,
+        line:{ color:'#c06060', width:1.2, dash:'dash' } },
+    ];
+    Plotly.newPlot('exp1-bar', [{
+      type: 'bar',
+      x: ns.map(n => `n = ${n}`),
+      y: ns.map(n => res[String(n)].avg_delta),
+      error_y: {
+        type: 'data',
+        array: ns.map(n => res[String(n)].std_delta),
+        visible: true, color: '#8b6f47', thickness: 1.5, width: 5,
+      },
+      marker: { color: colors },
+      hovertemplate: '<b>%{x}</b><br>Avg Δ = %{y:.3f}<extra></extra>',
+    }], {
+      ...base,
+      title: { text: 'Average Profit Gain by Market Structure', font:{ size:12 } },
+      yaxis: { title:'Avg. Δ', range:[0,1.05], tickformat:'.2f', gridcolor:'#e8e0d4' },
+      shapes: refShapes,
+      annotations: [
+        { x:2.4, y:0.02,  text:'Competitive', showarrow:false,
+          font:{ size:9, color:'#6ba3be' }, xref:'x', yref:'y' },
+        { x:2.4, y:0.97, text:'Monopoly',    showarrow:false,
+          font:{ size:9, color:'#c06060' }, xref:'x', yref:'y' },
+      ],
+    }, cfg);
+    Plotly.newPlot('exp1-box',
+      ns.map((n, i) => ({
+        type: 'box',
+        name: `n = ${n}`,
+        y: res[String(n)].deltas,
+        marker:    { color: colors[i], size: 3 },
+        fillcolor: colorA[i],
+        line:      { color: colors[i], width: 1.5 },
+        boxpoints: 'outliers',
+        hovertemplate: 'Δ = %{y:.3f}<extra>n=%{fullData.name}</extra>',
+      })),
+      {
+        ...base,
+        title: { text: 'Distribution of Δ across Sessions', font:{ size:12 } },
+        yaxis: { title:'Δ', range:[0,1.1], tickformat:'.2f', gridcolor:'#e8e0d4' },
+        shapes: refShapes,
+        showlegend: false,
+      }, cfg);
+    const d2 = res['2'].avg_delta, d3 = res['3'].avg_delta, d4 = res['4'].avg_delta;
+    const drop23 = ((d2 - d3) / d2 * 100).toFixed(0);
+    const drop24 = ((d2 - d4) / d2 * 100).toFixed(0);
+    document.getElementById('exp1-finding-text').innerHTML =
+      `Algorithmic collusion emerges robustly but weakens with market fragmentation.
+       With <strong>n = 2</strong> firms, Q-learning algorithms achieve a profit gain of
+       <strong>Δ = ${(d2*100).toFixed(1)}%</strong> — closely replicating Calvano et al. (2020).
+       Expanding to <strong>n = 3</strong> reduces this to <strong>${(d3*100).toFixed(1)}%</strong>
+       (−${drop23}%), and to <strong>${(d4*100).toFixed(1)}%</strong> with four firms (−${drop24}%).
+       Crucially, collusion remains well above the competitive benchmark even in four-firm markets,
+       suggesting that algorithmic pricing raises antitrust concerns beyond duopoly settings.`;
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
 </script>
 </body>
 </html>
