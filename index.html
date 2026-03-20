@@ -186,65 +186,39 @@
     .insight-card {
       background: var(--cream);
       border: 1px solid var(--border-light);
-      padding: 0;
+      padding: 20px 22px 18px;
       display: flex;
-      flex-direction: row;
-      align-items: stretch;
+      flex-direction: column;
+      gap: 14px;
       cursor: pointer;
       transition: border-color 0.2s, background 0.2s;
       text-decoration: none;
       color: inherit;
-      overflow: hidden;
     }
-    .insight-card:hover {
-      border-color: var(--border);
-      background: var(--cream-dark);
-      opacity: 1;
-    }
-    .insight-card-left {
-      flex: 1;
-      padding: 22px 20px 18px 22px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      gap: 14px;
-    }
+    .insight-card:hover { border-color: var(--border); background: var(--cream-dark); opacity: 1; }
     .insight-source {
-      font-size: 12px;
-      font-weight: 400;
-      color: var(--ink-faint);
-      letter-spacing: 0.04em;
-      margin-bottom: 10px;
-      display: flex;
-      align-items: center;
-      gap: 5px;
+      font-size: 12px; font-weight: 400; color: var(--ink-faint);
+      letter-spacing: 0.04em; margin-bottom: 0;
+      display: flex; align-items: center; gap: 5px;
     }
     .insight-source::before { content: '⌗'; font-size: 11px; }
+    .insight-card-mid {
+      display: flex; align-items: stretch; gap: 16px; flex: 1;
+    }
     .insight-title {
-      font-family: var(--ff-serif);
-      font-size: 19px;
-      font-weight: 400;
-      color: var(--ink);
-      line-height: 1.35;
-      flex: 1;
+      font-family: var(--ff-serif); font-size: 19px; font-weight: 400;
+      color: var(--ink); line-height: 1.35; flex: 1;
     }
     .insight-thumb {
-      width: 145px;
-      flex-shrink: 0;
-      overflow: hidden;
-      border-left: 1px solid var(--border-light);
+      width: 145px; flex-shrink: 0;
+      overflow: hidden; border: 1px solid var(--border-light);
     }
     .insight-thumb img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: center 55%;
+      width: 100%; height: 100%;
+      object-fit: cover; object-position: center 55%;
     }
     .insight-card-bottom {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
+      display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
     }
     .insight-date {
       font-size: 12px;
@@ -548,84 +522,57 @@
     <div class="insight-grid fade-in">
 
       <a class="insight-card" href="semiconductor_gvc.html">
-        <div class="insight-card-left">
-          <div>
-            <div class="insight-source">UN Comtrade</div>
-            <div class="insight-title">Export Controls Created a 6-Month Shock. Then Semiconductor Trade Rebounded to Record Highs.</div>
-          </div>
-          <div class="insight-card-bottom">
-            <span class="insight-date">Mar 2026</span>
-            <span class="insight-dot"></span>
-            <span class="insight-tag">Data Snapshot</span>
-            <span class="insight-dot"></span>
-            <span class="insight-tag">GVC</span>
-            <span class="insight-dot"></span>
-            <span class="insight-tag">Semiconductors</span>
-          </div>
+        <div class="insight-source">UN Comtrade</div>
+        <div class="insight-card-mid">
+          <div class="insight-title">Export Controls Created a 6-Month Shock. Then Semiconductor Trade Rebounded to Record Highs.</div>
+          <div class="insight-thumb"><img src="fig1.png" alt="Semiconductor exports by product category"></div>
         </div>
-        <div class="insight-thumb">
-          <img src="fig1.png" alt="Semiconductor exports by product category">
+        <div class="insight-card-bottom">
+          <span class="insight-date">Mar 2026</span>
+          <span class="insight-dot"></span><span class="insight-tag">Data Snapshot</span>
+          <span class="insight-dot"></span><span class="insight-tag">GVC</span>
+          <span class="insight-dot"></span><span class="insight-tag">Semiconductors</span>
         </div>
       </a>
 
       <a class="insight-card" href="semiconductor_gvc.html">
-        <div class="insight-card-left">
-          <div>
-            <div class="insight-source">UN Comtrade</div>
-            <div class="insight-title">Memory Chips Lost Share After US Controls. Processors &amp; Controllers Gained It.</div>
-          </div>
-          <div class="insight-card-bottom">
-            <span class="insight-date">Mar 2026</span>
-            <span class="insight-dot"></span>
-            <span class="insight-tag">Data Snapshot</span>
-            <span class="insight-dot"></span>
-            <span class="insight-tag">Trade Structure</span>
-          </div>
+        <div class="insight-source">UN Comtrade</div>
+        <div class="insight-card-mid">
+          <div class="insight-title">Memory Chips Lost Share After US Controls. Processors &amp; Controllers Gained It.</div>
+          <div class="insight-thumb"><img src="fig2.png" alt="Structure of semiconductor exports"></div>
         </div>
-        <div class="insight-thumb">
-          <img src="fig2.png" alt="Structure of semiconductor exports">
+        <div class="insight-card-bottom">
+          <span class="insight-date">Mar 2026</span>
+          <span class="insight-dot"></span><span class="insight-tag">Data Snapshot</span>
+          <span class="insight-dot"></span><span class="insight-tag">Trade Structure</span>
         </div>
       </a>
 
       <a class="insight-card" href="semiconductor_gvc.html">
-        <div class="insight-card-left">
-          <div>
-            <div class="insight-source">UN Comtrade</div>
-            <div class="insight-title">China and Hong Kong SAR Quietly Became the World's Top Semiconductor Exporters by 2025.</div>
-          </div>
-          <div class="insight-card-bottom">
-            <span class="insight-date">Mar 2026</span>
-            <span class="insight-dot"></span>
-            <span class="insight-tag">Data Snapshot</span>
-            <span class="insight-dot"></span>
-            <span class="insight-tag">Asia</span>
-            <span class="insight-dot"></span>
-            <span class="insight-tag">Supply Chain</span>
-          </div>
+        <div class="insight-source">UN Comtrade</div>
+        <div class="insight-card-mid">
+          <div class="insight-title">China and Hong Kong SAR Quietly Became the World's Top Semiconductor Exporters by 2025.</div>
+          <div class="insight-thumb"><img src="fig3.png" alt="Top semiconductor exporters"></div>
         </div>
-        <div class="insight-thumb">
-          <img src="fig3.png" alt="Top semiconductor exporters">
+        <div class="insight-card-bottom">
+          <span class="insight-date">Mar 2026</span>
+          <span class="insight-dot"></span><span class="insight-tag">Data Snapshot</span>
+          <span class="insight-dot"></span><span class="insight-tag">Asia</span>
+          <span class="insight-dot"></span><span class="insight-tag">Supply Chain</span>
         </div>
       </a>
 
       <a class="insight-card" href="semiconductor_gvc.html">
-        <div class="insight-card-left">
-          <div>
-            <div class="insight-source">UN Comtrade</div>
-            <div class="insight-title">Despite Export Controls, China's Semiconductor Imports Hit a Record $234B in 2024.</div>
-          </div>
-          <div class="insight-card-bottom">
-            <span class="insight-date">Mar 2026</span>
-            <span class="insight-dot"></span>
-            <span class="insight-tag">Data Snapshot</span>
-            <span class="insight-dot"></span>
-            <span class="insight-tag">China</span>
-            <span class="insight-dot"></span>
-            <span class="insight-tag">Demand</span>
-          </div>
+        <div class="insight-source">UN Comtrade</div>
+        <div class="insight-card-mid">
+          <div class="insight-title">Despite Export Controls, China's Semiconductor Imports Hit a Record $234B in 2024.</div>
+          <div class="insight-thumb"><img src="fig4.png" alt="Top destinations for semiconductor exports"></div>
         </div>
-        <div class="insight-thumb">
-          <img src="fig4.png" alt="Top destinations for semiconductor exports">
+        <div class="insight-card-bottom">
+          <span class="insight-date">Mar 2026</span>
+          <span class="insight-dot"></span><span class="insight-tag">Data Snapshot</span>
+          <span class="insight-dot"></span><span class="insight-tag">China</span>
+          <span class="insight-dot"></span><span class="insight-tag">Demand</span>
         </div>
       </a>
 
