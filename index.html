@@ -177,6 +177,97 @@
     }
     .gvc-card:hover .gvc-arrow { transform: translateX(5px); }
 
+    /* ── Insight Cards ── */
+    .insight-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    .insight-card {
+      background: var(--cream);
+      border: 1px solid var(--border-light);
+      padding: 22px 22px 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 14px;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      text-decoration: none;
+      color: inherit;
+    }
+    .insight-card:hover {
+      border-color: var(--border);
+      background: var(--cream-dark);
+      opacity: 1;
+    }
+    .insight-card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+    }
+    .insight-card-text { flex: 1; }
+    .insight-source {
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--ink-faint);
+      letter-spacing: 0.04em;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .insight-source::before {
+      content: '⌗';
+      font-size: 11px;
+    }
+    .insight-title {
+      font-family: var(--ff-serif);
+      font-size: 19px;
+      font-weight: 400;
+      color: var(--ink);
+      line-height: 1.35;
+    }
+    .insight-thumb {
+      width: 88px;
+      height: 72px;
+      flex-shrink: 0;
+      overflow: hidden;
+      border: 1px solid var(--border-light);
+    }
+    .insight-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top left;
+    }
+    .insight-card-bottom {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .insight-date {
+      font-size: 12px;
+      font-weight: 300;
+      color: var(--ink-faint);
+    }
+    .insight-dot {
+      width: 2px; height: 2px;
+      border-radius: 50%;
+      background: var(--border);
+      flex-shrink: 0;
+    }
+    .insight-tag {
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+    }
+    @media (max-width: 640px) { .insight-grid { grid-template-columns: 1fr; } }
+
     /* ── Papers ── */
     .paper-item { padding: 40px 0; border-bottom: 1px solid var(--border-light); }
     .paper-item:first-child { padding-top: 0; }
@@ -447,7 +538,7 @@
   </div>
 </section>
 
-<!-- ── Papers ── -->
+<!-- ── Insights ── -->
 <section id="papers">
   <div class="container">
     <div class="section-header fade-in">
@@ -456,30 +547,90 @@
       <div class="section-rule"></div>
     </div>
 
-    <div class="paper-item fade-in">
-      <div class="paper-meta">
-        <span class="paper-status snapshot">Data Snapshot</span>
-        <span style="font-size:13px; color:var(--ink-faint);">March 2026</span>
-      </div>
-      <div class="paper-title">Speed Bumps, Not Choke Points: What Trade Data Reveals About US Semiconductor Export Controls</div>
-      <div class="paper-subtitle">Semiconductor Global Value Chain · UN Comtrade, 2020–2024</div>
-      <div class="paper-blocks">
-        <div class="paper-block">
-          <div class="paper-block-label">What We See</div>
-          <div class="paper-block-text">Global semiconductor exports peaked at ~$65B/month in mid-2022, then collapsed ~30% in the immediate aftermath of the October 2022 US export controls. But the disruption was short-lived: within six months, flows had largely recovered, and by late 2024 total exports surpassed their pre-shock peak. The controls landed — and the market absorbed them.</div>
+    <div class="insight-grid fade-in">
+
+      <a class="insight-card" href="semiconductor_gvc.html">
+        <div class="insight-card-top">
+          <div class="insight-card-text">
+            <div class="insight-source">UN Comtrade</div>
+            <div class="insight-title">Export Controls Created a 6-Month Shock. Then Semiconductor Trade Rebounded to Record Highs.</div>
+          </div>
+          <div class="insight-thumb">
+            <img src="fig1.png" alt="Semiconductor exports by product category">
+          </div>
         </div>
-        <div class="paper-block">
-          <div class="paper-block-label">What's Surprising</div>
-          <div class="paper-block-text">Three findings cut against the narrative of effective containment. First, China and Hong Kong SAR emerged as the <em>top semiconductor exporters</em> by 2025 (~$12B/month each), suggesting China's role in the GVC deepened on both the supply and demand side. Second, China remained the dominant <em>destination</em> in 2024 ($234B), larger than in 2020 ($176B) — imports not only recovered but grew. Third, the product mix shifted in a counterintuitive direction: memory chips' share fell from 35.9% to 31.4%, while Processors &amp; Controllers — the higher-value, more strategically sensitive category — actually grew from 51.5% to 54.4%.</div>
+        <div class="insight-card-bottom">
+          <span class="insight-date">Mar 2026</span>
+          <span class="insight-dot"></span>
+          <span class="insight-tag">Data Snapshot</span>
+          <span class="insight-dot"></span>
+          <span class="insight-tag">GVC</span>
+          <span class="insight-dot"></span>
+          <span class="insight-tag">Semiconductors</span>
         </div>
-        <div class="paper-block">
-          <div class="paper-block-label">What It Means</div>
-          <div class="paper-block-text">The semiconductor GVC is more elastic than export control frameworks assume. Three adaptation mechanisms appear to be at work: re-routing through entrepôt hubs (Hong Kong SAR's role as intermediary), domestic production scaling on the supply side, and front-loading of imports ahead of anticipated restrictions. Meanwhile, Vietnam ($28B → $48B) and India ($4B → $13B) show early signs of becoming alternative nodes — but at a scale that barely registers against China's gravitational pull. The central policy implication is sobering: unilateral export controls create adjustment costs and temporary shocks, but they are unlikely to durably restructure a GVC of this depth and complexity without multilateral coordination.</div>
+      </a>
+
+      <a class="insight-card" href="semiconductor_gvc.html">
+        <div class="insight-card-top">
+          <div class="insight-card-text">
+            <div class="insight-source">UN Comtrade</div>
+            <div class="insight-title">Memory Chips Lost Share After US Controls. Processors &amp; Controllers Gained It.</div>
+          </div>
+          <div class="insight-thumb">
+            <img src="fig2.png" alt="Structure of semiconductor exports">
+          </div>
         </div>
-      </div>
-      <div class="paper-links">
-        <a href="semiconductor_gvc.html" class="paper-link em">→ Interactive Charts</a>
-      </div>
+        <div class="insight-card-bottom">
+          <span class="insight-date">Mar 2026</span>
+          <span class="insight-dot"></span>
+          <span class="insight-tag">Data Snapshot</span>
+          <span class="insight-dot"></span>
+          <span class="insight-tag">Trade Structure</span>
+        </div>
+      </a>
+
+      <a class="insight-card" href="semiconductor_gvc.html">
+        <div class="insight-card-top">
+          <div class="insight-card-text">
+            <div class="insight-source">UN Comtrade</div>
+            <div class="insight-title">China and Hong Kong SAR Quietly Became the World's Top Semiconductor Exporters by 2025.</div>
+          </div>
+          <div class="insight-thumb">
+            <img src="fig3.png" alt="Top semiconductor exporters">
+          </div>
+        </div>
+        <div class="insight-card-bottom">
+          <span class="insight-date">Mar 2026</span>
+          <span class="insight-dot"></span>
+          <span class="insight-tag">Data Snapshot</span>
+          <span class="insight-dot"></span>
+          <span class="insight-tag">Asia</span>
+          <span class="insight-dot"></span>
+          <span class="insight-tag">Supply Chain</span>
+        </div>
+      </a>
+
+      <a class="insight-card" href="semiconductor_gvc.html">
+        <div class="insight-card-top">
+          <div class="insight-card-text">
+            <div class="insight-source">UN Comtrade</div>
+            <div class="insight-title">Despite Export Controls, China's Semiconductor Imports Hit a Record $234B in 2024.</div>
+          </div>
+          <div class="insight-thumb">
+            <img src="fig4.png" alt="Top destinations for semiconductor exports">
+          </div>
+        </div>
+        <div class="insight-card-bottom">
+          <span class="insight-date">Mar 2026</span>
+          <span class="insight-dot"></span>
+          <span class="insight-tag">Data Snapshot</span>
+          <span class="insight-dot"></span>
+          <span class="insight-tag">China</span>
+          <span class="insight-dot"></span>
+          <span class="insight-tag">Demand</span>
+        </div>
+      </a>
+
     </div>
 
     <div class="paper-item fade-in">
