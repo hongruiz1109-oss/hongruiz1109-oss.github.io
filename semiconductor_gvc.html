@@ -27,6 +27,7 @@
       background: var(--cream); color: var(--ink);
       font-family: var(--ff-sans); font-weight: 400;
       line-height: 1.75; -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
     }
     a { color: var(--brown); text-decoration: none; transition: opacity 0.2s; }
     a:hover { opacity: 0.55; }
@@ -48,44 +49,37 @@
       color: var(--ink-light); display: flex; align-items: center; gap: 8px;
     }
     .nav-back:hover { color: var(--ink); opacity: 1; }
-    .nav-title {
-      font-family: var(--ff-serif); font-size: 17px; color: var(--ink);
-    }
+    .nav-title { font-family: var(--ff-serif); font-size: 17px; color: var(--ink); }
 
     /* ── Header ── */
     .page-header {
-      max-width: 1020px; margin: 0 auto; padding: 56px 40px 40px;
+      max-width: 1020px; margin: 0 auto; padding: 48px 40px 36px;
       border-bottom: 1px solid var(--border-light);
     }
     .page-eyebrow {
       font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase;
-      color: var(--ink-faint); margin-bottom: 16px;
+      color: var(--ink-faint); margin-bottom: 14px;
     }
     h1.page-title {
-      font-family: var(--ff-serif); font-size: clamp(28px, 4vw, 42px);
-      font-weight: 400; line-height: 1.15; margin-bottom: 16px;
+      font-family: var(--ff-serif); font-size: clamp(26px, 4vw, 40px);
+      font-weight: 400; line-height: 1.15; margin-bottom: 14px;
     }
-    .page-desc {
-      font-size: 15px; color: var(--ink-light); max-width: 680px; line-height: 1.8;
-    }
-    .meta-row {
-      margin-top: 20px; display: flex; gap: 24px; flex-wrap: wrap;
-    }
+    .page-desc { font-size: 14px; color: var(--ink-light); max-width: 640px; line-height: 1.8; }
+    .meta-row { margin-top: 18px; display: flex; gap: 10px; flex-wrap: wrap; }
     .meta-item {
-      font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase;
-      color: var(--ink-faint); padding: 5px 12px;
-      border: 1px solid var(--border);
+      font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--ink-faint); padding: 4px 10px; border: 1px solid var(--border);
     }
 
-    /* ── Chart tabs ── */
-    .chart-section { max-width: 1020px; margin: 0 auto; padding: 40px 40px 0; }
+    /* ── Tabs ── */
+    .chart-controls { max-width: 1020px; margin: 0 auto; padding: 0 40px; }
     .tab-bar {
-      display: flex; gap: 0; border-bottom: 1px solid var(--border-light);
-      margin-bottom: 32px;
+      display: flex; border-bottom: 1px solid var(--border-light);
+      margin-top: 28px;
     }
     .tab-btn {
       font-family: var(--ff-sans); font-size: 13px; letter-spacing: 0.08em;
-      text-transform: uppercase; padding: 12px 24px;
+      text-transform: uppercase; padding: 11px 24px;
       background: none; border: none; border-bottom: 2px solid transparent;
       color: var(--ink-faint); cursor: pointer; transition: all 0.2s;
       margin-bottom: -1px;
@@ -93,28 +87,40 @@
     .tab-btn:hover { color: var(--ink); }
     .tab-btn.active { color: var(--ink); border-bottom-color: var(--ink); }
 
-    .chart-desc {
-      font-size: 14px; color: var(--ink-light); margin-bottom: 20px; line-height: 1.7;
-    }
-    .chart-wrap {
-      overflow-x: auto;
-      border: 1px solid var(--border-light);
-    }
-    .chart-wrap iframe { display: block; }
+    /* ── Chart panes ── */
     .chart-pane { display: none; }
     .chart-pane.active { display: block; }
 
+    /* ── Responsive chart container ── */
+    .chart-wrap {
+      position: relative;
+      width: 100%;
+      overflow: hidden;
+      border-top: 1px solid var(--border-light);
+      border-bottom: 1px solid var(--border-light);
+      margin-top: 20px;
+    }
+    .chart-wrap iframe {
+      position: absolute;
+      top: 0; left: 0;
+      width: 1280px;
+      height: 720px;
+      border: none;
+      transform-origin: top left;
+    }
+
     /* ── Footer ── */
     .page-footer {
-      max-width: 1020px; margin: 0 auto;
-      padding: 32px 40px 56px;
+      max-width: 1020px; margin: 40px auto 0;
+      padding: 24px 40px 48px;
       font-size: 12px; color: var(--ink-faint);
-      border-top: 1px solid var(--border-light); margin-top: 40px;
+      border-top: 1px solid var(--border-light);
       display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 12px;
     }
 
     @media (max-width: 640px) {
-      .nav-inner, .page-header, .chart-section, .page-footer { padding-left: 20px; padding-right: 20px; }
+      .nav-inner, .page-header, .chart-controls, .page-footer { padding-left: 20px; padding-right: 20px; }
       .tab-btn { padding: 10px 14px; font-size: 11px; }
     }
   </style>
@@ -130,8 +136,10 @@
 
 <div class="page-header">
   <div class="page-eyebrow">Interactive Data Visualization</div>
-  <h1 class="page-title">半导体全球价值链<br><em style="font-style:italic; color: var(--brown-mid);">Semiconductor Global Value Chain</em></h1>
-  <p class="page-desc">Quarterly bilateral trade flows across 40+ countries, 2020–2024. Select a commodity category, filter by country, and overlay major trade shock events. Switch between export and import perspectives using the tabs below.</p>
+  <h1 class="page-title">半导体全球价值链<br>
+    <em style="font-style:italic; color: var(--brown-mid);">Semiconductor Global Value Chain</em>
+  </h1>
+  <p class="page-desc">Quarterly bilateral trade flows across 40+ countries, 2020–2024. Select a commodity category, filter by country, and overlay major trade shock events.</p>
   <div class="meta-row">
     <span class="meta-item">Source: UN Comtrade</span>
     <span class="meta-item">2020 Q1 – 2024 Q4</span>
@@ -140,24 +148,22 @@
   </div>
 </div>
 
-<div class="chart-section">
+<div class="chart-controls">
   <div class="tab-bar">
     <button class="tab-btn active" onclick="switchTab('exports', this)">出口视角 · Export</button>
     <button class="tab-btn" onclick="switchTab('imports', this)">进口视角 · Import</button>
   </div>
+</div>
 
-  <div id="pane-exports" class="chart-pane active">
-    <p class="chart-desc">Each line represents one country's total semiconductor exports (or by category). Arc width in chord diagrams is proportional to bilateral trade value.</p>
-    <div class="chart-wrap">
-      <iframe src="semiconductor_exports.html" width="1280" height="720" frameborder="0" scrolling="no"></iframe>
-    </div>
+<div id="pane-exports" class="chart-pane active">
+  <div class="chart-wrap">
+    <iframe src="semiconductor_exports.html" frameborder="0" scrolling="no"></iframe>
   </div>
+</div>
 
-  <div id="pane-imports" class="chart-pane">
-    <p class="chart-desc">Import perspective: each line shows how much a country received from global semiconductor supply chains.</p>
-    <div class="chart-wrap">
-      <iframe src="semiconductor_imports.html" width="1280" height="720" frameborder="0" scrolling="no"></iframe>
-    </div>
+<div id="pane-imports" class="chart-pane">
+  <div class="chart-wrap">
+    <iframe src="semiconductor_imports.html" frameborder="0" scrolling="no"></iframe>
   </div>
 </div>
 
@@ -167,12 +173,27 @@
 </div>
 
 <script>
+  const CHART_W = 1280, CHART_H = 720;
+
+  function fitCharts() {
+    document.querySelectorAll('.chart-wrap').forEach(wrap => {
+      const scale = Math.min(1, wrap.offsetWidth / CHART_W);
+      const iframe = wrap.querySelector('iframe');
+      iframe.style.transform = `scale(${scale})`;
+      wrap.style.height = Math.round(CHART_H * scale) + 'px';
+    });
+  }
+
   function switchTab(name, btn) {
     document.querySelectorAll('.chart-pane').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     document.getElementById('pane-' + name).classList.add('active');
     btn.classList.add('active');
+    fitCharts();
   }
+
+  window.addEventListener('load', fitCharts);
+  window.addEventListener('resize', fitCharts);
 </script>
 
 </body>
