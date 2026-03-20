@@ -382,6 +382,23 @@
       .edu-item, .news-item { grid-template-columns: 1fr; gap: 4px; }
     }
 
+    /* ── Lab buttons & stats ── */
+    .lab-btn {
+      display: block; width: 100%; margin-top: 9px;
+      font-family: var(--ff-sans); font-size: 12px; font-weight: 400;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 9px 0; border: 1px solid var(--border);
+      background: transparent; color: var(--ink-light);
+      cursor: pointer; transition: all 0.2s;
+    }
+    .lab-btn:hover { background: var(--brown); color: var(--cream); border-color: var(--brown); }
+    .lab-btn-run { background: var(--brown); color: var(--cream); border-color: var(--brown); }
+    .lab-btn-run:hover { opacity: 0.8; }
+    .lab-stats { margin-top: 18px; border-top: 1px solid var(--border-light); padding-top: 12px; }
+    .lab-stat { display: flex; justify-content: space-between; align-items: baseline; padding: 3px 0; }
+    .lab-stat-label { font-size: 11px; letter-spacing: 0.07em; text-transform: uppercase; color: var(--ink-faint); }
+    .lab-stat-val { font-size: 13px; color: var(--brown-mid); font-family: var(--ff-serif); }
+
     /* ── Experiment 1: Market Structure ── */
     .exp1-card {
       background: #faf8f4;
@@ -772,40 +789,45 @@
       <div class="section-rule"></div>
     </div>
     <p class="lab-intro fade-in">
-      Adjust the market parameters and watch Q-Learning pricing agents compete in real time.
-      This is the core simulation from Paper 1 — running directly in your browser.
+      Real Q-learning agents — faithful to Calvano et al. (2020, <em>AER</em>) — run directly in your browser.
+      Adjust parameters and click <strong>Run</strong> to watch algorithms learn to collude without any explicit coordination.
     </p>
     <div class="lab-layout fade-in">
       <div class="lab-controls">
         <div class="lab-controls-title">Parameters</div>
         <div class="control-group">
-          <div class="control-label">Oligopolists (N) <span class="control-val" id="val-n">2</span></div>
-          <input type="range" id="slider-n" min="2" max="10" value="2" step="1">
-          <div class="control-hint">Number of competing firms in the market</div>
+          <div class="control-label">Firms (n) <span class="control-val" id="val-n">2</span></div>
+          <input type="range" id="slider-n" min="2" max="3" value="2" step="1">
+          <div class="control-hint">Number of competing algorithmic agents</div>
         </div>
         <div class="control-group">
-          <div class="control-label">Learning Rate (α) <span class="control-val" id="val-lr">0.10</span></div>
-          <input type="range" id="slider-lr" min="0.01" max="0.5" value="0.1" step="0.01">
+          <div class="control-label">Learning Rate (α) <span class="control-val" id="val-alpha">0.15</span></div>
+          <input type="range" id="slider-alpha" min="0.05" max="0.30" value="0.15" step="0.01">
           <div class="control-hint">Speed at which agents update Q-values</div>
         </div>
         <div class="control-group">
           <div class="control-label">Discount Factor (δ) <span class="control-val" id="val-delta">0.95</span></div>
-          <input type="range" id="slider-delta" min="0.5" max="0.99" value="0.95" step="0.01">
-          <div class="control-hint">Weight agents place on future profits</div>
+          <input type="range" id="slider-delta" min="0.80" max="0.99" value="0.95" step="0.01">
+          <div class="control-hint">Weight on future profits — higher → stronger collusion incentive</div>
+        </div>
+        <button id="btn-run" class="lab-btn lab-btn-run" onclick="labRun()">Run</button>
+        <button id="btn-reset" class="lab-btn" onclick="labReset()">Reset</button>
+        <div class="lab-stats">
+          <div class="lab-stat"><span class="lab-stat-label">Iteration</span><span class="lab-stat-val" id="stat-t">—</span></div>
+          <div class="lab-stat"><span class="lab-stat-label">Exploration ε</span><span class="lab-stat-val" id="stat-eps">1.0000</span></div>
+          <div class="lab-stat"><span class="lab-stat-label">Avg. Price</span><span class="lab-stat-val" id="stat-price">—</span></div>
+          <div class="lab-stat"><span class="lab-stat-label">Profit Gain Δ</span><span class="lab-stat-val" id="stat-delta">—</span></div>
+          <div class="lab-stat"><span class="lab-stat-label">Status</span><span class="lab-stat-val" id="stat-status">Ready</span></div>
         </div>
       </div>
-      <div id="simulation-chart"></div>
+      <div id="simulation-chart" style="min-height:300px;"></div>
       <div class="lab-insight">
         <div class="lab-insight-title">Economic Intuition</div>
-        <div class="lab-insight-text">
-          At the start, agents undercut to capture market share, driving prices toward the
-          <strong>Nash equilibrium (Bertrand competitive price)</strong>.
-          But when there are few firms and the discount factor is high, algorithms spontaneously learn
-          <strong>tacit collusion</strong> — pushing prices toward the monopoly level.
-          No explicit agreement. Just algorithms learning to punish defectors.
-          <br><br>
-          <strong>Policy implication:</strong> In highly concentrated digital markets, even without inter-firm communication,
-          simple pricing algorithms can reach an unspoken cartel — posing a severe challenge to existing antitrust law.
+        <div class="lab-insight-text" id="lab-insight-text">
+          Set parameters and click <strong>Run</strong>. Early on, agents explore randomly —
+          prices fluctuate widely. As exploration decays (ε → 0), each agent's Q-values converge
+          and prices stabilise. With high δ and few firms, the equilibrium price sits well above
+          the <strong>Nash competitive level</strong>, constituting tacit collusion with no explicit coordination.
         </div>
       </div>
     </div>
@@ -989,44 +1011,159 @@ document.querySelectorAll('section[id]').forEach(s => {
   }, { rootMargin: '-40% 0px -55% 0px' }).observe(s);
 });
 
-/* ── Simulation ── */
-function runSim(n, lr, delta) {
-  const eps = Array.from({length: 500}, (_, i) => i + 1);
-  const monopoly = 20, nash = 10;
-  const ct = (1 / n) * delta * (lr / 0.1);
-  const target = nash + (monopoly - nash) * ct;
-  let seed = 42;
-  const rand = () => { seed = (seed * 1664525 + 1013904223) & 0xffffffff; return (seed >>> 0) / 0xffffffff; };
-  const randn = () => { let u=rand(),v=rand(); return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v); };
-  const prices = eps.map(ep => target - (target - nash) * Math.exp(-0.02 * ep) + randn() * (0.5 + n * 0.1));
-  return { eps, prices, nash, monopoly };
+/* ── Real Q-Learning Lab (Calvano et al. 2020) ── */
+class QLSim {
+  constructor(n, alpha, delta) {
+    this.n = n; this.alpha = alpha; this.delta = delta;
+    this.beta = 4e-6; this.k = 15;
+    this.mu = 0.25; this.av = 2; this.a0 = 0; this.c = 1;
+    this.t = 0; this.converged = false; this.stableCount = 0; this.lastPolicy = null;
+    this.pNash = this._nash(); this.pMono = this._mono();
+    this.A = this._grid();
+    this.nS = Math.pow(this.k, this.n);
+    this.PI = this._profits();
+    this.Q  = this._initQ();
+    this.state = new Int32Array(this.n);
+    const piN = this._pi(new Array(n).fill(this.pNash));
+    const piM = this._pi(new Array(n).fill(this.pMono));
+    this.piN = piN.reduce((a,b)=>a+b,0)/n;
+    this.piM = piM.reduce((a,b)=>a+b,0)/n;
+  }
+  _demand(prices) {
+    const e = prices.map(p=>Math.exp((this.av-p)/this.mu));
+    const S = e.reduce((a,b)=>a+b,0) + Math.exp(this.a0/this.mu);
+    return e.map(x=>x/S);
+  }
+  _pi(prices) { const d=this._demand(prices); return prices.map((p,i)=>(p-this.c)*d[i]); }
+  _nash() {
+    let p=1.5;
+    for(let i=0;i<2000;i++){const d=this._demand(new Array(this.n).fill(p))[0];const pn=this.c+this.mu/(1-d);if(Math.abs(pn-p)<1e-10)break;p=pn;}
+    return p;
+  }
+  _mono() {
+    let best=-Infinity,bp=2;
+    for(let p=1.0;p<=3.5;p+=0.001){const v=this._pi(new Array(this.n).fill(p)).reduce((a,b)=>a+b,0);if(v>best){best=v;bp=p;}}
+    return bp;
+  }
+  _grid() {
+    const s=this.k-3, inner=Array.from({length:this.k-2},(_,i)=>this.pNash+i*(this.pMono-this.pNash)/s);
+    const dg=inner[1]-inner[0];
+    return Array.from({length:this.k},(_,i)=>inner[0]-dg+i*dg);
+  }
+  _i2a(idx) { const a=new Int32Array(this.n); for(let i=this.n-1;i>=0;i--){a[i]=idx%this.k;idx=Math.floor(idx/this.k);} return a; }
+  _a2i(a)   { let s=0; for(let i=0;i<this.n;i++) s=s*this.k+a[i]; return s; }
+  _profits() {
+    const PI=new Float64Array(this.nS*this.n);
+    for(let s=0;s<this.nS;s++){const p=Array.from(this._i2a(s),i=>this.A[i]);const pi=this._pi(p);for(let i=0;i<this.n;i++)PI[s*this.n+i]=pi[i];}
+    return PI;
+  }
+  _initQ() {
+    const Q=new Float64Array(this.n*this.nS*this.k);
+    for(let f=0;f<this.n;f++){
+      const avg=new Float64Array(this.k), cnt=new Float64Array(this.k);
+      for(let s=0;s<this.nS;s++){const af=this._i2a(s)[f];avg[af]+=this.PI[s*this.n+f];cnt[af]++;}
+      for(let a=0;a<this.k;a++){const v=(cnt[a]>0?avg[a]/cnt[a]:0)/(1-this.delta);const b=f*this.nS*this.k;for(let s=0;s<this.nS;s++)Q[b+s*this.k+a]=v;}
+    }
+    return Q;
+  }
+  _greedy(f, si) { let ba=0,bq=-Infinity,b=f*this.nS*this.k+si*this.k; for(let a=0;a<this.k;a++){if(this.Q[b+a]>bq){bq=this.Q[b+a];ba=a;}} return ba; }
+  step() {
+    const eps=Math.exp(-this.beta*this.t), si=this._a2i(this.state), actions=new Int32Array(this.n);
+    for(let i=0;i<this.n;i++) actions[i]=Math.random()<eps?Math.floor(Math.random()*this.k):this._greedy(i,si);
+    const nsi=this._a2i(actions);
+    for(let i=0;i<this.n;i++){
+      let mq=-Infinity; const bn=i*this.nS*this.k+nsi*this.k; for(let a=0;a<this.k;a++) if(this.Q[bn+a]>mq) mq=this.Q[bn+a];
+      const bs=i*this.nS*this.k+si*this.k; this.Q[bs+actions[i]]=(1-this.alpha)*this.Q[bs+actions[i]]+this.alpha*(this.PI[nsi*this.n+i]+this.delta*mq);
+    }
+    this.state=actions; this.t++;
+    if(this.t%5000===0&&!this.converged){
+      const pol=new Int32Array(this.nS*this.n);
+      for(let s=0;s<this.nS;s++) for(let i=0;i<this.n;i++) pol[s*this.n+i]=this._greedy(i,s);
+      if(this.lastPolicy&&pol.every((v,j)=>v===this.lastPolicy[j])){this.stableCount+=5000;if(this.stableCount>=15000)this.converged=true;}
+      else{this.stableCount=0;}
+      this.lastPolicy=pol;
+    }
+  }
+  avgPrice() { const si=this._a2i(this.state); let s=0; for(let i=0;i<this.n;i++)s+=this.A[this._greedy(i,si)]; return s/this.n; }
+  getDelta() {
+    let s=Array.from(this.state);
+    for(let it=0;it<200;it++){
+      const si=this._a2i(s), ga=Array.from({length:this.n},(_,i)=>this._greedy(i,si));
+      if(ga.every((a,i)=>a===s[i])){const piEq=this._pi(ga.map(a=>this.A[a])).reduce((a,b)=>a+b,0)/this.n;return Math.max(0,Math.min(1.2,(piEq-this.piN)/(this.piM-this.piN)));}
+      s=ga;
+    }
+    return null;
+  }
 }
 
-function drawChart() {
-  const n     = parseInt(document.getElementById('slider-n').value);
-  const lr    = parseFloat(document.getElementById('slider-lr').value);
-  const delta = parseFloat(document.getElementById('slider-delta').value);
-  document.getElementById('val-n').textContent = n;
-  document.getElementById('val-lr').textContent = lr.toFixed(2);
-  document.getElementById('val-delta').textContent = delta.toFixed(2);
-  const { eps, prices, nash, monopoly } = runSim(n, lr, delta);
-  Plotly.react('simulation-chart', [
-    { x: eps, y: prices, name: 'Agent Avg Price', mode: 'lines', line: { color: '#6B5440', width: 1.5 } },
-    { x: [1,500], y: [nash,nash], name: 'Nash Equilibrium', mode: 'lines', line: { color: '#7A8B6E', width: 1, dash: 'dot' } },
-    { x: [1,500], y: [monopoly,monopoly], name: 'Monopoly Price', mode: 'lines', line: { color: '#B87045', width: 1, dash: 'dot' } },
-  ], {
-    paper_bgcolor: 'transparent', plot_bgcolor: 'rgba(244,239,230,0.6)',
-    font: { family: "'IBM Plex Sans', sans-serif", color: '#6B5E4E', size: 12 },
-    title: { text: `Price Dynamics — ${n} Competing Agents`, font: { color: '#1C1812', size: 14, family: "'EB Garamond', serif" }, x: 0.04 },
-    xaxis: { title: 'Iteration', gridcolor: '#DDD6C8', zerolinecolor: '#DDD6C8', color: '#6B5E4E' },
-    yaxis: { title: 'Price', gridcolor: '#DDD6C8', zerolinecolor: '#DDD6C8', color: '#6B5E4E', range: [7, 22] },
-    legend: { bgcolor: 'rgba(0,0,0,0)', font: { size: 12 } },
-    margin: { t: 44, r: 20, b: 44, l: 50 },
-    hovermode: 'x unified',
-  }, { responsive: true, displayModeBar: false });
+let _sim=null, _running=false, _raf=null, _pt=[], _pp=[], _nextUpd=0;
+const BATCH=20000, MAX_T=3000000, UPD_EVERY=25000;
+
+function labGetP(){return{n:+document.getElementById('slider-n').value,alpha:+document.getElementById('slider-alpha').value,delta:+document.getElementById('slider-delta').value};}
+function labLabels(){const p=labGetP();document.getElementById('val-n').textContent=p.n;document.getElementById('val-alpha').textContent=p.alpha.toFixed(2);document.getElementById('val-delta').textContent=p.delta.toFixed(2);}
+function labStats(){
+  if(!_sim)return;
+  const eps=Math.exp(-_sim.beta*_sim.t);
+  document.getElementById('stat-t').textContent=(_sim.t/1000).toFixed(0)+'k';
+  document.getElementById('stat-eps').textContent=eps.toFixed(4);
+  document.getElementById('stat-price').textContent=_sim.avgPrice().toFixed(3);
+  const d=_sim.getDelta(); document.getElementById('stat-delta').textContent=d!==null?(d*100).toFixed(1)+'%':'—';
+  document.getElementById('stat-status').textContent=_sim.converged?'✓ Converged':_sim.t>=MAX_T?'Max iter':'Running…';
 }
-['slider-n','slider-lr','slider-delta'].forEach(id => document.getElementById(id).addEventListener('input', drawChart));
-drawChart();
+function labInitChart(){
+  if(!_sim)return;
+  Plotly.react('simulation-chart',[
+    {x:[],y:[],name:'Avg. Price',mode:'lines',line:{color:'#6B5440',width:2}},
+    {x:[0,MAX_T/1000],y:[_sim.pNash,_sim.pNash],name:'Nash',mode:'lines',line:{color:'#7A8B6E',width:1,dash:'dot'}},
+    {x:[0,MAX_T/1000],y:[_sim.pMono,_sim.pMono],name:'Monopoly',mode:'lines',line:{color:'#B87045',width:1,dash:'dot'}},
+  ],{
+    paper_bgcolor:'transparent',plot_bgcolor:'rgba(244,239,230,0.6)',
+    font:{family:"'IBM Plex Sans',sans-serif",color:'#6B5E4E',size:12},
+    title:{text:`Price Dynamics — n = ${_sim.n} firms`,font:{color:'#1C1812',size:14,family:"'EB Garamond',serif"},x:0.04},
+    xaxis:{title:'Iteration (×1k)',gridcolor:'#DDD6C8',zerolinecolor:'#DDD6C8',color:'#6B5E4E'},
+    yaxis:{title:'Price',gridcolor:'#DDD6C8',zerolinecolor:'#DDD6C8',color:'#6B5E4E',range:[_sim.pNash-0.15,_sim.pMono+0.15]},
+    legend:{bgcolor:'rgba(0,0,0,0)',font:{size:11}},
+    margin:{t:44,r:20,b:44,l:50},hovermode:'x unified',
+  },{responsive:true,displayModeBar:false});
+}
+function labInsight(){
+  if(!_sim)return;
+  const d=_sim.getDelta(), n=_sim.n, done=_sim.converged||_sim.t>=MAX_T;
+  if(!done){document.getElementById('lab-insight-text').innerHTML='Agents are exploring and updating Q-values. Watch prices gradually drift upward as algorithms learn to coordinate.';return;}
+  const pct=d!==null?(d*100).toFixed(1):'?', colludes=d!==null&&d>0.3;
+  document.getElementById('lab-insight-text').innerHTML=colludes
+    ?`With <strong>n = ${n}</strong> firms, algorithms converged to Profit Gain <strong>Δ = ${pct}%</strong> — well above the competitive benchmark. This is tacit collusion: no communication, no agreement, yet prices cluster near the <strong>monopoly level</strong>. A direct antitrust concern.`
+    :`With <strong>n = ${n}</strong> firms, algorithms settled at Δ = ${pct}% — closer to the competitive outcome. More competitors weaken implicit coordination, consistent with the experimental findings below.`;
+}
+function labTick(){
+  if(!_running||!_sim)return;
+  const stop=Math.min(_sim.t+BATCH,MAX_T);
+  while(_sim.t<stop&&!_sim.converged)_sim.step();
+  if(_sim.t>=_nextUpd||_sim.converged||_sim.t>=MAX_T){
+    _pt.push(_sim.t/1000); _pp.push(_sim.avgPrice());
+    Plotly.restyle('simulation-chart',{x:[_pt],y:[_pp]},[0]);
+    labStats(); _nextUpd=_sim.t+UPD_EVERY;
+  }
+  if(_sim.converged||_sim.t>=MAX_T){_running=false;document.getElementById('btn-run').textContent='Run';document.getElementById('btn-run').className='lab-btn lab-btn-run';labInsight();return;}
+  _raf=requestAnimationFrame(labTick);
+}
+function labRun(){
+  const btn=document.getElementById('btn-run');
+  if(_running){_running=false;if(_raf)cancelAnimationFrame(_raf);btn.textContent='Resume';btn.className='lab-btn';return;}
+  if(!_sim)labReset();
+  _running=true;btn.textContent='Pause';btn.className='lab-btn';
+  _raf=requestAnimationFrame(labTick);
+}
+function labReset(){
+  if(_raf)cancelAnimationFrame(_raf);_running=false;
+  const btn=document.getElementById('btn-run');btn.textContent='Run';btn.className='lab-btn lab-btn-run';
+  const p=labGetP();_sim=new QLSim(p.n,p.alpha,p.delta);
+  _pt=[0];_pp=[_sim.avgPrice()];_nextUpd=UPD_EVERY;
+  labInitChart();labStats();
+  document.getElementById('lab-insight-text').innerHTML='Set parameters and click <strong>Run</strong>. Early on, agents explore randomly — prices fluctuate widely. As exploration decays (ε → 0), Q-values converge and prices stabilise. With high δ and few firms, the equilibrium sits well above the <strong>Nash competitive level</strong>.';
+}
+['slider-n','slider-alpha','slider-delta'].forEach(id=>document.getElementById(id).addEventListener('input',labLabels));
+labReset();
 
 /* ── Experiment 1: Market Structure Viz ── */
 (function () {
