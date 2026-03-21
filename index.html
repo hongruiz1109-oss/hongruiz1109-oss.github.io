@@ -382,6 +382,18 @@
       .edu-item, .news-item { grid-template-columns: 1fr; gap: 4px; }
     }
 
+    /* ── Lab presets ── */
+    .lab-presets { display: flex; flex-direction: column; gap: 5px; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--border-light); }
+    .lab-preset-btn {
+      font-family: var(--ff-sans); font-size: 11px; font-weight: 400;
+      text-align: left; padding: 8px 10px;
+      border: 1px solid var(--border-light); background: transparent; color: var(--ink-light);
+      cursor: pointer; transition: all 0.2s; line-height: 1.4;
+    }
+    .lab-preset-btn:hover { border-color: var(--border); background: var(--cream-dark); color: var(--ink); }
+    .lab-preset-name { display: block; font-weight: 500; color: var(--ink-mid); margin-bottom: 2px; }
+    .lab-preset-vals { color: var(--ink-faint); font-size: 10px; letter-spacing: 0.03em; }
+
     /* ── Lab buttons & stats ── */
     .lab-btn {
       display: block; width: 100%; margin-top: 9px;
@@ -794,21 +806,40 @@
     </p>
     <div class="lab-layout fade-in">
       <div class="lab-controls">
+        <div class="lab-controls-title">Try a Scenario</div>
+        <div class="lab-presets">
+          <button class="lab-preset-btn" onclick="labPreset(2,0.15,0.95)">
+            <span class="lab-preset-name">① Paper Baseline</span>
+            <span class="lab-preset-vals">n=2 · α=0.15 · δ=0.95 — replicates Calvano et al.</span>
+          </button>
+          <button class="lab-preset-btn" onclick="labPreset(2,0.15,0.99)">
+            <span class="lab-preset-name">② Patient Agents</span>
+            <span class="lab-preset-vals">n=2 · α=0.15 · δ=0.99 — stronger collusion</span>
+          </button>
+          <button class="lab-preset-btn" onclick="labPreset(3,0.15,0.95)">
+            <span class="lab-preset-name">③ Three Firms</span>
+            <span class="lab-preset-vals">n=3 · α=0.15 · δ=0.95 — collusion weakens</span>
+          </button>
+          <button class="lab-preset-btn" onclick="labPreset(2,0.05,0.80)">
+            <span class="lab-preset-name">④ Myopic Agents</span>
+            <span class="lab-preset-vals">n=2 · α=0.05 · δ=0.80 — near-competitive</span>
+          </button>
+        </div>
         <div class="lab-controls-title">Parameters</div>
         <div class="control-group">
           <div class="control-label">Firms (n) <span class="control-val" id="val-n">2</span></div>
           <input type="range" id="slider-n" min="2" max="3" value="2" step="1">
-          <div class="control-hint">Number of competing algorithmic agents</div>
+          <div class="control-hint">2 or 3 competing algorithms. More firms → harder to sustain coordination.</div>
         </div>
         <div class="control-group">
           <div class="control-label">Learning Rate (α) <span class="control-val" id="val-alpha">0.15</span></div>
           <input type="range" id="slider-alpha" min="0.05" max="0.30" value="0.15" step="0.01">
-          <div class="control-hint">Speed at which agents update Q-values</div>
+          <div class="control-hint">Blends past Q-value (weight 1−α) with new experience (weight α). Paper uses 0.15. Lower → cautious, slow; higher → reactive, noisy.</div>
         </div>
         <div class="control-group">
           <div class="control-label">Discount Factor (δ) <span class="control-val" id="val-delta">0.95</span></div>
           <input type="range" id="slider-delta" min="0.80" max="0.99" value="0.95" step="0.01">
-          <div class="control-hint">Weight on future profits — higher → stronger collusion incentive</div>
+          <div class="control-hint">Weight placed on future profits. δ=0.95 → agents "care" strongly about tomorrow. High δ makes tacit collusion self-sustaining — deviating now sacrifices too much future payoff.</div>
         </div>
         <button id="btn-run" class="lab-btn lab-btn-run" onclick="labRun()">Run</button>
         <button id="btn-reset" class="lab-btn" onclick="labReset()">Reset</button>
@@ -1161,6 +1192,12 @@ function labReset(){
   _pt=[0];_pp=[_sim.avgPrice()];_nextUpd=UPD_EVERY;
   labInitChart();labStats();
   document.getElementById('lab-insight-text').innerHTML='Set parameters and click <strong>Run</strong>. Early on, agents explore randomly — prices fluctuate widely. As exploration decays (ε → 0), Q-values converge and prices stabilise. With high δ and few firms, the equilibrium sits well above the <strong>Nash competitive level</strong>.';
+}
+function labPreset(n,alpha,delta){
+  document.getElementById('slider-n').value=n;
+  document.getElementById('slider-alpha').value=alpha;
+  document.getElementById('slider-delta').value=delta;
+  labLabels(); labReset();
 }
 ['slider-n','slider-alpha','slider-delta'].forEach(id=>document.getElementById(id).addEventListener('input',labLabels));
 labReset();
