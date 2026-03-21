@@ -282,8 +282,9 @@
     /* ── Agent Lab ── */
     #lab { background: var(--cream-dark); }
     .lab-intro { font-size: 18px; font-weight: 400; color: var(--ink-mid); line-height: 1.85; margin-bottom: 36px; max-width: 620px; }
-    .lab-layout { display: grid; grid-template-columns: 210px 1fr; gap: 0; border: 1px solid var(--border); }
-    .lab-controls { padding: 28px 24px; border-right: 1px solid var(--border); background: var(--cream); }
+    .lab-layout { display: grid; grid-template-columns: 200px 1fr 220px; gap: 0; border: 1px solid var(--border); }
+    .lab-presets-panel { padding: 28px 20px; border-right: 1px solid var(--border); background: var(--cream); }
+    .lab-params-panel { padding: 28px 20px; border-left: 1px solid var(--border); background: var(--cream); }
     .lab-controls-title {
       font-size: 12px; font-weight: 400; letter-spacing: 0.15em;
       text-transform: uppercase; color: var(--ink-faint); margin-bottom: 28px;
@@ -378,7 +379,8 @@
       .research-grid { grid-template-columns: 1fr; }
       .project-grid { grid-template-columns: 1fr; }
       .lab-layout { grid-template-columns: 1fr; }
-      .lab-controls { border-right: none; border-bottom: 1px solid var(--border); }
+      .lab-presets-panel { border-right: none; border-bottom: 1px solid var(--border); }
+      .lab-params-panel { border-left: none; border-top: 1px solid var(--border); }
       .edu-item, .news-item { grid-template-columns: 1fr; gap: 4px; }
     }
 
@@ -839,7 +841,7 @@
       <span class="t-zh">完全忠实于 Calvano et al. (2020, <em>AER</em>) 的真实 Q-learning 智能体在浏览器中运行。调整参数后点击<strong>运行</strong>，观察算法如何在毫无显性协调的情况下学会默契合谋。</span>
     </p>
     <div class="lab-layout fade-in">
-      <div class="lab-controls">
+      <div class="lab-presets-panel">
         <div class="lab-controls-title">Try a Scenario · 选择场景</div>
         <div class="lab-presets">
           <button class="lab-preset-btn" onclick="labPreset(2,0.15,0.95)">
@@ -859,6 +861,9 @@
             <span class="lab-preset-vals">n=2 · α=0.05 · δ=0.80 — near-competitive · 接近竞争均衡</span>
           </button>
         </div>
+      </div>
+      <div id="simulation-chart" style="min-height:300px;"></div>
+      <div class="lab-params-panel">
         <div class="lab-controls-title">Parameters · 参数</div>
         <div class="control-group">
           <div class="control-label">Firms (n) · 厂商数 <span class="control-val" id="val-n">2</span></div>
@@ -885,7 +890,6 @@
           <div class="lab-stat"><span class="lab-stat-label">Status</span><span class="lab-stat-val" id="stat-status">Ready</span></div>
         </div>
       </div>
-      <div id="simulation-chart" style="min-height:300px;"></div>
       <div class="lab-insight">
         <div class="lab-insight-title">Economic Intuition</div>
         <div class="lab-insight-text" id="lab-insight-text">
