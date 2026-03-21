@@ -464,16 +464,16 @@ document.addEventListener('DOMContentLoaded', function () {
         traces.push({
           x: xVals,
           y: yVals,
-          type: 'scatter',
-          mode: 'lines',
+          type: 'bar',
           name: creatorLabels[creator] || creator,
-          line: { color: creatorColors[creator] || '#999', width: 2 },
+          marker: { color: creatorColors[creator] || '#CFC6B4' },
           hovertemplate: (creatorLabels[creator] || creator) + '<br>%{x}: %{y:.1f}%<extra></extra>'
         });
       });
 
       var layout = Object.assign({}, base, {
         title: { text: 'Monthly Creator Market Share (% of Total Requests)', font: { size: 13, family: "'EB Garamond', Georgia, serif", color: '#3a2a1a' }, x: 0.01, xanchor: 'left' },
+        barmode: 'stack',
         xaxis: {
           title: '',
           gridcolor: 'rgba(207,198,180,0.4)',
@@ -490,10 +490,11 @@ document.addEventListener('DOMContentLoaded', function () {
         showlegend: true,
         legend: {
           orientation: 'h',
-          x: 0, y: 1.12,
+          x: 0, y: 1.15,
           font: { size: 10 }
         },
-        margin: { t: 60, r: 20, b: 50, l: 60 }
+        bargap: 0.25,
+        margin: { t: 70, r: 20, b: 50, l: 60 }
       });
 
       Plotly.newPlot('chart-creator', traces, layout, cfg);
