@@ -399,17 +399,6 @@
       font-family: "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", "Microsoft YaHei", sans-serif;
     }
 
-    /* CH mode: show Chinese prominently */
-    html[data-lang="zh"] .t-zh {
-      display: block;
-      font-size: 1em; color: var(--ink-mid); line-height: 1.9; margin-top: 6px;
-    }
-    html[data-lang="zh"] .t-zh-i {
-      display: inline;
-      font-size: 0.52em; color: var(--ink-light); letter-spacing: 0.1em;
-      margin-left: 10px; font-weight: 400; vertical-align: middle;
-    }
-
     /* EN/CH mode: show Chinese supplementarily */
     html[data-lang="bi"] .t-zh {
       display: block;
@@ -595,7 +584,6 @@
     </ul>
     <div class="lang-switcher">
       <button class="lang-btn active" onclick="setLang('en')">EN</button>
-      <button class="lang-btn" onclick="setLang('zh')">CH</button>
       <button class="lang-btn" onclick="setLang('bi')">EN/CH</button>
     </div>
   </div>
@@ -644,7 +632,7 @@
   <div class="container">
     <div class="section-header fade-in">
       <div class="section-eyebrow">01</div>
-      <h2 class="section-title">About <span class="t-zh-i">关于我</span></h2>
+      <h2 class="section-title">About</h2>
       <div class="section-rule"></div>
     </div>
     <div class="about-text fade-in">
@@ -652,14 +640,12 @@
         I am <strong>Hongrui ZHU</strong>, a PhD student in Industrial Economics at UCASS.
         My research goes beyond traditional econometrics, applying <strong>AI and economic theory</strong>
         to address complex business and regulatory challenges in the digital age.
-        <span class="t-zh">我是朱洪睿，中国社科院研究生院产业经济学方向博士生。研究超越传统计量经济学框架，将人工智能与经济理论融合，应对数字时代复杂的商业与监管挑战。</span>
       </p>
       <p>
         The central question: when markets are governed by algorithms and large language models,
         what new patterns of competition, pricing, and consumer behavior emerge that classical theory
         never anticipated? Answering this demands both <strong>rigorous economic intuition</strong>
         and <strong>executable computational tools</strong>.
-        <span class="t-zh">核心问题：当市场由算法与大语言模型主导，会涌现出哪些经典理论从未预见的竞争格局、定价规律与消费者行为？回答这一问题，既需要严谨的经济学直觉，也需要可执行的计算工具。</span>
       </p>
     </div>
     <div class="about-tags fade-in">
@@ -1252,8 +1238,9 @@ labReset();
 
 /* ── Language Switcher ── */
 function setLang(lang) {
+  if (lang !== 'en' && lang !== 'bi') lang = 'en';
   document.documentElement.dataset.lang = lang;
-  const labels = { en:'EN', zh:'CH', bi:'EN/CH' };
+  const labels = { en:'EN', bi:'EN/CH' };
   document.querySelectorAll('.lang-btn').forEach(b => {
     b.classList.toggle('active', b.textContent === labels[lang]);
   });
