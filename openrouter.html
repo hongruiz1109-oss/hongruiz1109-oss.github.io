@@ -467,6 +467,10 @@ document.addEventListener('DOMContentLoaded', function () {
           type: 'bar',
           name: creatorLabels[creator] || creator,
           marker: { color: creatorColors[creator] || '#CFC6B4' },
+          text: yVals.map(function (v) { return v >= 5 ? v.toFixed(0) + '%' : ''; }),
+          textposition: 'inside',
+          textfont: { size: 9, color: 'rgba(255,255,255,0.9)' },
+          insidetextanchor: 'middle',
           hovertemplate: (creatorLabels[creator] || creator) + '<br>%{x}: %{y:.1f}%<extra></extra>'
         });
       });
@@ -489,12 +493,13 @@ document.addEventListener('DOMContentLoaded', function () {
         },
         showlegend: true,
         legend: {
-          orientation: 'h',
-          x: 0, y: 1.15,
+          orientation: 'v',
+          x: 1.02, y: 1,
+          xanchor: 'left',
           font: { size: 10 }
         },
         bargap: 0.25,
-        margin: { t: 70, r: 20, b: 50, l: 60 }
+        margin: { t: 50, r: 120, b: 50, l: 60 }
       });
 
       Plotly.newPlot('chart-creator', traces, layout, cfg);
@@ -635,6 +640,9 @@ document.addEventListener('DOMContentLoaded', function () {
         byCreator[key].push(d);
       });
 
+      var sorted5 = D.perf_vs_usage.slice().sort(function (a, b) { return b.log_count - a.log_count; });
+      var labelThreshold5 = sorted5.length > 15 ? sorted5[14].log_count : 0;
+
       var traces = [];
       creatorOrder.forEach(function (creator) {
         if (!byCreator[creator] || byCreator[creator].length === 0) return;
@@ -643,10 +651,16 @@ document.addEventListener('DOMContentLoaded', function () {
           x: pts.map(function (d) { return d.intelligence_index; }),
           y: pts.map(function (d) { return d.log_count; }),
           type: 'scatter',
-          mode: 'markers',
+          mode: 'markers+text',
           name: creatorLabels[creator] || creator,
           marker: { color: creatorColors[creator] || '#CFC6B4', size: 7, opacity: 0.8 },
-          text: pts.map(function (d) { return d.display_name || d.model_id; }),
+          text: pts.map(function (d) {
+            if (d.log_count < labelThreshold5) return '';
+            var n = d.display_name || d.model_id;
+            return n.length > 22 ? n.substring(0, 20) + '…' : n;
+          }),
+          textposition: 'top center',
+          textfont: { size: 8, color: '#4A3D30' },
           customdata: pts.map(function (d) { return [d.intelligence_index, d.total_count]; }),
           hovertemplate: '<b>%{text}</b><br>Intelligence: %{customdata[0]:.1f}<br>Requests: %{customdata[1]:,}<extra></extra>'
         });
@@ -694,6 +708,9 @@ document.addEventListener('DOMContentLoaded', function () {
         return 5 + ((lc - minLog) / (maxLog - minLog)) * 15;
       }
 
+      var sorted6 = D.price_vs_intelligence.slice().sort(function (a, b) { return b.log_count - a.log_count; });
+      var labelThreshold6 = sorted6.length > 15 ? sorted6[14].log_count : 0;
+
       var traces = [];
       creatorOrder.forEach(function (creator) {
         if (!byCreator[creator] || byCreator[creator].length === 0) return;
@@ -702,14 +719,20 @@ document.addEventListener('DOMContentLoaded', function () {
           x: pts.map(function (d) { return d.intelligence_index; }),
           y: pts.map(function (d) { return d.price_blended; }),
           type: 'scatter',
-          mode: 'markers',
+          mode: 'markers+text',
           name: creatorLabels[creator] || creator,
           marker: {
             color: creatorColors[creator] || '#CFC6B4',
             size: pts.map(function (d) { return scaleSize(d.log_count); }),
             opacity: 0.8
           },
-          text: pts.map(function (d) { return d.display_name || d.model_id; }),
+          text: pts.map(function (d) {
+            if (d.log_count < labelThreshold6) return '';
+            var n = d.display_name || d.model_id;
+            return n.length > 22 ? n.substring(0, 20) + '…' : n;
+          }),
+          textposition: 'top center',
+          textfont: { size: 8, color: '#4A3D30' },
           customdata: pts.map(function (d) { return [d.intelligence_index, d.price_blended, d.total_count]; }),
           hovertemplate: '<b>%{text}</b><br>Intelligence: %{customdata[0]:.1f}<br>Price: $%{customdata[1]:.3f}/M tokens<br>Requests: %{customdata[2]:,}<extra></extra>'
         });
