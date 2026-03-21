@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calvano et al. (2020) — Paper Explainer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=IBM+Plex+Sans:wght@300;400;500&family=IBM+Plex+Mono:wght@400&display=swap" rel="stylesheet">
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+  <script src="assets/js/viz_data.js"></script>
+  <style>
+    :root {
+      --cream:      #F4EFE6;
+      --cream-dark: #EBE4D8;
+      --cream-deep: #E0D8C8;
+      --border:     #CFC6B4;
+      --border-lt:  #DDD6C8;
+      --ink:        #1C1812;
+      --ink-mid:    #2E251A;
+      --ink-light:  #4A3D30;
+      --ink-faint:  #6B5E4E;
+      --brown:      #3D2E1E;
+      --brown-mid:  #6B5440;
+      --brown-lt:   #9C7B5A;
+      --serif:      'EB Garamond', Georgia, serif;
+      --sans:       'IBM Plex Sans', 'Helvetica Neue', sans-serif;
+      --mono:       'IBM Plex Mono', monospace;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--cream);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-weight: 400;
+      line-height: 1.75;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: var(--brown-mid); text-decoration: none; border-bottom: 1px solid var(--border); padding-bottom: 1px; }
+    a:hover { color: var(--brown); border-color: var(--brown); }
+
+    /* ── Layout ── */
+    .page { max-width: 860px; margin: 0 auto; padding: 0 40px 80px; }
+
+    /* ── Back link ── */
+    .back {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase;
+      color: var(--ink-faint); border: none; padding: 0;
+      margin: 32px 0 0;
+    }
+    .back:hover { color: var(--brown); border: none; }
+
+    /* ── Hero ── */
+    .hero { padding: 44px 0 48px; border-bottom: 1px solid var(--border-lt); }
+    .hero-tag {
+      font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--brown-lt); margin-bottom: 18px;
+    }
+    h1.hero-title {
+      font-family: var(--serif); font-size: clamp(32px, 5vw, 50px);
+      font-weight: 400; line-height: 1.15; color: var(--ink);
+      margin-bottom: 16px; max-width: 720px;
+    }
+    h1.hero-title em { font-style: italic; color: var(--brown-mid); }
+    .hero-authors {
+      font-size: 15px; color: var(--ink-mid); margin-bottom: 6px;
+    }
+    .hero-pub {
+      font-size: 13px; color: var(--ink-faint); letter-spacing: 0.04em;
+      margin-bottom: 28px;
+    }
+    .hero-abstract {
+      font-family: var(--serif); font-size: 18px; color: var(--ink-mid);
+      line-height: 1.85; max-width: 680px;
+      border-left: 3px solid var(--border); padding-left: 20px;
+    }
+
+    /* ── Stat cards ── */
+    .stat-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 1px; background: var(--border-lt);
+      border: 1px solid var(--border-lt); margin: 40px 0;
+    }
+    .stat-card { background: var(--cream); padding: 22px 18px; }
+    .stat-val {
+      font-family: var(--serif); font-size: 34px; font-weight: 500;
+      color: var(--ink); line-height: 1;
+    }
+    .stat-label { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-faint); margin-top: 6px; }
+    .stat-sub { font-size: 12px; color: var(--brown-lt); margin-top: 4px; }
+
+    /* ── Section ── */
+    .section { padding: 52px 0; border-top: 1px solid var(--border-lt); }
+    .section-num {
+      font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--ink-faint); margin-bottom: 8px;
+    }
+    h2.section-title {
+      font-family: var(--serif); font-size: 32px; font-weight: 400;
+      color: var(--ink); margin-bottom: 24px; line-height: 1.2;
+    }
+    h3.sub-title {
+      font-family: var(--serif); font-size: 22px; font-weight: 400;
+      color: var(--ink); margin: 36px 0 14px; line-height: 1.3;
+    }
+    .body-text { font-size: 16px; color: var(--ink-mid); line-height: 1.85; }
+    .body-text + .body-text { margin-top: 16px; }
+    .body-text strong { color: var(--ink); }
+
+    /* ── Pull quote ── */
+    .pull {
+      background: var(--cream-dark);
+      border-left: 3px solid var(--brown-mid);
+      padding: 16px 22px; margin: 28px 0;
+      border-radius: 0 6px 6px 0;
+    }
+    .pull p {
+      font-family: var(--serif); font-size: 17px; color: var(--ink);
+      line-height: 1.7; margin: 0;
+    }
+    .pull-label {
+      font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--brown-lt); margin-bottom: 6px;
+    }
+
+    /* ── Equation block ── */
+    .eq-block {
+      background: var(--cream-dark); border: 1px solid var(--border-lt);
+      padding: 14px 20px; margin: 20px 0; border-radius: 4px;
+      font-family: var(--mono); font-size: 14px; color: var(--ink-mid);
+      overflow-x: auto;
+    }
+    .eq-label { font-size: 11px; color: var(--ink-faint); margin-top: 4px; font-family: var(--sans); }
+
+    /* ── Table ── */
+    .tbl-wrap { overflow-x: auto; margin: 24px 0; }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    thead tr { border-bottom: 1px solid var(--border); }
+    th {
+      font-family: var(--sans); font-size: 11px; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--ink-faint);
+      padding: 8px 12px; text-align: left; font-weight: 400;
+    }
+    td { padding: 9px 12px; color: var(--ink-mid); border-bottom: 1px solid var(--border-lt); }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: var(--cream-dark); }
+    .td-num { text-align: right; font-family: var(--mono); font-size: 13px; }
+    .td-hi { color: var(--brown-mid); font-weight: 500; }
+
+    /* ── Tag ── */
+    .tag-row { display: flex; flex-wrap: wrap; gap: 6px; margin: 20px 0; }
+    .tag {
+      font-size: 11px; letter-spacing: 0.07em; text-transform: uppercase;
+      padding: 4px 12px; border: 1px solid var(--border);
+      color: var(--ink-light);
+    }
+
+    /* ── Finding box ── */
+    .finding {
+      border: 1px solid var(--border); padding: 24px 28px; margin: 28px 0;
+    }
+    .finding-label {
+      font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--ink-faint); margin-bottom: 10px;
+    }
+    .finding p {
+      font-family: var(--serif); font-size: 18px; color: var(--ink);
+      line-height: 1.7; margin: 0;
+    }
+
+    /* ── Extension section ── */
+    .ext-card {
+      background: #faf8f4; border: 1px solid #e8e0d4;
+      border-radius: 12px; padding: 36px; margin-top: 32px;
+    }
+    .ext-tag {
+      display: inline-block; font-size: 11px; letter-spacing: 0.09em;
+      text-transform: uppercase; color: #8b6f47;
+      background: #f0e8d8; padding: 4px 12px;
+      border-radius: 20px; margin-bottom: 14px;
+    }
+    .ext-title {
+      font-family: var(--serif); font-size: 26px; color: #2c1f0e;
+      margin: 0 0 8px; line-height: 1.2;
+    }
+    .ext-sub {
+      font-size: 14px; color: #6b5a44; line-height: 1.7; margin-bottom: 28px;
+    }
+    .ext-metrics {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 12px; margin-bottom: 24px;
+    }
+    .ext-metric {
+      background: #fff; border: 1px solid #e8e0d4;
+      border-radius: 8px; padding: 16px 14px; text-align: center;
+    }
+    .ext-metric-label { font-size: 11px; color: #8b6f47; letter-spacing: 0.04em; margin-bottom: 6px; }
+    .ext-metric-val {
+      font-family: var(--serif); font-size: 28px; font-weight: 600;
+      color: #2c1f0e; line-height: 1;
+    }
+    .ext-metric-sub { font-size: 11px; color: #a0876a; margin-top: 4px; }
+    .ext-charts { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }
+    .ext-chart {
+      background: #fff; border: 1px solid #e8e0d4;
+      border-radius: 8px; height: 260px;
+    }
+    .ext-finding {
+      background: #f5efe6; border-left: 3px solid #8b6f47;
+      padding: 14px 20px; border-radius: 0 6px 6px 0; margin-bottom: 16px;
+    }
+    .ext-finding-label {
+      font-size: 10px; letter-spacing: 0.07em; text-transform: uppercase;
+      color: #8b6f47; margin-bottom: 6px;
+    }
+    .ext-finding p {
+      font-family: var(--serif); font-size: 16px; color: #3a2a1a; line-height: 1.7; margin: 0;
+    }
+    .ext-method {
+      border-top: 1px solid #e8e0d4; padding-top: 14px;
+    }
+    .ext-method summary {
+      font-size: 13px; color: #8b6f47; font-weight: 500;
+      cursor: pointer; user-select: none;
+    }
+    .ext-method p {
+      font-size: 13px; color: #6b5a44; line-height: 1.7; margin: 8px 0 0;
+    }
+    .ext-ext-body { font-size: 15px; color: var(--ink-mid); line-height: 1.85; margin-top: 20px; }
+    .ext-ext-body + .ext-ext-body { margin-top: 14px; }
+    .ext-ext-body strong { color: var(--ink); }
+
+    /* ── Equation reference table ── */
+    .eq-ref td:first-child { font-family: var(--mono); font-size: 12px; white-space: nowrap; }
+
+    /* ── Footer ── */
+    footer { border-top: 1px solid var(--border-lt); padding: 28px 0; margin-top: 60px; }
+    .footer-text { font-size: 12px; color: var(--ink-faint); letter-spacing: 0.04em; }
+
+    @media (max-width: 640px) {
+      .page { padding: 0 20px 60px; }
+      .stat-grid { grid-template-columns: 1fr 1fr; }
+      .ext-charts { grid-template-columns: 1fr; }
+      .ext-metrics { grid-template-columns: repeat(3, 1fr); }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <a href="index.html" class="back">← Back to Portfolio</a>
+
+  <!-- ── Hero ── -->
+  <div class="hero">
+    <div class="hero-tag">Paper Explainer &nbsp;·&nbsp; Industrial Economics &nbsp;·&nbsp; Algorithmic Pricing</div>
+    <h1 class="hero-title">Artificial Intelligence, Algorithmic Pricing, <em>and Collusion</em></h1>
+    <div class="hero-authors">Emilio Calvano, Giacomo Calzolari, Vincenzo Denicolo, Sergio Pastorello</div>
+    <div class="hero-pub">American Economic Review, Vol. 110, No. 10, October 2020 &nbsp;·&nbsp; <a href="https://www.aeaweb.org/articles?id=10.1257/aer.20190623" target="_blank" rel="noopener">doi:10.1257/aer.20190623</a></div>
+    <p class="hero-abstract">
+      AI pricing algorithms — trained through reinforcement learning alone, with no collusion instructions
+      and no communication — consistently learn to charge supra-competitive prices. The collusion is
+      sustained by autonomous punishment strategies: algorithms retaliate against price cuts, then
+      gradually forgive, in patterns that resemble economic theory far more than chance.
+    </p>
+  </div>
+
+  <!-- ── Key stats ── -->
+  <div class="stat-grid">
+    <div class="stat-card">
+      <div class="stat-val">85%</div>
+      <div class="stat-label">Profit Gain Δ</div>
+      <div class="stat-sub">Baseline duopoly result</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val">&lt;0.5%</div>
+      <div class="stat-label">Q-loss on path</div>
+      <div class="stat-sub">Near-optimal play</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val">5–7</div>
+      <div class="stat-label">Punishment periods</div>
+      <div class="stat-sub">After a deviation</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val">&gt;99.9%</div>
+      <div class="stat-label">Sessions converge</div>
+      <div class="stat-sub">Across 10,000 param combos</div>
+    </div>
+  </div>
+
+  <div class="tag-row">
+    <span class="tag">Reinforcement Learning</span>
+    <span class="tag">Tacit Collusion</span>
+    <span class="tag">Algorithmic Pricing</span>
+    <span class="tag">Q-Learning</span>
+    <span class="tag">Antitrust</span>
+    <span class="tag">Industrial Organization</span>
+  </div>
+
+  <!-- ── 1. Introduction ── -->
+  <div class="section">
+    <div class="section-num">01</div>
+    <h2 class="section-title">The Central Question</h2>
+
+    <p class="body-text">
+      Firms increasingly delegate pricing decisions to software. Early repricing tools were rule-based;
+      modern AI systems use <strong>reinforcement learning</strong> — they develop pricing strategies from
+      scratch, through trial-and-error, with no prior knowledge and no explicit instructions. Amazon
+      deploys such algorithms at scale; so do airline and ride-sharing platforms.
+    </p>
+    <p class="body-text">
+      This raises a question that matters deeply for competition policy: <strong>can AI algorithms
+      spontaneously learn to collude</strong>, even when they cannot communicate with each other and
+      have never been told to coordinate? If yes, the traditional antitrust focus on explicit agreements
+      could leave a significant gap.
+    </p>
+
+    <div class="pull">
+      <div class="pull-label">The Core Tension</div>
+      <p>Tacit collusion among humans is considered extremely difficult to sustain — which is why it is
+      mostly legal. The paper's results suggest it may be much easier for algorithms. Current antitrust
+      frameworks were not designed for this world.</p>
+    </div>
+
+    <p class="body-text">
+      Prior simulation work (Waltman and Kaymak 2008) had observed supra-competitive prices but stopped
+      short of verifying <em>why</em>. The authors argue this distinction is crucial: collusion is not
+      merely high prices — it requires a reward–punishment scheme that gives firms an ongoing incentive
+      to stay cooperative. An algorithm that simply fails to optimize competitively would be replaced
+      quickly by its operator. An algorithm that <em>intentionally</em> sustains high prices through
+      strategic self-restraint is a genuine antitrust concern.
+    </p>
+    <p class="body-text">
+      The approach is experimental simulation. Because the stochastic dynamic systems generated by
+      reinforcement learning are too complex for closed-form analysis, the authors construct Q-learning
+      algorithms, place them in computer-simulated markets, and study what strategies emerge — running
+      1,000 independent sessions per parameter configuration.
+    </p>
+  </div>
+
+  <!-- ── 2. Q-Learning ── -->
+  <div class="section">
+    <div class="section-num">02</div>
+    <h2 class="section-title">How Q-Learning Works</h2>
+
+    <p class="body-text">
+      Q-learning is a model-free algorithm for solving Markov decision problems. An agent observes a
+      state <em>s<sub>t</sub></em>, takes an action <em>a<sub>t</sub></em>, receives a reward
+      <em>π<sub>t</sub></em>, and transitions to state <em>s<sub>t+1</sub></em>. The goal is to
+      maximize the discounted sum of future rewards:
+    </p>
+
+    <div class="eq-block">E[Σ δᵗ π<sub>t</sub>]</div>
+
+    <p class="body-text">
+      The key object is the <strong>Q-function</strong> — a matrix mapping every (state, action) pair
+      to its expected discounted value. For finite state and action spaces, the Bellman equation gives:
+    </p>
+
+    <div class="eq-block">Q(s, a) = E(π | s, a) + δ · E[max<sub>a'</sub> Q(s', a') | s, a]
+<div class="eq-label">Q-value = immediate reward + discounted best future value</div></div>
+
+    <p class="body-text">
+      The <strong>learning update rule</strong> is a running average. After observing reward
+      <em>π<sub>t</sub></em> and next state <em>s'</em>, only the visited cell is updated:
+    </p>
+
+    <div class="eq-block">Q(s,a) ← (1 − α) · Q(s,a) + α · [π<sub>t</sub> + δ · max<sub>a'</sub> Q(s', a')]
+<div class="eq-label">α ∈ (0,1) is the learning rate. All other cells are unchanged.</div></div>
+
+    <p class="body-text">
+      <strong>Exploration vs. exploitation</strong> is handled with epsilon-greedy: with probability
+      <em>ε<sub>t</sub></em> the algorithm picks a random action; otherwise it picks the current best.
+      The exploration rate decays exponentially:
+    </p>
+
+    <div class="eq-block">ε<sub>t</sub> = exp(−β · t)
+<div class="eq-label">β controls how quickly exploration fades. Early on: random. Later: increasingly greedy.</div></div>
+
+    <p class="body-text">
+      In a game, multiple Q-learners interact simultaneously. Each treats the others' actions as part
+      of its environment (independent learning). The joint system is non-stationary — rivals are also
+      learning — so convergence guarantees from single-agent theory do not apply. Whether the system
+      settles into equilibrium play must be verified empirically.
+    </p>
+
+    <h3 class="sub-title">Initialization</h3>
+    <p class="body-text">
+      Q-matrices are initialized to the discounted payoff each action would yield if rivals randomized
+      uniformly — a neutral, uninformative prior:
+    </p>
+    <div class="eq-block">Q<sub>i,0</sub>(s, a<sub>i</sub>) = Σ<sub>a₋ᵢ</sub> π<sub>i</sub>(a<sub>i</sub>, a₋ᵢ) / [(1 − δ) · |A|ⁿ⁻¹]</div>
+
+    <p class="body-text">
+      The initial state <em>s<sub>0</sub></em> is drawn randomly each session, ensuring results do not
+      depend on a particular starting point.
+    </p>
+  </div>
+
+  <!-- ── 3. Experiment Design ── -->
+  <div class="section">
+    <div class="section-num">03</div>
+    <h2 class="section-title">Experiment Design</h2>
+
+    <h3 class="sub-title">Economic Environment</h3>
+    <p class="body-text">
+      The market is an infinitely repeated Bertrand oligopoly with <strong>logit demand</strong>.
+      Firms simultaneously set prices each period; demand is given by:
+    </p>
+    <div class="eq-block">q<sub>i,t</sub> = exp((a<sub>i</sub> − p<sub>i,t</sub>)/μ) / [Σ<sub>j</sub> exp((a<sub>j</sub> − p<sub>j,t</sub>)/μ) + exp(a<sub>0</sub>/μ)]
+<div class="eq-label">a = product quality; μ = horizontal differentiation; a₀ = outside option quality</div></div>
+
+    <p class="body-text">
+      Each firm's per-period profit is <em>π<sub>i</sub> = (p<sub>i</sub> − c<sub>i</sub>) · q<sub>i</sub></em>.
+      State variables are the prices set in the <em>k</em> preceding periods. Action spaces are grids of
+      <em>m</em> equally spaced prices spanning from below Bertrand–Nash to above monopoly.
+    </p>
+
+    <h3 class="sub-title">Baseline Parameters</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Parameter</th><th>Symbol</th><th>Baseline Value</th><th>Role</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Firms</td><td class="td-num">n</td><td class="td-num td-hi">2</td><td>Symmetric duopoly</td></tr>
+          <tr><td>Marginal cost</td><td class="td-num">c</td><td class="td-num">1</td><td>Identical firms</td></tr>
+          <tr><td>Product quality − cost</td><td class="td-num">a − c</td><td class="td-num">1</td><td>Mark-up potential</td></tr>
+          <tr><td>Differentiation</td><td class="td-num">μ</td><td class="td-num">0.25</td><td>Moderate horizontal diff.</td></tr>
+          <tr><td>Discount factor</td><td class="td-num">δ</td><td class="td-num td-hi">0.95</td><td>Future-oriented agents</td></tr>
+          <tr><td>Price grid points</td><td class="td-num">m</td><td class="td-num">15</td><td>Feasible prices per firm</td></tr>
+          <tr><td>Memory length</td><td class="td-num">k</td><td class="td-num">1</td><td>One-period state</td></tr>
+          <tr><td>Learning rate</td><td class="td-num">α</td><td class="td-num">0.15</td><td>Update speed</td></tr>
+          <tr><td>Exploration decay</td><td class="td-num">β</td><td class="td-num">4 × 10⁻⁶</td><td>≈20 sub-optimal visits</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="body-text">
+      The Q-matrix for each agent has <em>|S| × |A| = 15² × 15 = 3,375</em> cells in the duopoly baseline.
+      The parameter grid sweeps 100 × 100 = 10,000 combinations of α and β, each run for 1,000 independent
+      sessions (10 million sessions total). <strong>Convergence criterion:</strong> the greedy policy
+      (argmax over each state) must be unchanged for 100,000 consecutive periods.
+    </p>
+  </div>
+
+  <!-- ── 4. Results ── -->
+  <div class="section">
+    <div class="section-num">04</div>
+    <h2 class="section-title">Main Results: Algorithms Learn to Collude</h2>
+
+    <h3 class="sub-title">Measuring Collusion Intensity</h3>
+    <p class="body-text">
+      The paper introduces a normalized <strong>profit gain</strong> measure:
+    </p>
+    <div class="eq-block">Δ = (π − π<sup>N</sup>) / (π<sup>M</sup> − π<sup>N</sup>)
+<div class="eq-label">π<sup>N</sup> = Bertrand-Nash (competitive) profit; π<sup>M</sup> = monopoly profit. Δ=0 is competitive; Δ=1 is perfectly collusive.</div></div>
+
+    <div class="finding">
+      <div class="finding-label">Main Finding</div>
+      <p>
+        Over the entire 100×100 parameter grid, the profit gain ranges from <strong>70% to 90%</strong>.
+        Algorithms consistently learn to charge supra-competitive prices — far above Bertrand–Nash — without
+        any communication, collusion instruction, or prior knowledge. At the representative calibration
+        (α = 0.15, β = 4×10⁻⁶), the average profit gain is <strong>Δ = 84.9%</strong>.
+      </p>
+    </div>
+
+    <h3 class="sub-title">Is This Really Collusion, or Just Poor Optimization?</h3>
+    <p class="body-text">
+      High prices alone could reflect sub-optimal play — algorithms that simply fail to find the
+      competitive equilibrium. The authors rule this out by computing the "true" best response to each
+      rival's limit strategy and measuring the <strong>Q-loss</strong>: the percentage of foregone payoff
+      when an algorithm doesn't exactly optimize.
+    </p>
+
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr><th>Session Type</th><th>Freq.</th><th>Avg. Δ</th><th>Nash Eq.</th><th>Q-loss (path)</th><th>Q-loss (all)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Symmetric constant price</td><td class="td-num">27.7%</td><td class="td-num td-hi">86.6%</td><td class="td-num">68.6%</td><td class="td-num">0.1%</td><td class="td-num">1.8%</td></tr>
+          <tr><td>Asymmetric constant price</td><td class="td-num">36.6%</td><td class="td-num td-hi">85.5%</td><td class="td-num">66.1%</td><td class="td-num">0.1%</td><td class="td-num">1.8%</td></tr>
+          <tr><td>Period-2 price cycles</td><td class="td-num">23.8%</td><td class="td-num">84.6%</td><td class="td-num">29.4%</td><td class="td-num">0.2%</td><td class="td-num">1.8%</td></tr>
+          <tr><td>Longer cycles (≥3)</td><td class="td-num">11.9%</td><td class="td-num">79.3%</td><td class="td-num">2.5%</td><td class="td-num">0.4%</td><td class="td-num">1.8%</td></tr>
+          <tr><td><strong>All sessions</strong></td><td class="td-num"><strong>100%</strong></td><td class="td-num td-hi"><strong>84.9%</strong></td><td class="td-num"><strong>50.5%</strong></td><td class="td-num"><strong>0.2%</strong></td><td class="td-num"><strong>1.8%</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="body-text">
+      The Q-loss on path is typically below <strong>0.5%</strong> and never exceeds 1.2% across the
+      entire parameter grid. High prices are not an accident of sub-optimal play — the algorithms are
+      deliberately and near-optimally maintaining collusive prices. Critically, the correlation between
+      profit gain and equilibrium play frequency is only 0.12, confirming that collusion and optimization
+      quality are independent phenomena.
+    </p>
+
+    <div class="pull">
+      <div class="pull-label">Key Insight</div>
+      <p>Algorithms that merely fail to optimize would be replaced by their operators. The algorithms
+      here <em>could</em> compete more aggressively — they just choose not to, because their learned
+      strategies make cooperation the individually rational outcome.</p>
+    </div>
+  </div>
+
+  <!-- ── 5. Anatomy ── -->
+  <div class="section">
+    <div class="section-num">05</div>
+    <h2 class="section-title">Anatomy of Collusion: Punishment Mechanisms</h2>
+
+    <h3 class="sub-title">Verifying Incentive Compatibility</h3>
+    <p class="body-text">
+      The smoking gun for genuine collusion is the presence of punishment strategies. Starting from the
+      long-run prices, the authors exogenously force one algorithm to deviate to its static best response
+      in a single period. Both algorithms then revert to their learned strategies, and prices are tracked
+      for subsequent periods.
+    </p>
+
+    <div class="finding">
+      <div class="finding-label">Punishment Pattern</div>
+      <p>The non-deviating algorithm cuts its price (punishment). Prices then gradually return to
+      pre-deviation levels over approximately <strong>5–7 periods</strong>. In more than <strong>95%</strong>
+      of sessions, the punishment makes the deviation unprofitable. The punishment–forgiveness cycle
+      is the hallmark of self-sustaining tacit collusion.</p>
+    </div>
+
+    <h3 class="sub-title">Finite Punishment, Not Grim Trigger</h3>
+    <p class="body-text">
+      The punishment strategies are notably <em>not</em> grim trigger. Grim trigger — punish forever
+      after any deviation — would be impractical with ongoing exploration, since any random exploration
+      draw would permanently trap firms in the punishment phase. Instead, the algorithms independently
+      learn strategies resembling <strong>Abreu (1984) stick-and-carrot</strong>: punishment is intense
+      but finite, followed by gradual re-escalation to cooperative prices.
+    </p>
+    <p class="body-text">
+      Strikingly, both algorithms cut prices after a deviation — even the non-deviating algorithm prices
+      below its pre-deviation level for several periods. For small deviations, prices initially overshoot
+      downward before recovering. This "overshooting" cannot be explained by mechanical mean-reversion;
+      it is structurally consistent with a deliberate punishment design.
+    </p>
+
+    <h3 class="sub-title">Punishment Ubiquity and Quantification</h3>
+    <p class="body-text">
+      The intensity of punishment (average % price cut by the non-deviating algorithm) correlates with
+      the profit gain at <strong>76.2%</strong> across the entire parameter grid — the strongest
+      predictor of collusion. Markets where algorithms collude more are precisely the markets where
+      punishments are harder.
+    </p>
+
+    <h3 class="sub-title">Strategy Graphs</h3>
+    <p class="body-text">
+      With one-period memory, each firm's strategy is a function from 225 possible (price₁, price₂)
+      pairs to one of 15 current prices. The authors represent limit strategies as directed graphs
+      where nodes are states and edges point to successor states.
+    </p>
+    <p class="body-text">
+      In a representative session, the long-run price pair is an <em>absorbing node</em>: every other
+      state eventually leads back to it. The average path length from any state to long-run prices is
+      <strong>6 steps</strong>; the maximum is 18. In <strong>92% of sessions</strong>, every possible
+      state converges back to the collusive prices — the self-correcting mechanism is near-universal.
+    </p>
+
+    <h3 class="sub-title">Baseline Validation</h3>
+    <p class="body-text">
+      Two sanity checks confirm the mechanism is genuine. First, with <strong>zero memory</strong>
+      (<em>k = 0</em>), algorithms cannot condition on past play, so punishment is impossible —
+      simulations confirm near-competitive prices. Second, with <strong>zero discount factor</strong>
+      (<em>δ = 0</em>), agents are myopic and cannot value future punishment; the profit gain falls
+      smoothly from 85% toward zero as δ decreases, consistent with the theoretical collusion threshold
+      of approximately δ = 0.40 for grim-trigger strategies in this environment.
+    </p>
+  </div>
+
+  <!-- ── 6. Robustness ── -->
+  <div class="section">
+    <div class="section-num">06</div>
+    <h2 class="section-title">Robustness Across Market Structures</h2>
+
+    <h3 class="sub-title">Number of Firms</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr><th>Firms (n)</th><th>Q-matrix size</th><th>Avg. Δ</th><th>vs. Human experiments</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>2 (duopoly)</td><td class="td-num">3,375</td><td class="td-num td-hi">85%</td><td>Collusion common in experiments</td></tr>
+          <tr><td>3 (triopoly)</td><td class="td-num">~50,000</td><td class="td-num td-hi">64%</td><td>Rare in human experiments</td></tr>
+          <tr><td>4 firms</td><td class="td-num">~750,000</td><td class="td-num">56%</td><td>Almost never in human experiments</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="body-text">
+      Collusion weakens as the number of firms grows — as theory predicts — but remains substantial.
+      Algorithms continue to collude significantly even with four firms, a stark difference from human
+      experimental results, where collusion "is frequently observed with 2 sellers, rarely with 3, and
+      almost never with 4 or more." If β is reduced to compensate for the larger state space (i.e.,
+      allowing proportionally more learning), the triopoly profit gain rises to ~75%.
+    </p>
+
+    <h3 class="sub-title">Asymmetric Firms</h3>
+    <p class="body-text">
+      Varying firm 2's cost from 0.25 to 1.0 (firm 1 fixed at <em>c = 1</em>), asymmetry reduces Δ
+      modestly — from 85% to about 71% at maximum asymmetry. The gain from collusion is split
+      disproportionately in favor of the <em>less</em> efficient firm: the algorithms coordinate on a
+      solution that does not maximize total joint profit (no side payments), yet each benefits
+      individually. This is not coordination failure — it is an equilibrium of the coordination game
+      without a central planner.
+    </p>
+
+    <h3 class="sub-title">Demand Uncertainty and Variable Market Structure</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr><th>Variation</th><th>Avg. Δ</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Baseline (no uncertainty)</td><td class="td-num td-hi">85%</td></tr>
+          <tr><td>Stochastic demand (σ = 0.15)</td><td class="td-num">80%</td></tr>
+          <tr><td>Stochastic demand (σ = 0.25)</td><td class="td-num">70%</td></tr>
+          <tr><td>Variable market structure (entry/exit, ρ = 0.1%)</td><td class="td-num">58%</td></tr>
+          <tr><td>Perfect substitutes (μ → 0)</td><td class="td-num">&gt;77%</td></tr>
+          <tr><td>Fine grid (m = 100 prices)</td><td class="td-num">~70%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="body-text">
+      No robustness check eliminates collusion. Even with stochastic demand, random entry and exit,
+      near-perfect substitutes, or a 100-point price grid, the profit gain remains well above the
+      competitive benchmark. Alternative Q-matrix initializations (Nash-based, grim-trigger-based,
+      large constants) all produce Δ &gt; 70%.
+    </p>
+  </div>
+
+  <!-- ── 7. Time Scale & Policy ── -->
+  <div class="section">
+    <div class="section-num">07</div>
+    <h2 class="section-title">Time Scale and Policy Implications</h2>
+
+    <h3 class="sub-title">How Long Does Learning Take?</h3>
+    <p class="body-text">
+      Convergence typically requires <strong>400,000 to several million periods</strong> depending on
+      exploration intensity. Even before full convergence, algorithms begin raising prices above the
+      competitive level well before the learning process completes — collusion emerges progressively,
+      not only at the endpoint of training.
+    </p>
+    <p class="body-text">
+      This timescale is a recognized limitation. If one "period" lasts minutes, millions of interactions
+      take years — far longer than typical product cycles. However, the authors note two important
+      moderating factors. First, <strong>offline training</strong> allows firms to run simulations in
+      compressed time before deployment. When converged algorithms are re-matched with new partners and
+      exploration is shut off, collusion collapses to ~20% initially but recovers in less than
+      one-tenth of the original training time — suggesting that prior training transfers.
+    </p>
+    <p class="body-text">
+      Second, in <strong>financial markets</strong> where periods can last milliseconds, millions of
+      interactions complete in hours. Even a small supra-competitive spread, sustained across millions
+      of automated trades, can generate economically significant extra profits.
+    </p>
+    <p class="body-text">
+      Third, Q-learning is deliberately chosen as the simplest case. More efficient algorithms —
+      deep Q-networks, value-function approximation — update many cells simultaneously and would
+      learn orders of magnitude faster. The paper's results are thus a conservative lower bound on
+      the speed of algorithmic collusion.
+    </p>
+
+    <h3 class="sub-title">Competition Policy</h3>
+
+    <div class="pull">
+      <div class="pull-label">Policy Implications</div>
+      <p>"Our findings should probably ring an alarm bell for antitrust policy." Current law targets
+      explicit agreements; tacit coordination among humans is largely legal because it is viewed as
+      very hard to achieve. Algorithms may change this calculus fundamentally.</p>
+    </div>
+
+    <p class="body-text">
+      The authors identify both a risk and an opportunity for regulators. The <strong>risk:</strong>
+      a world with ubiquitous AI pricing may see more tacit collusion than expected — more false
+      negatives in enforcement. The <strong>opportunity:</strong> unlike human decision-makers, pricing
+      algorithms can be subpoenaed, tested in simulation, and their strategies formally analyzed. Courts
+      and competition authorities could verify whether a pricing algorithm incorporates punishment logic —
+      something that is inherently impossible with human behavior. This could reduce false positives,
+      potentially shifting the balance of enforcement errors.
+    </p>
+    <p class="body-text">
+      Key open questions for future research: the effect of richer heterogeneous environments (persistent
+      cost and demand shocks that create signal-extraction problems), the interaction of algorithms from
+      <em>different</em> design families, and the use of faster learning architectures that make the
+      time-scale concern tractable.
+    </p>
+  </div>
+
+  <!-- ── 8. Extension ── -->
+  <div class="section">
+    <div class="section-num">08</div>
+    <h2 class="section-title">Extension: Market Structure &amp; Algorithmic Collusion</h2>
+    <p class="body-text">
+      The paper's robustness section reports brief results on the number-of-firms dimension but holds
+      the exploration parameter β constant — understating collusion for n = 3 and n = 4 because the
+      larger state space receives proportionally less learning. The following extension replicates the
+      full Q-learning framework of Calvano et al. with the paper's exact parameters, then varies the
+      number of competing firms across 50 independent sessions per configuration, to examine how
+      market structure shapes the intensity and distribution of algorithmic collusion.
+    </p>
+
+    <div class="ext-card">
+      <div class="ext-tag">Extension · Calvano et al. (2020, AER)</div>
+      <div class="ext-title">Market Structure &amp; Algorithmic Collusion</div>
+      <p class="ext-sub">
+        Does the number of competing firms affect how well pricing algorithms learn to tacitly collude?
+        We extend the Q-learning framework across duopoly, triopoly, and four-firm oligopoly settings,
+        running 50 independent sessions per configuration at the paper's baseline parameters.
+      </p>
+
+      <div class="ext-metrics" id="ext-metrics"></div>
+
+      <div class="ext-charts">
+        <div class="ext-chart" id="ext-bar"></div>
+        <div class="ext-chart" id="ext-box"></div>
+      </div>
+
+      <div class="ext-finding">
+        <div class="ext-finding-label">Key Finding</div>
+        <p id="ext-finding-text">Loading results…</p>
+      </div>
+
+      <details class="ext-method">
+        <summary>Methodology</summary>
+        <p>
+          We replicate the Q-learning duopoly model of Calvano et al. (2020, <em>AER</em>) and vary
+          the number of firms (<em>n</em> = 2, 3, 4), running
+          <span id="ext-nsessions">50</span> independent sessions per configuration
+          (α = 0.15, β = 4×10⁻⁶, δ = 0.95, μ = 0.25, m = 15 price points).
+          Profit gain Δ = (π<sub>eq</sub> − π<sub>N</sub>) / (π<sub>M</sub> − π<sub>N</sub>)
+          measures collusion intensity relative to the competitive (Δ = 0) and full-monopoly (Δ = 1)
+          benchmarks. Equilibrium prices are identified by finding the fixed point of the greedy policy.
+        </p>
+      </details>
+    </div>
+
+    <h3 class="sub-title">Discussion</h3>
+    <p class="ext-ext-body">
+      The results confirm and extend Calvano et al.'s brief robustness findings. With <strong>two
+      firms</strong>, the Q-learning algorithm achieves a profit gain tightly consistent with the
+      paper's reported Δ ≈ 85%, validating the replication. The distribution across sessions is
+      wide (IQR spanning roughly 0.75–0.96), reflecting the sensitivity of learned strategies to
+      initial conditions and exploration paths.
+    </p>
+    <p class="ext-ext-body">
+      Expanding to <strong>three firms</strong> produces a meaningful drop in average collusion, as
+      a larger state space (15³ = 3,375 per-firm states vs. 15² = 225 in the duopoly) means each
+      cell receives fewer updates under the same β. The distribution widens substantially, with some
+      sessions achieving near-monopoly profits and others closer to competitive outcomes — suggesting
+      high sensitivity to initial exploration paths in the higher-dimensional learning problem.
+    </p>
+    <p class="ext-ext-body">
+      The <strong>four-firm</strong> case shows further decline but remains well above the competitive
+      benchmark in most sessions. This contrasts sharply with human experimental results, where tacit
+      collusion "is almost never observed with four or more sellers." The key difference: algorithms
+      do not suffer from the cognitive and strategic complexity that derails human coordination in
+      large groups. Punishment strategies remain learnable even with n = 4.
+    </p>
+
+    <div class="pull">
+      <div class="pull-label">Antitrust Implication</div>
+      <p>Algorithmic collusion does not require a duopoly. Even in four-firm markets — well beyond the
+      threshold where human tacit collusion breaks down — Q-learning algorithms maintain significant
+      supra-competitive pricing. Antitrust analysis cannot treat large-n markets as safe from
+      algorithmic coordination risk.</p>
+    </div>
+  </div>
+
+  <!-- ── 9. Equation Reference ── -->
+  <div class="section">
+    <div class="section-num">09</div>
+    <h2 class="section-title">Equation Reference</h2>
+    <div class="tbl-wrap">
+      <table class="eq-ref">
+        <thead>
+          <tr><th>Equation</th><th>Formula</th><th>Role</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Objective</td><td>E[Σ δᵗ πₜ]</td><td>Discounted reward maximization</td></tr>
+          <tr><td>Bellman</td><td>V(s) = max_a {E[π|s,a] + δ E[V(s')]}</td><td>Value function recursion</td></tr>
+          <tr><td>Q-function</td><td>Q(s,a) = E(π|s,a) + δ E[max_a' Q(s',a')]</td><td>Action-value definition</td></tr>
+          <tr><td>Update rule</td><td>Q(s,a) ← (1−α)Q(s,a) + α[πₜ + δ max_a' Q(s',a')]</td><td>Online learning</td></tr>
+          <tr><td>Logit demand</td><td>qᵢ = exp((aᵢ−pᵢ)/μ) / [Σ exp((aⱼ−pⱼ)/μ) + exp(a₀/μ)]</td><td>Market demand</td></tr>
+          <tr><td>Exploration</td><td>εₜ = exp(−β t)</td><td>Decaying randomization</td></tr>
+          <tr><td>Q-init</td><td>Q₀(s,a) = Σ πᵢ(a,a₋ᵢ) / [(1−δ)|A|ⁿ⁻¹]</td><td>Neutral initialization</td></tr>
+          <tr><td>Profit gain</td><td>Δ = (π − πᴺ) / (πᴹ − πᴺ)</td><td>Collusion intensity [0,1]</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <footer>
+    <p class="footer-text">
+      Explainer by Hongrui Zhu &nbsp;·&nbsp; Based on Calvano, Calzolari, Denicolo &amp; Pastorello (2020, AER)
+      &nbsp;·&nbsp; Extension: original replication study
+    </p>
+  </footer>
+
+</div><!-- /page -->
+
+<script>
+(function () {
+  function init() {
+    if (typeof COLLUSION_DATA === 'undefined' || typeof Plotly === 'undefined') {
+      setTimeout(init, 200); return;
+    }
+
+    const res    = COLLUSION_DATA.results;
+    const ns     = [2, 3, 4];
+    const colors = ['#8b6f47', '#b8956a', '#d4b896'];
+    const colorA = ['rgba(139,111,71,.18)', 'rgba(184,149,106,.18)', 'rgba(212,184,150,.18)'];
+
+    document.getElementById('ext-nsessions').textContent = COLLUSION_DATA.n_sessions || res['2'].n_sessions;
+
+    // Metric cards
+    const metricsEl = document.getElementById('ext-metrics');
+    ns.forEach((n, i) => {
+      const r = res[String(n)];
+      metricsEl.innerHTML += `
+        <div class="ext-metric">
+          <div class="ext-metric-label">n = ${n} firms</div>
+          <div class="ext-metric-val">${(r.avg_delta * 100).toFixed(1)}%</div>
+          <div class="ext-metric-sub">Avg Δ ± ${(r.std_delta * 100).toFixed(1)}%</div>
+        </div>`;
+    });
+
+    const base = {
+      paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)',
+      font: { family: "'IBM Plex Sans',sans-serif", color: '#3a2a1a', size: 11 },
+      margin: { t: 36, r: 16, b: 40, l: 46 },
+    };
+    const cfg = { responsive: true, displayModeBar: false };
+    const refShapes = [
+      { type:'line', x0:-.5, x1:2.5, y0:0, y1:0, line:{ color:'#6ba3be', width:1.2, dash:'dot' } },
+      { type:'line', x0:-.5, x1:2.5, y0:1, y1:1, line:{ color:'#c06060', width:1.2, dash:'dash' } },
+    ];
+
+    Plotly.newPlot('ext-bar', [{
+      type: 'bar',
+      x: ns.map(n => `n = ${n}`),
+      y: ns.map(n => res[String(n)].avg_delta),
+      error_y: {
+        type: 'data', array: ns.map(n => res[String(n)].std_delta),
+        visible: true, color: '#8b6f47', thickness: 1.5, width: 5,
+      },
+      marker: { color: colors },
+      hovertemplate: '<b>%{x}</b><br>Avg Δ = %{y:.3f}<extra></extra>',
+    }], {
+      ...base,
+      title: { text: 'Average Profit Gain by Market Structure', font:{ size:12 } },
+      yaxis: { title:'Avg. Δ', range:[0,1.05], tickformat:'.2f', gridcolor:'#e8e0d4' },
+      shapes: refShapes,
+      annotations: [
+        { x:2.4, y:0.02,  text:'Competitive', showarrow:false, font:{ size:9, color:'#6ba3be' }, xref:'x', yref:'y' },
+        { x:2.4, y:0.97, text:'Monopoly',    showarrow:false, font:{ size:9, color:'#c06060' }, xref:'x', yref:'y' },
+      ],
+    }, cfg);
+
+    Plotly.newPlot('ext-box',
+      ns.map((n, i) => ({
+        type: 'box', name: `n = ${n}`,
+        y: res[String(n)].deltas,
+        marker: { color: colors[i], size: 3 },
+        fillcolor: colorA[i],
+        line: { color: colors[i], width: 1.5 },
+        boxpoints: 'outliers',
+        hovertemplate: 'Δ = %{y:.3f}<extra>n=%{fullData.name}</extra>',
+      })),
+      { ...base,
+        title: { text: 'Distribution of Δ across Sessions', font:{ size:12 } },
+        yaxis: { title:'Δ', range:[0,1.1], tickformat:'.2f', gridcolor:'#e8e0d4' },
+        shapes: refShapes, showlegend: false,
+      }, cfg);
+
+    const d2 = res['2'].avg_delta, d3 = res['3'].avg_delta, d4 = res['4'].avg_delta;
+    const drop23 = ((d2 - d3) / d2 * 100).toFixed(0);
+    const drop24 = ((d2 - d4) / d2 * 100).toFixed(0);
+    document.getElementById('ext-finding-text').innerHTML =
+      `Algorithmic collusion emerges robustly but weakens with market fragmentation.
+       With <strong>n = 2</strong> firms, Q-learning algorithms achieve a profit gain of
+       <strong>Δ = ${(d2*100).toFixed(1)}%</strong> — closely replicating Calvano et al. (2020).
+       Expanding to <strong>n = 3</strong> reduces this to <strong>${(d3*100).toFixed(1)}%</strong>
+       (−${drop23}%), and to <strong>${(d4*100).toFixed(1)}%</strong> with four firms (−${drop24}%).
+       Crucially, collusion remains well above the competitive benchmark even in four-firm markets,
+       suggesting that algorithmic pricing raises antitrust concerns beyond duopoly settings.`;
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else { init(); }
+})();
+</script>
+</body>
+</html>
