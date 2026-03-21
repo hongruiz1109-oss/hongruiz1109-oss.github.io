@@ -177,7 +177,8 @@
       .chart-half-grid { grid-template-columns: 1fr; }
     }
 
-    .chart-toggle-row { display: flex; justify-content: flex-end; align-items: center; gap: 8px; margin-bottom: 4px; margin-top: 24px; }
+    .chart-title { font-family: 'EB Garamond', Georgia, serif; font-size: 13px; color: #3a2a1a; text-align: center; margin: 24px 0 0; }
+    .chart-toggle-row { display: flex; justify-content: flex-end; align-items: center; gap: 8px; margin-bottom: 4px; margin-top: 6px; }
     .chart-label-btn {
       font-family: var(--sans); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;
       color: var(--ink-faint); background: transparent; border: 1px solid var(--border-lt);
@@ -284,7 +285,8 @@
       本样本期内 LLM 市场最显著的结构性变化，是推理模型的急速崛起——这类系统在回答前会产生扩展的思维链过程。2025年1月，推理模型仅占 OpenRouter API 请求的不足1%。到2026年2月，其流量占比已接近60%，以惊人的速度取代了传统模型。
     </p>
 
-    <div class="chart-full" id="chart-reasoning"></div>
+    <p class="chart-title">Reasoning Model Share of OpenRouter API Requests (%)</p>
+    <div class="chart-full" id="chart-reasoning" style="margin-top:4px;"></div>
 
     <div class="finding">
       <div class="finding-label">Key Finding</div>
@@ -310,7 +312,8 @@
       谷歌凭借面向高吞吐应用的低价 Gemini Flash 系列在请求量上占据主导。Anthropic 尽管能力评分最高，请求量却排名第八——这是竞争市场中高端定位策略的典型体现。2025年2月和12月的集中度下降，分别与 DeepSeek R1 发布以及前沿能力广泛商品化相吻合。
     </p>
 
-    <div class="chart-toggle-row">
+    <p class="chart-title">Creator Market Share (% of Total Requests)</p>
+    <div class="chart-toggle-row" style="margin-top:6px;">
       <div class="gran-group">
         <button class="gran-btn active" id="btn-creator-weekly">Weekly</button>
         <button class="gran-btn" id="btn-creator-monthly">Monthly</button>
@@ -319,7 +322,8 @@
     </div>
     <div class="chart-full" id="chart-creator" style="margin-top:0;"></div>
 
-    <div class="chart-toggle-row">
+    <p class="chart-title">Market Concentration (HHI)</p>
+    <div class="chart-toggle-row" style="margin-top:6px;">
       <div class="gran-group">
         <button class="gran-btn" id="btn-hhi-daily">Daily</button>
         <button class="gran-btn" id="btn-hhi-weekly">Weekly</button>
@@ -346,9 +350,11 @@
       将模型能力（Artificial Analysis 智能指数）与采用率进行映射，揭示出清晰的市场分层：高流量模型集中在能力谱系的低端，定价极低；前沿模型尽管基准测试表现卓越，请求量却少得多。智能指数与对数使用量之间呈负相关——市场系统性地偏好成本效率而非原始能力。
     </p>
 
-    <div class="chart-toggle-row"><button class="chart-label-btn" id="btn-perf">Labels</button></div>
+    <p class="chart-title">Intelligence vs. Usage</p>
+    <div class="chart-toggle-row" style="margin-top:6px;"><button class="chart-label-btn" id="btn-perf">Labels</button></div>
     <div class="chart-full" id="chart-perf" style="margin-top:0;"></div>
-    <div class="chart-toggle-row"><button class="chart-label-btn" id="btn-price">Labels</button></div>
+    <p class="chart-title">Price vs. Intelligence</p>
+    <div class="chart-toggle-row" style="margin-top:6px;"><button class="chart-label-btn" id="btn-price">Labels</button></div>
     <div class="chart-full" id="chart-price" style="margin-top:0;"></div>
   </div>
 
@@ -495,7 +501,6 @@ document.addEventListener('DOMContentLoaded', function () {
       };
 
       var layout = Object.assign({}, base, {
-        title: { text: 'Reasoning Model Share of OpenRouter API Requests (%)', font: { size: 13, family: "'EB Garamond', Georgia, serif", color: '#3a2a1a' }, x: 0.01, xanchor: 'left' },
         xaxis: {
           title: '',
           gridcolor: 'rgba(207,198,180,0.4)',
@@ -521,7 +526,6 @@ document.addEventListener('DOMContentLoaded', function () {
       var creatorOrder = ['google', 'openai', 'meta-llama', 'deepseek', 'qwen', 'mistralai', 'x-ai', 'anthropic', 'Other'];
 
       var creatorLayout = Object.assign({}, base, {
-        title: { text: 'Creator Market Share (% of Total Requests)', font: { size: 13, family: "'EB Garamond', Georgia, serif", color: '#3a2a1a' }, x: 0.01, xanchor: 'left' },
         barmode: 'stack',
         xaxis: { title: '', gridcolor: 'rgba(207,198,180,0.4)', linecolor: 'rgba(207,198,180,0.6)', tickangle: -30 },
         yaxis: { title: 'Market Share (%)', gridcolor: 'rgba(207,198,180,0.4)', linecolor: 'rgba(207,198,180,0.6)', ticksuffix: '%', range: [0, 100] },
@@ -608,7 +612,6 @@ document.addEventListener('DOMContentLoaded', function () {
         var xs = src.data.map(function (d) { return d[src.key]; });
         var x0 = xs[0], x1 = xs[xs.length - 1];
         return Object.assign({}, base, {
-          title: { text: 'Market Concentration (HHI)', font: { size: 13, family: "'EB Garamond', Georgia, serif", color: '#3a2a1a' }, x: 0.01, xanchor: 'left' },
           xaxis: { title: '', gridcolor: 'rgba(207,198,180,0.4)', linecolor: 'rgba(207,198,180,0.6)', tickangle: -30 },
           yaxis: { title: 'HHI', gridcolor: 'rgba(207,198,180,0.4)', linecolor: 'rgba(207,198,180,0.6)' },
           shapes: [
@@ -675,8 +678,16 @@ document.addEventListener('DOMContentLoaded', function () {
         });
       });
 
+      // Quadrant medians
+      (function med() {
+        var xs = D.perf_vs_usage.map(function(d){return d.intelligence_index;}).slice().sort(function(a,b){return a-b;});
+        var ys = D.perf_vs_usage.map(function(d){return d.log_count;}).slice().sort(function(a,b){return a-b;});
+        var mx = Math.floor(xs.length/2), my = Math.floor(ys.length/2);
+        window._medX5 = xs.length%2 ? xs[mx] : (xs[mx-1]+xs[mx])/2;
+        window._medY5 = ys.length%2 ? ys[my] : (ys[my-1]+ys[my])/2;
+      })();
+
       var layout = Object.assign({}, base, {
-        title: { text: 'Intelligence vs. Usage', font: { size: 13, family: "'EB Garamond', Georgia, serif", color: '#3a2a1a' }, x: 0.01, xanchor: 'left' },
         xaxis: {
           title: 'Intelligence Index (Artificial Analysis)',
           gridcolor: 'rgba(207,198,180,0.4)',
@@ -687,6 +698,16 @@ document.addEventListener('DOMContentLoaded', function () {
           gridcolor: 'rgba(207,198,180,0.4)',
           linecolor: 'rgba(207,198,180,0.6)'
         },
+        shapes: [
+          { type: 'line', x0: window._medX5, x1: window._medX5, y0: 0, y1: 1, xref: 'x', yref: 'paper', line: { color: 'rgba(139,111,71,0.4)', width: 1.2, dash: 'dot' } },
+          { type: 'line', x0: 0, x1: 1, y0: window._medY5, y1: window._medY5, xref: 'paper', yref: 'y', line: { color: 'rgba(139,111,71,0.4)', width: 1.2, dash: 'dot' } }
+        ],
+        annotations: [
+          { x: 0.98, y: 0.97, xref: 'paper', yref: 'paper', text: 'Popular & Smart', showarrow: false, font: { size: 9, color: 'rgba(139,111,71,0.55)' }, xanchor: 'right', yanchor: 'top' },
+          { x: 0.02, y: 0.97, xref: 'paper', yref: 'paper', text: 'Popular', showarrow: false, font: { size: 9, color: 'rgba(139,111,71,0.55)' }, xanchor: 'left', yanchor: 'top' },
+          { x: 0.98, y: 0.03, xref: 'paper', yref: 'paper', text: 'Niche & Smart', showarrow: false, font: { size: 9, color: 'rgba(139,111,71,0.55)' }, xanchor: 'right', yanchor: 'bottom' },
+          { x: 0.02, y: 0.03, xref: 'paper', yref: 'paper', text: 'Niche', showarrow: false, font: { size: 9, color: 'rgba(139,111,71,0.55)' }, xanchor: 'left', yanchor: 'bottom' }
+        ],
         showlegend: true,
         legend: { font: { size: 9 }, itemsizing: 'constant' },
         margin: { t: 36, r: 16, b: 50, l: 56 }
@@ -750,8 +771,16 @@ document.addEventListener('DOMContentLoaded', function () {
         });
       });
 
+      // Quadrant medians
+      (function med() {
+        var xs = D.price_vs_intelligence.map(function(d){return d.intelligence_index;}).slice().sort(function(a,b){return a-b;});
+        var ys = D.price_vs_intelligence.map(function(d){return d.price_blended;}).slice().sort(function(a,b){return a-b;});
+        var mx = Math.floor(xs.length/2), my = Math.floor(ys.length/2);
+        window._medX6 = xs.length%2 ? xs[mx] : (xs[mx-1]+xs[mx])/2;
+        window._medY6 = ys.length%2 ? ys[my] : (ys[my-1]+ys[my])/2;
+      })();
+
       var layout = Object.assign({}, base, {
-        title: { text: 'Price vs. Intelligence', font: { size: 13, family: "'EB Garamond', Georgia, serif", color: '#3a2a1a' }, x: 0.01, xanchor: 'left' },
         xaxis: {
           title: 'Intelligence Index',
           gridcolor: 'rgba(207,198,180,0.4)',
@@ -763,6 +792,16 @@ document.addEventListener('DOMContentLoaded', function () {
           gridcolor: 'rgba(207,198,180,0.4)',
           linecolor: 'rgba(207,198,180,0.6)'
         },
+        shapes: [
+          { type: 'line', x0: window._medX6, x1: window._medX6, y0: 0, y1: 1, xref: 'x', yref: 'paper', line: { color: 'rgba(139,111,71,0.4)', width: 1.2, dash: 'dot' } },
+          { type: 'line', x0: 0, x1: 1, y0: window._medY6, y1: window._medY6, xref: 'paper', yref: 'y', line: { color: 'rgba(139,111,71,0.4)', width: 1.2, dash: 'dot' } }
+        ],
+        annotations: [
+          { x: 0.98, y: 0.97, xref: 'paper', yref: 'paper', text: 'Premium', showarrow: false, font: { size: 9, color: 'rgba(139,111,71,0.55)' }, xanchor: 'right', yanchor: 'top' },
+          { x: 0.02, y: 0.97, xref: 'paper', yref: 'paper', text: 'Overpriced', showarrow: false, font: { size: 9, color: 'rgba(139,111,71,0.55)' }, xanchor: 'left', yanchor: 'top' },
+          { x: 0.98, y: 0.03, xref: 'paper', yref: 'paper', text: 'Best Value', showarrow: false, font: { size: 9, color: 'rgba(139,111,71,0.55)' }, xanchor: 'right', yanchor: 'bottom' },
+          { x: 0.02, y: 0.03, xref: 'paper', yref: 'paper', text: 'Budget', showarrow: false, font: { size: 9, color: 'rgba(139,111,71,0.55)' }, xanchor: 'left', yanchor: 'bottom' }
+        ],
         showlegend: true,
         legend: { font: { size: 9 }, itemsizing: 'constant' },
         margin: { t: 36, r: 16, b: 50, l: 60 }
