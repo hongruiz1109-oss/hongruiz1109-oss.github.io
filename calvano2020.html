@@ -9,6 +9,13 @@
   <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=IBM+Plex+Sans:wght@300;400;500&family=IBM+Plex+Mono:wght@400&display=swap" rel="stylesheet">
   <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
   <script src="assets/js/viz_data.js"></script>
+  <script>
+MathJax = {
+  tex: { displayMath: [['\\[','\\]']], inlineMath: [['\\(','\\)']] },
+  options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] }
+};
+</script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
   <style>
     :root {
       --cream:      #F4EFE6;
@@ -130,11 +137,12 @@
     /* ── Equation block ── */
     .eq-block {
       background: var(--cream-dark); border: 1px solid var(--border-lt);
-      padding: 14px 20px; margin: 20px 0; border-radius: 4px;
-      font-family: var(--mono); font-size: 14px; color: var(--ink-mid);
+      padding: 20px 24px; margin: 20px 0; border-radius: 4px;
+      color: var(--ink-mid);
       overflow-x: auto;
+      text-align: center;
     }
-    .eq-label { font-size: 11px; color: var(--ink-faint); margin-top: 4px; font-family: var(--sans); }
+    .eq-label { font-size: 11px; color: var(--ink-faint); margin-top: 4px; font-family: var(--sans); text-align: left; }
 
     /* ── Table ── */
     .tbl-wrap { overflow-x: auto; margin: 24px 0; }
@@ -241,6 +249,22 @@
     footer { border-top: 1px solid var(--border-lt); padding: 28px 0; margin-top: 60px; }
     .footer-text { font-size: 12px; color: var(--ink-faint); letter-spacing: 0.04em; }
 
+    /* ── Bilingual Chinese ── */
+    .zh {
+      font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      font-size: 13.5px;
+      color: var(--ink-faint);
+      line-height: 1.9;
+      margin-top: 5px;
+      margin-bottom: 0;
+      font-weight: 400;
+    }
+    h2.section-title + .zh { font-size: 15px; margin-bottom: 20px; }
+    h3.sub-title + .zh { font-size: 13.5px; margin-bottom: 10px; }
+    .zh + .body-text { margin-top: 16px; }
+    .zh + .ext-ext-body { margin-top: 14px; }
+    .stat-card .zh { font-size: 10.5px; margin-top: 3px; letter-spacing: 0; text-transform: none; }
+
     @media (max-width: 640px) {
       .page { padding: 0 20px 60px; }
       .stat-grid { grid-template-columns: 1fr 1fr; }
@@ -252,11 +276,12 @@
 <body>
 <div class="page">
 
-  <a href="index.html" class="back">← Back to Portfolio</a>
+  <a href="index.html" class="back">← Back to Portfolio &nbsp;<span class="zh" style="display:inline;font-size:12px;">← 返回作品集</span></a>
 
   <!-- ── Hero ── -->
   <div class="hero">
     <div class="hero-tag">Paper Explainer &nbsp;·&nbsp; Industrial Economics &nbsp;·&nbsp; Algorithmic Pricing</div>
+    <div class="zh" style="margin-top:4px;">论文解读 · 产业经济学 · 算法定价</div>
     <h1 class="hero-title">Artificial Intelligence, Algorithmic Pricing, <em>and Collusion</em></h1>
     <div class="hero-authors">Emilio Calvano, Giacomo Calzolari, Vincenzo Denicolo, Sergio Pastorello</div>
     <div class="hero-pub">American Economic Review, Vol. 110, No. 10, October 2020 &nbsp;·&nbsp; <a href="https://www.aeaweb.org/articles?id=10.1257/aer.20190623" target="_blank" rel="noopener">doi:10.1257/aer.20190623</a></div>
@@ -266,6 +291,7 @@
       sustained by autonomous punishment strategies: algorithms retaliate against price cuts, then
       gradually forgive, in patterns that resemble economic theory far more than chance.
     </p>
+    <p class="zh hero-abstract" style="border-left:3px solid var(--border);padding-left:20px;margin-top:10px;">AI 定价算法——仅通过强化学习训练，无需串谋指令，也无需相互通信——始终如一地学会了索取高于竞争性水平的价格。这种合谋由算法自发演化出的惩罚策略所维持：算法会对降价行为实施报复，随后逐步恢复合作，其规律与经济理论的预测高度吻合，绝非偶然。</p>
   </div>
 
   <!-- ── Key stats ── -->
@@ -273,22 +299,30 @@
     <div class="stat-card">
       <div class="stat-val">85%</div>
       <div class="stat-label">Profit Gain Δ</div>
+      <div class="zh stat-label">利润增益 Δ</div>
       <div class="stat-sub">Baseline duopoly result</div>
+      <div class="zh stat-sub">基准双头垄断结果</div>
     </div>
     <div class="stat-card">
       <div class="stat-val">&lt;0.5%</div>
       <div class="stat-label">Q-loss on path</div>
+      <div class="zh stat-label">路径 Q 损失</div>
       <div class="stat-sub">Near-optimal play</div>
+      <div class="zh stat-sub">接近最优决策</div>
     </div>
     <div class="stat-card">
       <div class="stat-val">5–7</div>
       <div class="stat-label">Punishment periods</div>
+      <div class="zh stat-label">惩罚持续期数</div>
       <div class="stat-sub">After a deviation</div>
+      <div class="zh stat-sub">偏离后的惩罚周期</div>
     </div>
     <div class="stat-card">
       <div class="stat-val">&gt;99.9%</div>
       <div class="stat-label">Sessions converge</div>
+      <div class="zh stat-label">模拟收敛率</div>
       <div class="stat-sub">Across 10,000 param combos</div>
+      <div class="zh stat-sub">跨 1 万组参数配置</div>
     </div>
   </div>
 
@@ -300,11 +334,13 @@
     <span class="tag">Antitrust</span>
     <span class="tag">Industrial Organization</span>
   </div>
+  <div class="zh" style="margin-top:4px;">强化学习 &nbsp;·&nbsp; 默契合谋 &nbsp;·&nbsp; 算法定价 &nbsp;·&nbsp; Q 学习 &nbsp;·&nbsp; 反垄断 &nbsp;·&nbsp; 产业组织</div>
 
   <!-- ── 1. Introduction ── -->
   <div class="section">
     <div class="section-num">01</div>
     <h2 class="section-title">The Central Question</h2>
+    <p class="zh">核心问题</p>
 
     <p class="body-text">
       Firms increasingly delegate pricing decisions to software. Early repricing tools were rule-based;
@@ -312,18 +348,22 @@
       scratch, through trial-and-error, with no prior knowledge and no explicit instructions. Amazon
       deploys such algorithms at scale; so do airline and ride-sharing platforms.
     </p>
+    <p class="zh">企业越来越多地将定价决策委托给软件。早期的重新定价工具基于规则；现代 AI 系统采用强化学习——从零开始、通过试错自主形成定价策略，无需任何先验知识和明确指令。亚马逊已大规模部署此类算法，航空公司和网约车平台亦然。</p>
+
     <p class="body-text">
       This raises a question that matters deeply for competition policy: <strong>can AI algorithms
       spontaneously learn to collude</strong>, even when they cannot communicate with each other and
       have never been told to coordinate? If yes, the traditional antitrust focus on explicit agreements
       could leave a significant gap.
     </p>
+    <p class="zh">这引发了一个对竞争政策至关重要的问题：AI 算法能否在互不通信、从未被告知协调的情况下，自发学会合谋？如果是，反垄断政策传统上对明确协议的关注将面临重大漏洞。</p>
 
     <div class="pull">
       <div class="pull-label">The Core Tension</div>
       <p>Tacit collusion among humans is considered extremely difficult to sustain — which is why it is
       mostly legal. The paper's results suggest it may be much easier for algorithms. Current antitrust
       frameworks were not designed for this world.</p>
+      <p class="zh">人类之间的默契合谋被认为极难持续——这也是它通常合法的原因。本文结果表明，对算法而言这可能容易得多。现行反垄断框架并非为这一世界而设计。</p>
     </div>
 
     <p class="body-text">
@@ -334,18 +374,22 @@
       quickly by its operator. An algorithm that <em>intentionally</em> sustains high prices through
       strategic self-restraint is a genuine antitrust concern.
     </p>
+    <p class="zh">此前的模拟研究（Waltman and Kaymak 2008）观察到了高于竞争水平的价格，但未深究原因。作者认为这一区分至关重要：合谋不仅仅是高价格，还需要一套奖惩机制，使各方持续有动力维持合作。一个仅仅无法找到竞争均衡的算法会被运营者迅速替换；而通过战略性自我克制刻意维持高价的算法，才是真正的反垄断隐患。</p>
+
     <p class="body-text">
       The approach is experimental simulation. Because the stochastic dynamic systems generated by
       reinforcement learning are too complex for closed-form analysis, the authors construct Q-learning
       algorithms, place them in computer-simulated markets, and study what strategies emerge — running
       1,000 independent sessions per parameter configuration.
     </p>
+    <p class="zh">本文采用实验模拟方法。由于强化学习产生的随机动态系统过于复杂，无法进行解析分析，作者构建 Q 学习算法，将其置于计算机模拟市场中，研究涌现出的策略——每种参数配置运行 1,000 次独立模拟。</p>
   </div>
 
   <!-- ── 2. Q-Learning ── -->
   <div class="section">
     <div class="section-num">02</div>
     <h2 class="section-title">How Q-Learning Works</h2>
+    <p class="zh">Q 学习的工作原理</p>
 
     <p class="body-text">
       Q-learning is a model-free algorithm for solving Markov decision problems. An agent observes a
@@ -353,33 +397,45 @@
       <em>π<sub>t</sub></em>, and transitions to state <em>s<sub>t+1</sub></em>. The goal is to
       maximize the discounted sum of future rewards:
     </p>
+    <p class="zh">Q 学习是求解马尔可夫决策问题的无模型算法。智能体观察状态 \(s_t\)，采取行动 \(a_t\)，获得奖励 \(\pi_t\)，并转移至下一状态 \(s_{t+1}\)。目标是最大化未来折现奖励之和：</p>
 
-    <div class="eq-block">E[Σ δᵗ π<sub>t</sub>]</div>
+    <div class="eq-block">
+      \[\mathbb{E}\!\left[\sum_{t=0}^{\infty}\delta^{t}\pi_{t}\right]\]
+    </div>
 
     <p class="body-text">
       The key object is the <strong>Q-function</strong> — a matrix mapping every (state, action) pair
       to its expected discounted value. For finite state and action spaces, the Bellman equation gives:
     </p>
+    <p class="zh">核心对象是 Q 函数——将每个（状态，行动）对映射至其期望折现值的矩阵。对于有限状态和行动空间，贝尔曼方程给出：</p>
 
-    <div class="eq-block">Q(s, a) = E(π | s, a) + δ · E[max<sub>a'</sub> Q(s', a') | s, a]
-<div class="eq-label">Q-value = immediate reward + discounted best future value</div></div>
+    <div class="eq-block">
+      \[Q(s,a)=\mathbb{E}(\pi\mid s,a)+\delta\cdot\mathbb{E}\!\left[\max_{a'}Q(s',a')\;\middle|\;s,a\right]\]
+      <div class="eq-label">Q-value = immediate reward + discounted best future value</div>
+    </div>
 
     <p class="body-text">
       The <strong>learning update rule</strong> is a running average. After observing reward
       <em>π<sub>t</sub></em> and next state <em>s'</em>, only the visited cell is updated:
     </p>
+    <p class="zh">学习更新规则是一种滑动平均。在观察到奖励 \(\pi_t\) 和下一状态 \(s'\) 后，仅更新被访问的单元格：</p>
 
-    <div class="eq-block">Q(s,a) ← (1 − α) · Q(s,a) + α · [π<sub>t</sub> + δ · max<sub>a'</sub> Q(s', a')]
-<div class="eq-label">α ∈ (0,1) is the learning rate. All other cells are unchanged.</div></div>
+    <div class="eq-block">
+      \[Q(s,a)\;\leftarrow\;(1-\alpha)\,Q(s,a)+\alpha\!\left[\pi_{t}+\delta\max_{a'}Q(s',a')\right]\]
+      <div class="eq-label">α ∈ (0,1) is the learning rate. All other cells are unchanged.</div>
+    </div>
 
     <p class="body-text">
       <strong>Exploration vs. exploitation</strong> is handled with epsilon-greedy: with probability
       <em>ε<sub>t</sub></em> the algorithm picks a random action; otherwise it picks the current best.
       The exploration rate decays exponentially:
     </p>
+    <p class="zh">探索与利用的权衡通过 ε-贪婪策略处理：以概率 \(\varepsilon_t\) 随机选择行动，否则选择当前最优行动。探索率指数衰减：</p>
 
-    <div class="eq-block">ε<sub>t</sub> = exp(−β · t)
-<div class="eq-label">β controls how quickly exploration fades. Early on: random. Later: increasingly greedy.</div></div>
+    <div class="eq-block">
+      \[\varepsilon_{t}=e^{-\beta t}\]
+      <div class="eq-label">β controls how quickly exploration fades. Early on: random. Later: increasingly greedy.</div>
+    </div>
 
     <p class="body-text">
       In a game, multiple Q-learners interact simultaneously. Each treats the others' actions as part
@@ -387,40 +443,55 @@
       learning — so convergence guarantees from single-agent theory do not apply. Whether the system
       settles into equilibrium play must be verified empirically.
     </p>
+    <p class="zh">在博弈中，多个 Q 学习者同时交互，每个学习者将其他人的行动视为环境的一部分（独立学习）。该联合系统是非平稳的——竞争对手也在同步学习——因此单智能体理论的收敛保证不适用。系统是否收敛到均衡策略，必须通过实证验证。</p>
 
     <h3 class="sub-title">Initialization</h3>
+    <p class="zh">初始化</p>
     <p class="body-text">
       Q-matrices are initialized to the discounted payoff each action would yield if rivals randomized
       uniformly — a neutral, uninformative prior:
     </p>
-    <div class="eq-block">Q<sub>i,0</sub>(s, a<sub>i</sub>) = Σ<sub>a₋ᵢ</sub> π<sub>i</sub>(a<sub>i</sub>, a₋ᵢ) / [(1 − δ) · |A|ⁿ⁻¹]</div>
+    <p class="zh">Q 矩阵初始化为：假设竞争对手随机选择行动时，每个行动对应的折现收益期望值——一个中性、无信息的先验：</p>
+
+    <div class="eq-block">
+      \[Q_{i,0}(s,a_{i})=\frac{\displaystyle\sum_{a_{-i}}\pi_{i}(a_{i},a_{-i})}{(1-\delta)\,|A|^{n-1}}\]
+    </div>
 
     <p class="body-text">
       The initial state <em>s<sub>0</sub></em> is drawn randomly each session, ensuring results do not
       depend on a particular starting point.
     </p>
+    <p class="zh">初始状态 \(s_0\) 在每次模拟中随机抽取，确保结果不依赖于特定起始点。</p>
   </div>
 
   <!-- ── 3. Experiment Design ── -->
   <div class="section">
     <div class="section-num">03</div>
     <h2 class="section-title">Experiment Design</h2>
+    <p class="zh">实验设计</p>
 
     <h3 class="sub-title">Economic Environment</h3>
+    <p class="zh">经济环境</p>
     <p class="body-text">
       The market is an infinitely repeated Bertrand oligopoly with <strong>logit demand</strong>.
       Firms simultaneously set prices each period; demand is given by:
     </p>
-    <div class="eq-block">q<sub>i,t</sub> = exp((a<sub>i</sub> − p<sub>i,t</sub>)/μ) / [Σ<sub>j</sub> exp((a<sub>j</sub> − p<sub>j,t</sub>)/μ) + exp(a<sub>0</sub>/μ)]
-<div class="eq-label">a = product quality; μ = horizontal differentiation; a₀ = outside option quality</div></div>
+    <p class="zh">市场是一个无限重复的伯特兰寡头博弈，采用多项式（logit）需求。各企业每期同时设定价格，需求由以下公式给出：</p>
+
+    <div class="eq-block">
+      \[q_{i,t}=\frac{\exp\!\left(\dfrac{a_{i}-p_{i,t}}{\mu}\right)}{\displaystyle\sum_{j}\exp\!\left(\dfrac{a_{j}-p_{j,t}}{\mu}\right)+\exp\!\left(\dfrac{a_{0}}{\mu}\right)}\]
+      <div class="eq-label">a = product quality; μ = horizontal differentiation; a₀ = outside option quality</div>
+    </div>
 
     <p class="body-text">
       Each firm's per-period profit is <em>π<sub>i</sub> = (p<sub>i</sub> − c<sub>i</sub>) · q<sub>i</sub></em>.
       State variables are the prices set in the <em>k</em> preceding periods. Action spaces are grids of
       <em>m</em> equally spaced prices spanning from below Bertrand–Nash to above monopoly.
     </p>
+    <p class="zh">每家企业的当期利润为 \(\pi_i=(p_i-c_i)\cdot q_i\)。状态变量为前 \(k\) 期设定的价格。行动空间是 \(m\) 个等间距价格点的网格，覆盖范围从低于伯特兰—纳什均衡价格到高于垄断价格。</p>
 
     <h3 class="sub-title">Baseline Parameters</h3>
+    <p class="zh">基准参数</p>
     <div class="tbl-wrap">
       <table>
         <thead>
@@ -441,6 +512,7 @@
         </tbody>
       </table>
     </div>
+    <p class="zh">每个智能体的 Q 矩阵在双头垄断基准配置下共有 \(|S|\times|A|=15^2\times15=3{,}375\) 个单元格。参数网格扫描 \(100\times100=10{,}000\) 种 α 和 β 组合，每种配置运行 1,000 次独立模拟（共 1,000 万次）。收敛标准：每个状态的贪婪策略（对 Q 值取 argmax）需在连续 100,000 期内保持不变。</p>
 
     <p class="body-text">
       The Q-matrix for each agent has <em>|S| × |A| = 15² × 15 = 3,375</em> cells in the duopoly baseline.
@@ -454,13 +526,19 @@
   <div class="section">
     <div class="section-num">04</div>
     <h2 class="section-title">Main Results: Algorithms Learn to Collude</h2>
+    <p class="zh">主要结果：算法学会了合谋</p>
 
     <h3 class="sub-title">Measuring Collusion Intensity</h3>
+    <p class="zh">衡量合谋强度</p>
     <p class="body-text">
       The paper introduces a normalized <strong>profit gain</strong> measure:
     </p>
-    <div class="eq-block">Δ = (π − π<sup>N</sup>) / (π<sup>M</sup> − π<sup>N</sup>)
-<div class="eq-label">π<sup>N</sup> = Bertrand-Nash (competitive) profit; π<sup>M</sup> = monopoly profit. Δ=0 is competitive; Δ=1 is perfectly collusive.</div></div>
+    <p class="zh">论文引入了一个归一化的"利润增益"指标：</p>
+
+    <div class="eq-block">
+      \[\Delta=\frac{\pi-\pi^{N}}{\pi^{M}-\pi^{N}}\]
+      <div class="eq-label">π<sup>N</sup> = Bertrand-Nash (competitive) profit; π<sup>M</sup> = monopoly profit. Δ=0 is competitive; Δ=1 is perfectly collusive.</div>
+    </div>
 
     <div class="finding">
       <div class="finding-label">Main Finding</div>
@@ -470,15 +548,18 @@
         any communication, collusion instruction, or prior knowledge. At the representative calibration
         (α = 0.15, β = 4×10⁻⁶), the average profit gain is <strong>Δ = 84.9%</strong>.
       </p>
+      <p class="zh">在整个 100×100 参数网格上，利润增益介于 70% 至 90% 之间。算法在没有任何通信、合谋指令或先验知识的情况下，始终如一地学会了索取高于竞争水平的价格。在代表性参数校准下（α=0.15，β=4×10⁻⁶），平均利润增益为 Δ=84.9%。</p>
     </div>
 
     <h3 class="sub-title">Is This Really Collusion, or Just Poor Optimization?</h3>
+    <p class="zh">这究竟是合谋，还是次优化？</p>
     <p class="body-text">
       High prices alone could reflect sub-optimal play — algorithms that simply fail to find the
       competitive equilibrium. The authors rule this out by computing the "true" best response to each
       rival's limit strategy and measuring the <strong>Q-loss</strong>: the percentage of foregone payoff
       when an algorithm doesn't exactly optimize.
     </p>
+    <p class="zh">高价格单独来看可能只是反映了次优决策——算法未能找到竞争均衡。作者通过计算针对竞争对手限制策略的"真实"最优应对来排除这一可能，并测量"Q 损失"：算法未完全最优化时损失的收益比例。</p>
 
     <div class="tbl-wrap">
       <table>
@@ -502,12 +583,14 @@
       profit gain and equilibrium play frequency is only 0.12, confirming that collusion and optimization
       quality are independent phenomena.
     </p>
+    <p class="zh">Q 损失在路径上通常低于 0.5%，在整个参数网格上从未超过 1.2%。高价格并非次优决策的意外产物——算法是在刻意且近乎最优地维持合谋价格。关键地，利润增益与均衡策略频率的相关性仅为 0.12，证实合谋与优化质量是两个相互独立的现象。</p>
 
     <div class="pull">
       <div class="pull-label">Key Insight</div>
       <p>Algorithms that merely fail to optimize would be replaced by their operators. The algorithms
       here <em>could</em> compete more aggressively — they just choose not to, because their learned
       strategies make cooperation the individually rational outcome.</p>
+      <p class="zh">仅仅无法最优化的算法会被运营者替换。本文中的算法完全有能力更积极地竞争——它们只是选择不这样做，因为其学到的策略使合作成为个体理性的最优选择。</p>
     </div>
   </div>
 
@@ -515,14 +598,17 @@
   <div class="section">
     <div class="section-num">05</div>
     <h2 class="section-title">Anatomy of Collusion: Punishment Mechanisms</h2>
+    <p class="zh">合谋解剖：惩罚机制</p>
 
     <h3 class="sub-title">Verifying Incentive Compatibility</h3>
+    <p class="zh">验证激励相容性</p>
     <p class="body-text">
       The smoking gun for genuine collusion is the presence of punishment strategies. Starting from the
       long-run prices, the authors exogenously force one algorithm to deviate to its static best response
       in a single period. Both algorithms then revert to their learned strategies, and prices are tracked
       for subsequent periods.
     </p>
+    <p class="zh">真正合谋的"吸烟枪"是惩罚策略的存在。从长期均衡价格出发，作者在单一时期内外生地迫使一个算法背叛至其静态最优应对。两个算法随后恢复各自的学习策略，并追踪后续各期的价格走势。</p>
 
     <div class="finding">
       <div class="finding-label">Punishment Pattern</div>
@@ -530,9 +616,11 @@
       pre-deviation levels over approximately <strong>5–7 periods</strong>. In more than <strong>95%</strong>
       of sessions, the punishment makes the deviation unprofitable. The punishment–forgiveness cycle
       is the hallmark of self-sustaining tacit collusion.</p>
+      <p class="zh">未背叛的算法降价（实施惩罚）。随后价格在约 5–7 期内逐步恢复至背叛前水平。在超过 95% 的模拟中，惩罚使背叛行为无利可图。这种"惩罚—宽恕"循环是自我维持的默契合谋的标志性特征。</p>
     </div>
 
     <h3 class="sub-title">Finite Punishment, Not Grim Trigger</h3>
+    <p class="zh">有限惩罚，而非冷酷触发</p>
     <p class="body-text">
       The punishment strategies are notably <em>not</em> grim trigger. Grim trigger — punish forever
       after any deviation — would be impractical with ongoing exploration, since any random exploration
@@ -540,35 +628,45 @@
       learn strategies resembling <strong>Abreu (1984) stick-and-carrot</strong>: punishment is intense
       but finite, followed by gradual re-escalation to cooperative prices.
     </p>
+    <p class="zh">惩罚策略明显不是"冷酷触发"（grim trigger）。冷酷触发——任何背叛后永久惩罚——在持续探索下不切实际，因为任何随机探索都会将双方永久锁入惩罚阶段。相反，算法独立学会了类似 Abreu（1984）"大棒加胡萝卜"的策略：惩罚强烈但有限，随后逐步重新升至合作价格。</p>
+
     <p class="body-text">
       Strikingly, both algorithms cut prices after a deviation — even the non-deviating algorithm prices
       below its pre-deviation level for several periods. For small deviations, prices initially overshoot
       downward before recovering. This "overshooting" cannot be explained by mechanical mean-reversion;
       it is structurally consistent with a deliberate punishment design.
     </p>
+    <p class="zh">值得注意的是，背叛发生后两个算法都会降价——即使未背叛的算法也会在数期内将价格压低至背叛前水平以下。对于小幅背叛，价格最初会超调向下，随后恢复。这种"超调"无法用机械均值回归解释，其结构与刻意设计的惩罚方案高度吻合。</p>
 
     <h3 class="sub-title">Punishment Ubiquity and Quantification</h3>
+    <p class="zh">惩罚的普遍性与量化</p>
     <p class="body-text">
       The intensity of punishment (average % price cut by the non-deviating algorithm) correlates with
       the profit gain at <strong>76.2%</strong> across the entire parameter grid — the strongest
       predictor of collusion. Markets where algorithms collude more are precisely the markets where
       punishments are harder.
     </p>
+    <p class="zh">惩罚强度（未背叛算法的平均降价幅度）与整个参数网格上利润增益的相关性高达 76.2%——是预测合谋强度最强的指标。合谋程度更高的市场，恰恰是惩罚力度更大的市场。</p>
 
     <h3 class="sub-title">Strategy Graphs</h3>
+    <p class="zh">策略图</p>
     <p class="body-text">
       With one-period memory, each firm's strategy is a function from 225 possible (price₁, price₂)
       pairs to one of 15 current prices. The authors represent limit strategies as directed graphs
       where nodes are states and edges point to successor states.
     </p>
+    <p class="zh">在单期记忆下，每家企业的策略是从 225 个可能的（价格₁, 价格₂）状态对到 15 个当期价格之一的映射。作者将限制策略表示为有向图，节点为状态，边指向后继状态。</p>
+
     <p class="body-text">
       In a representative session, the long-run price pair is an <em>absorbing node</em>: every other
       state eventually leads back to it. The average path length from any state to long-run prices is
       <strong>6 steps</strong>; the maximum is 18. In <strong>92% of sessions</strong>, every possible
       state converges back to the collusive prices — the self-correcting mechanism is near-universal.
     </p>
+    <p class="zh">在代表性模拟中，长期价格对是一个"吸收节点"：其他所有状态最终均回归至此。从任意状态到长期价格的平均路径长度为 6 步，最大为 18 步。在 92% 的模拟中，所有可能状态均收敛回合谋价格——自我修正机制近乎普遍存在。</p>
 
     <h3 class="sub-title">Baseline Validation</h3>
+    <p class="zh">基准验证</p>
     <p class="body-text">
       Two sanity checks confirm the mechanism is genuine. First, with <strong>zero memory</strong>
       (<em>k = 0</em>), algorithms cannot condition on past play, so punishment is impossible —
@@ -577,14 +675,17 @@
       smoothly from 85% toward zero as δ decreases, consistent with the theoretical collusion threshold
       of approximately δ = 0.40 for grim-trigger strategies in this environment.
     </p>
+    <p class="zh">两项稳健性检验证实了机制的真实性。第一，零记忆（k=0）下算法无法根据过去策略做出条件反应，惩罚不可能发生——模拟结果证实价格接近竞争水平。第二，零折现因子（δ=0）下智能体是短视的，无法重视未来惩罚；利润增益随 δ 降低从 85% 平稳趋向零，与冷酷触发策略约 δ=0.40 的理论合谋临界值一致。</p>
   </div>
 
   <!-- ── 6. Robustness ── -->
   <div class="section">
     <div class="section-num">06</div>
     <h2 class="section-title">Robustness Across Market Structures</h2>
+    <p class="zh">跨市场结构的稳健性</p>
 
     <h3 class="sub-title">Number of Firms</h3>
+    <p class="zh">企业数量</p>
     <div class="tbl-wrap">
       <table>
         <thead>
@@ -604,8 +705,10 @@
       almost never with 4 or more." If β is reduced to compensate for the larger state space (i.e.,
       allowing proportionally more learning), the triopoly profit gain rises to ~75%.
     </p>
+    <p class="zh">随着企业数量增加，合谋有所减弱——与理论预测一致——但仍然显著。即使在四家企业的市场中，算法仍持续实现显著的超竞争合谋，与人类实验形成鲜明对比：在人类实验中，"合谋在两卖方时常见，三卖方时罕见，四卖方及以上时几乎从不发生"。若降低 β 以补偿更大的状态空间，三家企业市场的利润增益可升至约 75%。</p>
 
     <h3 class="sub-title">Asymmetric Firms</h3>
+    <p class="zh">非对称企业</p>
     <p class="body-text">
       Varying firm 2's cost from 0.25 to 1.0 (firm 1 fixed at <em>c = 1</em>), asymmetry reduces Δ
       modestly — from 85% to about 71% at maximum asymmetry. The gain from collusion is split
@@ -614,8 +717,10 @@
       individually. This is not coordination failure — it is an equilibrium of the coordination game
       without a central planner.
     </p>
+    <p class="zh">将企业 2 的成本从 0.25 变化至 1.0（企业 1 固定 c=1），非对称性使 Δ 小幅下降——从 85% 降至最大非对称时的约 71%。合谋收益不成比例地向效率较低的企业倾斜：算法协调的解并非最大化总联合利润（无侧支付），但各方均独立获益。这并非协调失败——而是没有中央计划者的协调博弈均衡。</p>
 
     <h3 class="sub-title">Demand Uncertainty and Variable Market Structure</h3>
+    <p class="zh">需求不确定性与可变市场结构</p>
     <div class="tbl-wrap">
       <table>
         <thead>
@@ -637,20 +742,25 @@
       competitive benchmark. Alternative Q-matrix initializations (Nash-based, grim-trigger-based,
       large constants) all produce Δ &gt; 70%.
     </p>
+    <p class="zh">没有任何稳健性检验能消除合谋。即使面对随机需求、随机进入退出、近乎完全替代品或 100 点价格网格，利润增益仍远高于竞争基准。不同 Q 矩阵初始化方式（基于纳什均衡、冷酷触发、大常数）均产生 Δ&gt;70% 的结果。</p>
   </div>
 
   <!-- ── 7. Time Scale & Policy ── -->
   <div class="section">
     <div class="section-num">07</div>
     <h2 class="section-title">Time Scale and Policy Implications</h2>
+    <p class="zh">时间尺度与政策含义</p>
 
     <h3 class="sub-title">How Long Does Learning Take?</h3>
+    <p class="zh">学习需要多长时间？</p>
     <p class="body-text">
       Convergence typically requires <strong>400,000 to several million periods</strong> depending on
       exploration intensity. Even before full convergence, algorithms begin raising prices above the
       competitive level well before the learning process completes — collusion emerges progressively,
       not only at the endpoint of training.
     </p>
+    <p class="zh">收敛通常需要 400,000 到数百万个周期，具体取决于探索强度。即使在完全收敛之前，算法在学习过程尚未结束时就已开始将价格推高至竞争水平以上——合谋是逐步涌现的，并不仅仅发生在训练终点。</p>
+
     <p class="body-text">
       This timescale is a recognized limitation. If one "period" lasts minutes, millions of interactions
       take years — far longer than typical product cycles. However, the authors note two important
@@ -659,25 +769,32 @@
       exploration is shut off, collusion collapses to ~20% initially but recovers in less than
       one-tenth of the original training time — suggesting that prior training transfers.
     </p>
+    <p class="zh">这一时间尺度是公认的局限。若一个"周期"持续数分钟，数百万次交互需要数年——远超典型产品周期。然而作者指出两个缓解因素。第一，离线训练允许企业在部署前以压缩时间运行模拟。当已收敛的算法与新伙伴重新匹配且探索被关闭后，合谋最初崩溃至约 20%，但恢复时间不足原始训练时间的十分之一——表明训练知识可以迁移。</p>
+
     <p class="body-text">
       Second, in <strong>financial markets</strong> where periods can last milliseconds, millions of
       interactions complete in hours. Even a small supra-competitive spread, sustained across millions
       of automated trades, can generate economically significant extra profits.
     </p>
+    <p class="zh">第二，在交易周期可达毫秒级的金融市场中，数百万次交互可在数小时内完成。即使是微小的超竞争价差，若在数百万次自动交易中持续存在，也能产生经济上显著的额外利润。</p>
+
     <p class="body-text">
       Third, Q-learning is deliberately chosen as the simplest case. More efficient algorithms —
       deep Q-networks, value-function approximation — update many cells simultaneously and would
       learn orders of magnitude faster. The paper's results are thus a conservative lower bound on
       the speed of algorithmic collusion.
     </p>
+    <p class="zh">第三，Q 学习被刻意选为最简单的情形。更高效的算法——深度 Q 网络、价值函数近似——能同时更新多个单元格，学习速度快几个数量级。因此本文结果是算法合谋速度的保守下界。</p>
 
     <h3 class="sub-title">Competition Policy</h3>
+    <p class="zh">竞争政策</p>
 
     <div class="pull">
       <div class="pull-label">Policy Implications</div>
       <p>"Our findings should probably ring an alarm bell for antitrust policy." Current law targets
       explicit agreements; tacit coordination among humans is largely legal because it is viewed as
       very hard to achieve. Algorithms may change this calculus fundamentally.</p>
+      <p class="zh">"我们的发现可能应该为反垄断政策敲响警钟。"现行法律针对明确协议；人类之间的默契协调之所以大体合法，是因为被认为极难实现。算法可能从根本上改变这一逻辑。</p>
     </div>
 
     <p class="body-text">
@@ -689,18 +806,22 @@
       something that is inherently impossible with human behavior. This could reduce false positives,
       potentially shifting the balance of enforcement errors.
     </p>
+    <p class="zh">作者为监管者识别出了风险与机遇。风险：在 AI 定价无处不在的世界里，默契合谋可能比预期更普遍——执法中出现更多漏网之鱼。机遇：与人类决策者不同，定价算法可以被传唤取证、在模拟中测试，其策略可被正式分析。法院和竞争当局可验证定价算法是否包含惩罚逻辑——这对人类行为而言在本质上不可能。这可能减少误判，有望改变执法误差的平衡。</p>
+
     <p class="body-text">
       Key open questions for future research: the effect of richer heterogeneous environments (persistent
       cost and demand shocks that create signal-extraction problems), the interaction of algorithms from
       <em>different</em> design families, and the use of faster learning architectures that make the
       time-scale concern tractable.
     </p>
+    <p class="zh">未来研究的关键开放问题：更丰富的异质性环境（产生信号提取问题的持续性成本和需求冲击）的影响、来自不同设计族算法之间的交互，以及使时间尺度问题可处理的更快学习架构的应用。</p>
   </div>
 
   <!-- ── 8. Extension ── -->
   <div class="section">
     <div class="section-num">08</div>
     <h2 class="section-title">Extension: Market Structure &amp; Algorithmic Collusion</h2>
+    <p class="zh">延伸研究：市场结构与算法合谋</p>
     <p class="body-text">
       The paper's robustness section reports brief results on the number-of-firms dimension but holds
       the exploration parameter β constant — understating collusion for n = 3 and n = 4 because the
@@ -709,6 +830,7 @@
       number of competing firms across 50 independent sessions per configuration, to examine how
       market structure shapes the intensity and distribution of algorithmic collusion.
     </p>
+    <p class="zh">论文的稳健性部分简要报告了企业数量维度的结果，但保持探索参数 β 不变——因更大状态空间获得按比例更少的学习而低估了 n=3 和 n=4 时的合谋程度。以下延伸研究以论文精确参数完全复现 Q 学习框架，并在每种配置下运行 50 次独立模拟，将竞争企业数量从 2 变化至 4，以考察市场结构如何影响算法合谋的强度与分布。</p>
 
     <div class="ext-card">
       <div class="ext-tag">Extension · Calvano et al. (2020, AER)</div>
@@ -718,6 +840,7 @@
         We extend the Q-learning framework across duopoly, triopoly, and four-firm oligopoly settings,
         running 50 independent sessions per configuration at the paper's baseline parameters.
       </p>
+      <p class="zh" style="margin-bottom:24px;">竞争企业数量是否影响定价算法学习默契合谋的程度？我们在双头垄断、三寡头和四家企业寡头博弈设置下扩展了 Q 学习框架，在论文基准参数下每种配置运行 50 次独立模拟。</p>
 
       <div class="ext-metrics" id="ext-metrics"></div>
 
@@ -746,6 +869,7 @@
     </div>
 
     <h3 class="sub-title">Discussion</h3>
+    <p class="zh">讨论</p>
     <p class="ext-ext-body">
       The results confirm and extend Calvano et al.'s brief robustness findings. With <strong>two
       firms</strong>, the Q-learning algorithm achieves a profit gain tightly consistent with the
@@ -753,6 +877,8 @@
       wide (IQR spanning roughly 0.75–0.96), reflecting the sensitivity of learned strategies to
       initial conditions and exploration paths.
     </p>
+    <p class="zh">结果证实并延伸了 Calvano et al. 简要的稳健性发现。在两家企业条件下，Q 学习算法的利润增益与论文报告的 Δ≈85% 高度一致，验证了复现的准确性。各模拟之间的分布较宽（四分位距约 0.75–0.96），反映了学习策略对初始条件和探索路径的敏感性。</p>
+
     <p class="ext-ext-body">
       Expanding to <strong>three firms</strong> produces a meaningful drop in average collusion, as
       a larger state space (15³ = 3,375 per-firm states vs. 15² = 225 in the duopoly) means each
@@ -760,6 +886,8 @@
       sessions achieving near-monopoly profits and others closer to competitive outcomes — suggesting
       high sensitivity to initial exploration paths in the higher-dimensional learning problem.
     </p>
+    <p class="zh">扩展至三家企业导致平均合谋水平出现有意义的下降，因为更大的状态空间（每家企业 15³=3,375 个状态，对比双头垄断的 15²=225 个）意味着在相同 β 下每个单元格获得的更新次数更少。分布显著扩宽，部分模拟接近垄断利润，另一些则接近竞争结果——表明在更高维度的学习问题中高度依赖初始探索路径。</p>
+
     <p class="ext-ext-body">
       The <strong>four-firm</strong> case shows further decline but remains well above the competitive
       benchmark in most sessions. This contrasts sharply with human experimental results, where tacit
@@ -767,6 +895,7 @@
       do not suffer from the cognitive and strategic complexity that derails human coordination in
       large groups. Punishment strategies remain learnable even with n = 4.
     </p>
+    <p class="zh">四家企业的情形显示合谋进一步下降，但在大多数模拟中仍远高于竞争基准。这与人类实验结果形成鲜明对比，后者发现"在四家及以上卖家时几乎从不观察到默契合谋"。关键差异在于：算法不会因认知复杂性和策略博弈困难而在大群体中协调失败。即使 n=4，惩罚策略依然可以被学习到。</p>
 
     <div class="pull">
       <div class="pull-label">Antitrust Implication</div>
@@ -774,6 +903,7 @@
       threshold where human tacit collusion breaks down — Q-learning algorithms maintain significant
       supra-competitive pricing. Antitrust analysis cannot treat large-n markets as safe from
       algorithmic coordination risk.</p>
+      <p class="zh">算法合谋并不需要双头垄断。即使在四家企业的市场中——远超人类默契合谋崩溃的临界值——Q 学习算法仍能维持显著的超竞争定价。反垄断分析不能将大 n 市场视为免疫于算法协调风险的安全地带。</p>
     </div>
   </div>
 
@@ -781,20 +911,21 @@
   <div class="section">
     <div class="section-num">09</div>
     <h2 class="section-title">Equation Reference</h2>
+    <p class="zh">公式参考</p>
     <div class="tbl-wrap">
       <table class="eq-ref">
         <thead>
           <tr><th>Equation</th><th>Formula</th><th>Role</th></tr>
         </thead>
         <tbody>
-          <tr><td>Objective</td><td>E[Σ δᵗ πₜ]</td><td>Discounted reward maximization</td></tr>
-          <tr><td>Bellman</td><td>V(s) = max_a {E[π|s,a] + δ E[V(s')]}</td><td>Value function recursion</td></tr>
-          <tr><td>Q-function</td><td>Q(s,a) = E(π|s,a) + δ E[max_a' Q(s',a')]</td><td>Action-value definition</td></tr>
-          <tr><td>Update rule</td><td>Q(s,a) ← (1−α)Q(s,a) + α[πₜ + δ max_a' Q(s',a')]</td><td>Online learning</td></tr>
-          <tr><td>Logit demand</td><td>qᵢ = exp((aᵢ−pᵢ)/μ) / [Σ exp((aⱼ−pⱼ)/μ) + exp(a₀/μ)]</td><td>Market demand</td></tr>
-          <tr><td>Exploration</td><td>εₜ = exp(−β t)</td><td>Decaying randomization</td></tr>
-          <tr><td>Q-init</td><td>Q₀(s,a) = Σ πᵢ(a,a₋ᵢ) / [(1−δ)|A|ⁿ⁻¹]</td><td>Neutral initialization</td></tr>
-          <tr><td>Profit gain</td><td>Δ = (π − πᴺ) / (πᴹ − πᴺ)</td><td>Collusion intensity [0,1]</td></tr>
+          <tr><td>Objective</td><td>\(\mathbb{E}[\sum_t \delta^t \pi_t]\)</td><td>Discounted reward maximization</td></tr>
+          <tr><td>Bellman</td><td>\(V(s)=\max_a\{\mathbb{E}[\pi|s,a]+\delta\,\mathbb{E}[V(s')]\}\)</td><td>Value function recursion</td></tr>
+          <tr><td>Q-function</td><td>\(Q(s,a)=\mathbb{E}(\pi|s,a)+\delta\,\mathbb{E}[\max_{a'}Q(s',a')]\)</td><td>Action-value definition</td></tr>
+          <tr><td>Update rule</td><td>\(Q(s,a)\leftarrow(1-\alpha)Q(s,a)+\alpha[\pi_t+\delta\max_{a'}Q(s',a')]\)</td><td>Online learning</td></tr>
+          <tr><td>Logit demand</td><td>\(q_i=\exp((a_i-p_i)/\mu)/[\sum_j\exp((a_j-p_j)/\mu)+\exp(a_0/\mu)]\)</td><td>Market demand</td></tr>
+          <tr><td>Exploration</td><td>\(\varepsilon_t=e^{-\beta t}\)</td><td>Decaying randomization</td></tr>
+          <tr><td>Q-init</td><td>\(Q_0(s,a)=\sum\pi_i(a,a_{-i})/[(1-\delta)|A|^{n-1}]\)</td><td>Neutral initialization</td></tr>
+          <tr><td>Profit gain</td><td>\(\Delta=(\pi-\pi^N)/(\pi^M-\pi^N)\)</td><td>Collusion intensity [0,1]</td></tr>
         </tbody>
       </table>
     </div>
@@ -805,6 +936,7 @@
       Explainer by Hongrui Zhu &nbsp;·&nbsp; Based on Calvano, Calzolari, Denicolo &amp; Pastorello (2020, AER)
       &nbsp;·&nbsp; Extension: original replication study
     </p>
+    <p class="zh footer-text" style="margin-top:4px;">解读作者：朱宏睿 &nbsp;·&nbsp; 基于 Calvano, Calzolari, Denicolo &amp; Pastorello（2020, AER）&nbsp;·&nbsp; 延伸研究：原创复现</p>
   </footer>
 
 </div><!-- /page -->
