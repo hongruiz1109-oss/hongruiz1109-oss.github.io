@@ -31,6 +31,35 @@ Traditional discrete choice models fail to capture consumer preferences when fac
 
 ## 📊 Data Visualization
 
+### 📡 LLM Market Dynamics on OpenRouter
+
+A longitudinal panel dataset tracking daily API usage for **400 large language models** on OpenRouter, spanning **July 2024 – February 2026**, merged with Artificial Analysis benchmark scores.
+
+| | |
+|---|---|
+| 📦 Data sources | OpenRouter Wayback Machine Archives + Artificial Analysis |
+| 🤖 Models tracked | 400 models across 57 creators |
+| 📅 Period | 19 months (Jul 2024 – Feb 2026) |
+| 🔢 Total requests | 38 billion API calls |
+
+**Interactive charts:**
+
+- 📈 **Reasoning model adoption** — Monthly bar chart of reasoning model share (0% → 60% in 13 months)
+- 🏢 **Creator market share** — Stacked bar chart with Weekly / Monthly granularity toggle
+- 📉 **Market concentration (HHI)** — Line chart with Daily / Weekly / Monthly granularity toggle
+- 🧠 **Intelligence vs. Usage** — 4-quadrant scatter (median crosshair); Popular & Smart / Niche
+- 💰 **Price vs. Intelligence** — 4-quadrant scatter (log-scale price); Premium / Best Value / Budget
+
+```
+openrouter.html                    # interactive data page
+assets/js/openrouter_data.js       # auto-generated data (169 KB)
+openrouter/research/
+├── generate_openrouter_viz.py     # aggregates panel_final.csv → openrouter_data.js
+└── data/processed/panel_final.csv # cleaned daily panel
+```
+
+---
+
 ### 🔭 半导体全球价值链 · Semiconductor Global Value Chain
 
 Interactive visualization of quarterly bilateral semiconductor trade flows across **40+ countries**, **2020–2024**.
@@ -68,9 +97,12 @@ semiconductor/
 
 ```
 /
-├── 📄 index.html            # main portfolio page
-├── 🖼️  assets/              # thumbnail images (fig1–fig4)
-└── 📁 semiconductor/        # GVC visualization pages
+├── 📄 index.html               # main portfolio page
+├── 📄 openrouter.html          # LLM Market Dynamics interactive page
+├── 🖼️  assets/
+│   ├── js/openrouter_data.js   # auto-generated chart data
+│   └── img/                    # thumbnail images
+└── 📁 semiconductor/           # GVC visualization pages
 ```
 
 ---
