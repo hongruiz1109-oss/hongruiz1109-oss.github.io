@@ -494,7 +494,7 @@ document.addEventListener('DOMContentLoaded', function () {
     })();
 
     // ── Chart 2: Creator market share ──
-    (function () {
+    (function () { try {
       var creatorOrder = ['google', 'openai', 'meta-llama', 'deepseek', 'qwen', 'mistralai', 'x-ai', 'anthropic', 'Other'];
       var traces = [];
       var labelArrays = []; // store per-trace label text for toggle
@@ -552,10 +552,10 @@ document.addEventListener('DOMContentLoaded', function () {
       document.getElementById('btn-creator').onclick = function () {
         toggleBarLabels('chart-creator', 'btn-creator', _creatorLabels);
       };
-    })();
+    } catch(e) { console.error('Chart 2 error:', e); } })();
 
     // ── Chart 3: HHI over time ──
-    (function () {
+    (function () { try {
       var months = D.hhi_monthly.map(function (d) { return d.month; });
       var hhi = D.hhi_monthly.map(function (d) { return d.hhi; });
 
@@ -619,10 +619,10 @@ document.addEventListener('DOMContentLoaded', function () {
       });
 
       Plotly.newPlot('chart-hhi', [trace], layout, cfg);
-    })();
+    } catch(e) { console.error('Chart 3 error:', e); } })();
 
     // ── Chart 4: Top models horizontal bar ──
-    (function () {
+    (function () { try {
       var models = D.top_models.slice(0, 20);
       // Sort ascending so top model appears at top of horizontal bar
       models = models.slice().sort(function (a, b) { return a.total_count - b.total_count; });
@@ -675,10 +675,10 @@ document.addEventListener('DOMContentLoaded', function () {
       });
 
       Plotly.newPlot('chart-topmodels', [trace], layout, cfg);
-    })();
+    } catch(e) { console.error('Chart 4 error:', e); } })();
 
     // ── Chart 5: Performance (Intelligence Index) vs Usage ──
-    (function () {
+    (function () { try {
       var creatorOrder = ['google', 'openai', 'meta-llama', 'deepseek', 'qwen', 'mistralai', 'x-ai', 'anthropic', 'Other'];
       var byCreator = {};
 
@@ -736,7 +736,7 @@ document.addEventListener('DOMContentLoaded', function () {
       document.getElementById('btn-perf').onclick = function () {
         toggleScatterLabels('chart-perf', 'btn-perf');
       };
-    })();
+    } catch(e) { console.error('Chart 5 error:', e); } })();
 
     // ── Chart 6: Price vs Intelligence ──
     (function () {
@@ -812,7 +812,7 @@ document.addEventListener('DOMContentLoaded', function () {
       document.getElementById('btn-price').onclick = function () {
         toggleScatterLabels('chart-price', 'btn-price');
       };
-    })();
+    } catch(e) { console.error('Chart 6 error:', e); } })();
   }
 
 });
