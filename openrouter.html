@@ -176,6 +176,15 @@
       .chart-half-grid { grid-template-columns: 1fr; }
     }
 
+    .chart-toggle-row { display: flex; justify-content: flex-end; margin-bottom: 4px; margin-top: 24px; }
+    .chart-label-btn {
+      font-family: var(--sans); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--ink-faint); background: transparent; border: 1px solid var(--border-lt);
+      padding: 3px 10px; cursor: pointer; transition: all 0.15s; border-radius: 2px;
+    }
+    .chart-label-btn:hover { color: var(--brown-mid); border-color: var(--brown-mid); }
+    .chart-label-btn.active { color: var(--brown); border-color: var(--brown-mid); background: var(--cream-dark); }
+
     @media (max-width: 640px) {
       .page { padding: 0 20px 60px; }
       .stat-grid { grid-template-columns: 1fr 1fr; }
@@ -290,7 +299,8 @@
       谷歌凭借面向高吞吐应用的低价 Gemini Flash 系列在请求量上占据主导。Anthropic 尽管能力评分最高，请求量却排名第八——这是竞争市场中高端定位策略的典型体现。2025年2月和12月的集中度下降，分别与 DeepSeek R1 发布以及前沿能力广泛商品化相吻合。
     </p>
 
-    <div class="chart-full" id="chart-creator"></div>
+    <div class="chart-toggle-row"><button class="chart-label-btn" id="btn-creator">Labels</button></div>
+    <div class="chart-full" id="chart-creator" style="margin-top:0;"></div>
 
     <div class="chart-full" id="chart-hhi"></div>
     <div class="chart-full" id="chart-topmodels"></div>
@@ -313,8 +323,10 @@
       将模型能力（Artificial Analysis 智能指数）与采用率进行映射，揭示出清晰的市场分层：高流量模型集中在能力谱系的低端，定价极低；前沿模型尽管基准测试表现卓越，请求量却少得多。智能指数与对数使用量之间呈负相关——市场系统性地偏好成本效率而非原始能力。
     </p>
 
-    <div class="chart-full" id="chart-perf"></div>
-    <div class="chart-full" id="chart-price"></div>
+    <div class="chart-toggle-row"><button class="chart-label-btn" id="btn-perf">Labels</button></div>
+    <div class="chart-full" id="chart-perf" style="margin-top:0;"></div>
+    <div class="chart-toggle-row"><button class="chart-label-btn" id="btn-price">Labels</button></div>
+    <div class="chart-full" id="chart-price" style="margin-top:0;"></div>
   </div>
 
   <!-- ── Section 04 ── -->
@@ -368,6 +380,37 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   init();
+
+  function toggleBarLabels(chartId, btnId, labelArrays) {
+    var btn = document.getElementById(btnId);
+    var isActive = btn.classList.contains('active');
+    var gd = document.getElementById(chartId);
+    if (!gd || !gd.data) return;
+    var indices = gd.data.map(function (_, i) { return i; });
+    if (isActive) {
+      var empty = gd.data.map(function (t) { return t.x.map(function () { return ''; }); });
+      Plotly.restyle(chartId, { text: empty }, indices);
+      btn.classList.remove('active');
+    } else {
+      Plotly.restyle(chartId, { text: labelArrays }, indices);
+      btn.classList.add('active');
+    }
+  }
+
+  function toggleScatterLabels(chartId, btnId) {
+    var btn = document.getElementById(btnId);
+    var isActive = btn.classList.contains('active');
+    var gd = document.getElementById(chartId);
+    if (!gd || !gd.data) return;
+    var indices = gd.data.map(function (_, i) { return i; });
+    if (isActive) {
+      Plotly.restyle(chartId, { mode: 'markers' }, indices);
+      btn.classList.remove('active');
+    } else {
+      Plotly.restyle(chartId, { mode: 'markers+text' }, indices);
+      btn.classList.add('active');
+    }
+  }
 
   function renderCharts() {
     var D = OPENROUTER_DATA;
@@ -454,12 +497,14 @@ document.addEventListener('DOMContentLoaded', function () {
     (function () {
       var creatorOrder = ['google', 'openai', 'meta-llama', 'deepseek', 'qwen', 'mistralai', 'x-ai', 'anthropic', 'Other'];
       var traces = [];
+      var labelArrays = []; // store per-trace label text for toggle
 
       creatorOrder.forEach(function (creator) {
         if (!D.monthly_creator[creator]) return;
         var data = D.monthly_creator[creator];
         var xVals = data.map(function (d) { return d.month; });
         var yVals = data.map(function (d) { return d.share; });
+        labelArrays.push(yVals.map(function (v) { return v >= 5 ? v.toFixed(0) + '%' : ''; }));
 
         traces.push({
           x: xVals,
@@ -467,7 +512,7 @@ document.addEventListener('DOMContentLoaded', function () {
           type: 'bar',
           name: creatorLabels[creator] || creator,
           marker: { color: creatorColors[creator] || '#CFC6B4' },
-          text: yVals.map(function (v) { return v >= 5 ? v.toFixed(0) + '%' : ''; }),
+          text: yVals.map(function () { return ''; }),
           textposition: 'inside',
           textfont: { size: 9, color: 'rgba(255,255,255,0.9)' },
           insidetextanchor: 'middle',
@@ -503,6 +548,10 @@ document.addEventListener('DOMContentLoaded', function () {
       });
 
       Plotly.newPlot('chart-creator', traces, layout, cfg);
+      var _creatorLabels = labelArrays;
+      document.getElementById('btn-creator').onclick = function () {
+        toggleBarLabels('chart-creator', 'btn-creator', _creatorLabels);
+      };
     })();
 
     // ── Chart 3: HHI over time ──
@@ -651,7 +700,7 @@ document.addEventListener('DOMContentLoaded', function () {
           x: pts.map(function (d) { return d.intelligence_index; }),
           y: pts.map(function (d) { return d.log_count; }),
           type: 'scatter',
-          mode: 'markers+text',
+          mode: 'markers',
           name: creatorLabels[creator] || creator,
           marker: { color: creatorColors[creator] || '#CFC6B4', size: 7, opacity: 0.8 },
           text: pts.map(function (d) {
@@ -661,8 +710,8 @@ document.addEventListener('DOMContentLoaded', function () {
           }),
           textposition: 'top center',
           textfont: { size: 8, color: '#4A3D30' },
-          customdata: pts.map(function (d) { return [d.intelligence_index, d.total_count]; }),
-          hovertemplate: '<b>%{text}</b><br>Intelligence: %{customdata[0]:.1f}<br>Requests: %{customdata[1]:,}<extra></extra>'
+          customdata: pts.map(function (d) { return [d.display_name || d.model_id, d.intelligence_index, d.total_count]; }),
+          hovertemplate: '<b>%{customdata[0]}</b><br>Intelligence: %{customdata[1]:.1f}<br>Requests: %{customdata[2]:,}<extra></extra>'
         });
       });
 
@@ -684,6 +733,9 @@ document.addEventListener('DOMContentLoaded', function () {
       });
 
       Plotly.newPlot('chart-perf', traces, layout, cfg);
+      document.getElementById('btn-perf').onclick = function () {
+        toggleScatterLabels('chart-perf', 'btn-perf');
+      };
     })();
 
     // ── Chart 6: Price vs Intelligence ──
@@ -719,7 +771,7 @@ document.addEventListener('DOMContentLoaded', function () {
           x: pts.map(function (d) { return d.intelligence_index; }),
           y: pts.map(function (d) { return d.price_blended; }),
           type: 'scatter',
-          mode: 'markers+text',
+          mode: 'markers',
           name: creatorLabels[creator] || creator,
           marker: {
             color: creatorColors[creator] || '#CFC6B4',
@@ -733,8 +785,8 @@ document.addEventListener('DOMContentLoaded', function () {
           }),
           textposition: 'top center',
           textfont: { size: 8, color: '#4A3D30' },
-          customdata: pts.map(function (d) { return [d.intelligence_index, d.price_blended, d.total_count]; }),
-          hovertemplate: '<b>%{text}</b><br>Intelligence: %{customdata[0]:.1f}<br>Price: $%{customdata[1]:.3f}/M tokens<br>Requests: %{customdata[2]:,}<extra></extra>'
+          customdata: pts.map(function (d) { return [d.display_name || d.model_id, d.intelligence_index, d.price_blended, d.total_count]; }),
+          hovertemplate: '<b>%{customdata[0]}</b><br>Intelligence: %{customdata[1]:.1f}<br>Price: $%{customdata[2]:.3f}/M tokens<br>Requests: %{customdata[3]:,}<extra></extra>'
         });
       });
 
@@ -757,6 +809,9 @@ document.addEventListener('DOMContentLoaded', function () {
       });
 
       Plotly.newPlot('chart-price', traces, layout, cfg);
+      document.getElementById('btn-price').onclick = function () {
+        toggleScatterLabels('chart-price', 'btn-price');
+      };
     })();
   }
 
