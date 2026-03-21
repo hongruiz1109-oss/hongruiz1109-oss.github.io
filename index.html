@@ -309,19 +309,17 @@
     .control-hint { font-size: 12px; font-weight: 300; color: var(--ink-faint); margin-top: 7px; line-height: 1.5; }
     .lab-params-panel .control-hint { font-size: 11px; margin-top: 3px; line-height: 1.4; }
     .lab-params-panel .lab-btn { margin-top: 5px; padding: 7px 0; }
-    .lab-params-panel .lab-stats { margin-top: 8px; padding-top: 8px; }
-    .lab-params-panel .lab-stat { padding: 2px 0; }
     #simulation-chart { padding: 8px; height: 480px; }
-    .lab-insight {
-      grid-column: 1 / -1; padding: 26px 30px;
-      border-top: 1px solid var(--border); background: var(--cream);
+    .lab-insight-inline {
+      border-top: 1px solid var(--border-light);
+      margin-top: 10px; padding-top: 10px;
     }
     .lab-insight-title {
-      font-size: 12px; font-weight: 400; letter-spacing: 0.15em;
-      text-transform: uppercase; color: var(--ink-faint); margin-bottom: 12px;
+      font-size: 11px; font-weight: 400; letter-spacing: 0.15em;
+      text-transform: uppercase; color: var(--ink-faint); margin-bottom: 8px;
     }
-    .lab-insight-text { font-size: 16px; font-weight: 400; color: var(--ink-mid); line-height: 1.8; }
-    .lab-insight-text strong { color: var(--ink); }
+    .lab-insight-text { font-size: 12px; font-weight: 300; color: var(--ink-mid); line-height: 1.6; }
+    .lab-insight-text strong { color: var(--ink); font-weight: 400; }
 
     /* ── Portfolio ── */
     .project-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border-light); border: 1px solid var(--border-light); }
@@ -868,6 +866,13 @@
             <span class="lab-preset-vals">n=2 · α=0.05 · δ=0.80 — near-competitive<span class="t-zh-i"> · 接近竞争均衡</span></span>
           </button>
         </div>
+        <div class="lab-stats">
+          <div class="lab-stat"><span class="lab-stat-label">Iteration</span><span class="lab-stat-val" id="stat-t">—</span></div>
+          <div class="lab-stat"><span class="lab-stat-label">Exploration ε</span><span class="lab-stat-val" id="stat-eps">1.0000</span></div>
+          <div class="lab-stat"><span class="lab-stat-label">Avg. Price</span><span class="lab-stat-val" id="stat-price">—</span></div>
+          <div class="lab-stat"><span class="lab-stat-label">Profit Gain Δ</span><span class="lab-stat-val" id="stat-delta">—</span></div>
+          <div class="lab-stat"><span class="lab-stat-label">Status</span><span class="lab-stat-val" id="stat-status">Ready</span></div>
+        </div>
       </div>
       <div id="simulation-chart" style="min-height:300px;"></div>
       <div class="lab-params-panel">
@@ -889,21 +894,14 @@
         </div>
         <button id="btn-run" class="lab-btn lab-btn-run" onclick="labRun()">Run</button>
         <button id="btn-reset" class="lab-btn" onclick="labReset()">Reset</button>
-        <div class="lab-stats">
-          <div class="lab-stat"><span class="lab-stat-label">Iteration</span><span class="lab-stat-val" id="stat-t">—</span></div>
-          <div class="lab-stat"><span class="lab-stat-label">Exploration ε</span><span class="lab-stat-val" id="stat-eps">1.0000</span></div>
-          <div class="lab-stat"><span class="lab-stat-label">Avg. Price</span><span class="lab-stat-val" id="stat-price">—</span></div>
-          <div class="lab-stat"><span class="lab-stat-label">Profit Gain Δ</span><span class="lab-stat-val" id="stat-delta">—</span></div>
-          <div class="lab-stat"><span class="lab-stat-label">Status</span><span class="lab-stat-val" id="stat-status">Ready</span></div>
-        </div>
-      </div>
-      <div class="lab-insight">
-        <div class="lab-insight-title">Economic Intuition</div>
-        <div class="lab-insight-text" id="lab-insight-text">
-          Set parameters and click <strong>Run</strong>. Early on, agents explore randomly —
-          prices fluctuate widely. As exploration decays (ε → 0), each agent's Q-values converge
-          and prices stabilise. With high δ and few firms, the equilibrium price sits well above
-          the <strong>Nash competitive level</strong>, constituting tacit collusion with no explicit coordination.
+        <div class="lab-insight-inline">
+          <div class="lab-insight-title">Economic Intuition</div>
+          <div class="lab-insight-text" id="lab-insight-text">
+            Set parameters and click <strong>Run</strong>. Early on, agents explore randomly —
+            prices fluctuate widely. As exploration decays (ε → 0), Q-values converge
+            and prices stabilise. With high δ and few firms, the equilibrium sits well above
+            the <strong>Nash level</strong> — tacit collusion with no explicit coordination.
+          </div>
         </div>
       </div>
     </div>
