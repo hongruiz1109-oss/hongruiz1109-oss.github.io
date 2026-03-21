@@ -282,18 +282,21 @@
     /* ── Agent Lab ── */
     #lab { background: var(--cream-dark); }
     .lab-intro { font-size: 18px; font-weight: 400; color: var(--ink-mid); line-height: 1.85; margin-bottom: 36px; max-width: 620px; }
-    .lab-layout { display: grid; grid-template-columns: 200px 440px 220px; gap: 0; border: 1px solid var(--border); }
+    .lab-layout { display: grid; grid-template-columns: 200px 480px 220px; gap: 0; border: 1px solid var(--border); }
     .lab-presets-panel { padding: 28px 20px; border-right: 1px solid var(--border); background: var(--cream); }
-    .lab-params-panel { padding: 28px 20px; border-left: 1px solid var(--border); background: var(--cream); }
+    .lab-params-panel { padding: 16px 16px; border-left: 1px solid var(--border); background: var(--cream); }
     .lab-controls-title {
       font-size: 12px; font-weight: 400; letter-spacing: 0.15em;
       text-transform: uppercase; color: var(--ink-faint); margin-bottom: 28px;
     }
+    .lab-params-panel .lab-controls-title { margin-bottom: 12px; }
     .control-group { margin-bottom: 24px; }
+    .lab-params-panel .control-group { margin-bottom: 11px; }
     .control-label {
       font-size: 13px; font-weight: 400; letter-spacing: 0.04em;
       color: var(--ink-mid); display: flex; justify-content: space-between; margin-bottom: 10px;
     }
+    .lab-params-panel .control-label { margin-bottom: 5px; font-size: 12px; }
     .control-val { color: var(--brown); }
     input[type="range"] {
       width: 100%; -webkit-appearance: none; appearance: none;
@@ -304,7 +307,11 @@
       background: var(--brown); cursor: pointer;
     }
     .control-hint { font-size: 12px; font-weight: 300; color: var(--ink-faint); margin-top: 7px; line-height: 1.5; }
-    #simulation-chart { padding: 8px; height: 440px; }
+    .lab-params-panel .control-hint { font-size: 11px; margin-top: 3px; line-height: 1.4; }
+    .lab-params-panel .lab-btn { margin-top: 5px; padding: 7px 0; }
+    .lab-params-panel .lab-stats { margin-top: 8px; padding-top: 8px; }
+    .lab-params-panel .lab-stat { padding: 2px 0; }
+    #simulation-chart { padding: 8px; height: 480px; }
     .lab-insight {
       grid-column: 1 / -1; padding: 26px 30px;
       border-top: 1px solid var(--border); background: var(--cream);
@@ -1191,7 +1198,7 @@ function labInitChart(){
     title:{text:`Price Dynamics — n = ${_sim.n} firms`,font:{color:'#1C1812',size:14,family:"'EB Garamond',serif"},x:0.04},
     xaxis:{title:'Iteration (×1k)',gridcolor:'#DDD6C8',zerolinecolor:'#DDD6C8',color:'#6B5E4E'},
     yaxis:{title:'Price',gridcolor:'#DDD6C8',zerolinecolor:'#DDD6C8',color:'#6B5E4E',range:[_sim.pNash-0.15,_sim.pMono+0.15]},
-    legend:{bgcolor:'rgba(0,0,0,0)',font:{size:11}},
+    showlegend: false,
     margin:{t:44,r:20,b:44,l:50},hovermode:'x unified',
   },{responsive:true,displayModeBar:false});
 }
