@@ -739,7 +739,7 @@ document.addEventListener('DOMContentLoaded', function () {
     } catch(e) { console.error('Chart 5 error:', e); } })();
 
     // ── Chart 6: Price vs Intelligence ──
-    (function () {
+    (function () { try {
       var creatorOrder = ['google', 'openai', 'meta-llama', 'deepseek', 'qwen', 'mistralai', 'x-ai', 'anthropic', 'Other'];
       var byCreator = {};
 
