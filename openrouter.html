@@ -176,7 +176,7 @@
       .chart-half-grid { grid-template-columns: 1fr; }
     }
 
-    .chart-toggle-row { display: flex; justify-content: flex-end; margin-bottom: 4px; margin-top: 24px; }
+    .chart-toggle-row { display: flex; justify-content: flex-end; align-items: center; gap: 8px; margin-bottom: 4px; margin-top: 24px; }
     .chart-label-btn {
       font-family: var(--sans); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;
       color: var(--ink-faint); background: transparent; border: 1px solid var(--border-lt);
@@ -184,6 +184,16 @@
     }
     .chart-label-btn:hover { color: var(--brown-mid); border-color: var(--brown-mid); }
     .chart-label-btn.active { color: var(--brown); border-color: var(--brown-mid); background: var(--cream-dark); }
+    .gran-group { display: inline-flex; }
+    .gran-btn {
+      font-family: var(--sans); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--ink-faint); background: transparent; border: 1px solid var(--border-lt);
+      padding: 3px 10px; cursor: pointer; transition: all 0.15s; margin-left: -1px; position: relative;
+    }
+    .gran-btn:first-child { border-radius: 2px 0 0 2px; margin-left: 0; }
+    .gran-btn:last-child { border-radius: 0 2px 2px 0; }
+    .gran-btn:hover { color: var(--brown-mid); border-color: var(--brown-mid); z-index: 1; }
+    .gran-btn.active { color: var(--brown); border-color: var(--brown-mid); background: var(--cream-dark); z-index: 1; }
 
     @media (max-width: 640px) {
       .page { padding: 0 20px 60px; }
@@ -299,10 +309,23 @@
       谷歌凭借面向高吞吐应用的低价 Gemini Flash 系列在请求量上占据主导。Anthropic 尽管能力评分最高，请求量却排名第八——这是竞争市场中高端定位策略的典型体现。2025年2月和12月的集中度下降，分别与 DeepSeek R1 发布以及前沿能力广泛商品化相吻合。
     </p>
 
-    <div class="chart-toggle-row"><button class="chart-label-btn" id="btn-creator">Labels</button></div>
+    <div class="chart-toggle-row">
+      <div class="gran-group">
+        <button class="gran-btn active" id="btn-creator-weekly">Weekly</button>
+        <button class="gran-btn" id="btn-creator-monthly">Monthly</button>
+      </div>
+      <button class="chart-label-btn" id="btn-creator">Labels</button>
+    </div>
     <div class="chart-full" id="chart-creator" style="margin-top:0;"></div>
 
-    <div class="chart-full" id="chart-hhi"></div>
+    <div class="chart-toggle-row">
+      <div class="gran-group">
+        <button class="gran-btn" id="btn-hhi-daily">Daily</button>
+        <button class="gran-btn" id="btn-hhi-weekly">Weekly</button>
+        <button class="gran-btn active" id="btn-hhi-monthly">Monthly</button>
+      </div>
+    </div>
+    <div class="chart-full" id="chart-hhi" style="margin-top:0;"></div>
     <div class="chart-full" id="chart-topmodels"></div>
   </div>
 
@@ -496,129 +519,121 @@ document.addEventListener('DOMContentLoaded', function () {
     // ── Chart 2: Creator market share ──
     (function () { try {
       var creatorOrder = ['google', 'openai', 'meta-llama', 'deepseek', 'qwen', 'mistralai', 'x-ai', 'anthropic', 'Other'];
-      var traces = [];
-      var labelArrays = []; // store per-trace label text for toggle
 
-      creatorOrder.forEach(function (creator) {
-        if (!D.weekly_creator[creator]) return;
-        var data = D.weekly_creator[creator];
-        var xVals = data.map(function (d) { return d.week; });
-        var yVals = data.map(function (d) { return d.share; });
-        labelArrays.push(yVals.map(function (v) { return v >= 5 ? v.toFixed(0) + '%' : ''; }));
-
-        traces.push({
-          x: xVals,
-          y: yVals,
-          type: 'bar',
-          name: creatorLabels[creator] || creator,
-          marker: { color: creatorColors[creator] || '#CFC6B4' },
-          text: yVals.map(function () { return ''; }),
-          textposition: 'inside',
-          textfont: { size: 9, color: 'rgba(255,255,255,0.9)' },
-          insidetextanchor: 'middle',
-          hovertemplate: (creatorLabels[creator] || creator) + '<br>%{x}: %{y:.1f}%<extra></extra>'
-        });
-      });
-
-      var layout = Object.assign({}, base, {
-        title: { text: 'Weekly Creator Market Share (% of Total Requests)', font: { size: 13, family: "'EB Garamond', Georgia, serif", color: '#3a2a1a' }, x: 0.01, xanchor: 'left' },
+      var creatorLayout = Object.assign({}, base, {
+        title: { text: 'Creator Market Share (% of Total Requests)', font: { size: 13, family: "'EB Garamond', Georgia, serif", color: '#3a2a1a' }, x: 0.01, xanchor: 'left' },
         barmode: 'stack',
-        xaxis: {
-          title: '',
-          gridcolor: 'rgba(207,198,180,0.4)',
-          linecolor: 'rgba(207,198,180,0.6)',
-          tickangle: -30
-        },
-        yaxis: {
-          title: 'Market Share (%)',
-          gridcolor: 'rgba(207,198,180,0.4)',
-          linecolor: 'rgba(207,198,180,0.6)',
-          ticksuffix: '%',
-          range: [0, 100]
-        },
+        xaxis: { title: '', gridcolor: 'rgba(207,198,180,0.4)', linecolor: 'rgba(207,198,180,0.6)', tickangle: -30 },
+        yaxis: { title: 'Market Share (%)', gridcolor: 'rgba(207,198,180,0.4)', linecolor: 'rgba(207,198,180,0.6)', ticksuffix: '%', range: [0, 100] },
         showlegend: true,
-        legend: {
-          orientation: 'v',
-          x: 1.02, y: 1,
-          xanchor: 'left',
-          font: { size: 10 }
-        },
+        legend: { orientation: 'v', x: 1.02, y: 1, xanchor: 'left', font: { size: 10 } },
         bargap: 0.25,
         margin: { t: 50, r: 120, b: 50, l: 60 }
       });
 
-      Plotly.newPlot('chart-creator', traces, layout, cfg);
-      var _creatorLabels = labelArrays;
+      var _creatorLabelArrays = [];
+      var _creatorLabelsActive = false;
+
+      function buildCreatorTraces(granularity) {
+        var src = granularity === 'weekly' ? D.weekly_creator : D.monthly_creator;
+        var key = granularity === 'weekly' ? 'week' : 'month';
+        var traces = [], labels = [];
+        creatorOrder.forEach(function (creator) {
+          if (!src[creator]) return;
+          var items = src[creator];
+          var xVals = items.map(function (d) { return d[key]; });
+          var yVals = items.map(function (d) { return d.share; });
+          labels.push(yVals.map(function (v) { return v >= 5 ? v.toFixed(0) + '%' : ''; }));
+          traces.push({
+            x: xVals, y: yVals, type: 'bar',
+            name: creatorLabels[creator] || creator,
+            marker: { color: creatorColors[creator] || '#CFC6B4' },
+            text: yVals.map(function () { return ''; }),
+            textposition: 'inside', textfont: { size: 9, color: 'rgba(255,255,255,0.9)' }, insidetextanchor: 'middle',
+            hovertemplate: (creatorLabels[creator] || creator) + '<br>%{x}: %{y:.1f}%<extra></extra>'
+          });
+        });
+        return { traces: traces, labels: labels };
+      }
+
+      var init2 = buildCreatorTraces('weekly');
+      _creatorLabelArrays = init2.labels;
+      Plotly.newPlot('chart-creator', init2.traces, creatorLayout, cfg);
+
+      document.getElementById('btn-creator-weekly').onclick = function () {
+        document.getElementById('btn-creator-weekly').classList.add('active');
+        document.getElementById('btn-creator-monthly').classList.remove('active');
+        document.getElementById('btn-creator').classList.remove('active');
+        _creatorLabelsActive = false;
+        var built = buildCreatorTraces('weekly');
+        _creatorLabelArrays = built.labels;
+        Plotly.react('chart-creator', built.traces, creatorLayout);
+      };
+      document.getElementById('btn-creator-monthly').onclick = function () {
+        document.getElementById('btn-creator-monthly').classList.add('active');
+        document.getElementById('btn-creator-weekly').classList.remove('active');
+        document.getElementById('btn-creator').classList.remove('active');
+        _creatorLabelsActive = false;
+        var built = buildCreatorTraces('monthly');
+        _creatorLabelArrays = built.labels;
+        Plotly.react('chart-creator', built.traces, creatorLayout);
+      };
       document.getElementById('btn-creator').onclick = function () {
-        toggleBarLabels('chart-creator', 'btn-creator', _creatorLabels);
+        toggleBarLabels('chart-creator', 'btn-creator', _creatorLabelArrays);
       };
     } catch(e) { console.error('Chart 2 error:', e); } })();
 
     // ── Chart 3: HHI over time ──
     (function () { try {
-      var months = D.hhi_monthly.map(function (d) { return d.month; });
-      var hhi = D.hhi_monthly.map(function (d) { return d.hhi; });
-
-      var trace = {
-        x: months,
-        y: hhi,
-        type: 'scatter',
-        mode: 'lines',
-        line: { color: '#c06060', width: 2.5 },
-        name: 'HHI',
-        hovertemplate: '%{x}<br>HHI: %{y:,.0f}<extra></extra>'
+      var hhiSources = {
+        monthly: { data: D.hhi_monthly,  key: 'month' },
+        weekly:  { data: D.hhi_weekly,   key: 'week'  },
+        daily:   { data: D.hhi_daily,    key: 'date'  }
       };
 
-      var layout = Object.assign({}, base, {
-        title: { text: 'Market Concentration (HHI)', font: { size: 13, family: "'EB Garamond', Georgia, serif", color: '#3a2a1a' }, x: 0.01, xanchor: 'left' },
-        xaxis: {
-          title: '',
-          gridcolor: 'rgba(207,198,180,0.4)',
-          linecolor: 'rgba(207,198,180,0.6)',
-          tickangle: -30
-        },
-        yaxis: {
-          title: 'HHI',
-          gridcolor: 'rgba(207,198,180,0.4)',
-          linecolor: 'rgba(207,198,180,0.6)'
-        },
-        shapes: [
-          {
-            type: 'line', x0: months[0], x1: months[months.length - 1],
-            y0: 1500, y1: 1500,
-            line: { color: 'rgba(139,111,71,0.5)', width: 1, dash: 'dash' }
-          },
-          {
-            type: 'line', x0: months[0], x1: months[months.length - 1],
-            y0: 2500, y1: 2500,
-            line: { color: 'rgba(192,96,96,0.5)', width: 1, dash: 'dash' }
-          }
-        ],
-        annotations: [
-          {
-            x: months[0], y: 1500,
-            xref: 'x', yref: 'y',
-            text: 'Competitive (1500)',
-            showarrow: false,
-            xanchor: 'left',
-            font: { size: 9, color: '#8b6f47' },
-            yshift: 6
-          },
-          {
-            x: months[0], y: 2500,
-            xref: 'x', yref: 'y',
-            text: 'Concentrated (2500)',
-            showarrow: false,
-            xanchor: 'left',
-            font: { size: 9, color: '#c06060' },
-            yshift: 6
-          }
-        ],
-        showlegend: false,
-        margin: { t: 36, r: 16, b: 44, l: 56 }
-      });
+      function buildHHITrace(granularity) {
+        var src = hhiSources[granularity];
+        var xs = src.data.map(function (d) { return d[src.key]; });
+        var ys = src.data.map(function (d) { return d.hhi; });
+        return [{
+          x: xs, y: ys, type: 'scatter', mode: 'lines',
+          line: { color: '#c06060', width: granularity === 'daily' ? 1 : 2 },
+          name: 'HHI',
+          hovertemplate: '%{x}<br>HHI: %{y:,.0f}<extra></extra>'
+        }];
+      }
 
-      Plotly.newPlot('chart-hhi', [trace], layout, cfg);
+      function buildHHILayout(granularity) {
+        var src = hhiSources[granularity];
+        var xs = src.data.map(function (d) { return d[src.key]; });
+        var x0 = xs[0], x1 = xs[xs.length - 1];
+        return Object.assign({}, base, {
+          title: { text: 'Market Concentration (HHI)', font: { size: 13, family: "'EB Garamond', Georgia, serif", color: '#3a2a1a' }, x: 0.01, xanchor: 'left' },
+          xaxis: { title: '', gridcolor: 'rgba(207,198,180,0.4)', linecolor: 'rgba(207,198,180,0.6)', tickangle: -30 },
+          yaxis: { title: 'HHI', gridcolor: 'rgba(207,198,180,0.4)', linecolor: 'rgba(207,198,180,0.6)' },
+          shapes: [
+            { type: 'line', x0: x0, x1: x1, y0: 1500, y1: 1500, line: { color: 'rgba(139,111,71,0.5)', width: 1, dash: 'dash' } },
+            { type: 'line', x0: x0, x1: x1, y0: 2500, y1: 2500, line: { color: 'rgba(192,96,96,0.5)', width: 1, dash: 'dash' } }
+          ],
+          annotations: [
+            { x: x0, y: 1500, xref: 'x', yref: 'y', text: 'Competitive (1500)', showarrow: false, xanchor: 'left', font: { size: 9, color: '#8b6f47' }, yshift: 6 },
+            { x: x0, y: 2500, xref: 'x', yref: 'y', text: 'Concentrated (2500)', showarrow: false, xanchor: 'left', font: { size: 9, color: '#c06060' }, yshift: 6 }
+          ],
+          showlegend: false,
+          margin: { t: 36, r: 16, b: 44, l: 56 }
+        });
+      }
+
+      Plotly.newPlot('chart-hhi', buildHHITrace('monthly'), buildHHILayout('monthly'), cfg);
+
+      ['daily', 'weekly', 'monthly'].forEach(function (gran) {
+        document.getElementById('btn-hhi-' + gran).onclick = function () {
+          ['daily', 'weekly', 'monthly'].forEach(function (g) {
+            document.getElementById('btn-hhi-' + g).classList.toggle('active', g === gran);
+          });
+          Plotly.react('chart-hhi', buildHHITrace(gran), buildHHILayout(gran));
+        };
+      });
     } catch(e) { console.error('Chart 3 error:', e); } })();
 
     // ── Chart 4: Top models horizontal bar ──
