@@ -415,11 +415,15 @@ document.addEventListener('DOMContentLoaded', function () {
       var trace = {
         x: months,
         y: pct,
-        type: 'scatter',
-        mode: 'lines',
-        fill: 'tozeroy',
-        fillcolor: 'rgba(139,111,71,0.15)',
-        line: { color: '#8b6f47', width: 2.5 },
+        type: 'bar',
+        marker: {
+          color: pct.map(function (v) { return 'rgba(139,111,71,' + (0.3 + v / 100 * 0.7).toFixed(2) + ')'; }),
+          line: { color: '#8b6f47', width: 0.5 }
+        },
+        text: pct.map(function (v) { return v >= 5 ? v.toFixed(1) + '%' : ''; }),
+        textposition: 'outside',
+        textfont: { size: 10, color: '#6B5440' },
+        cliponaxis: false,
         name: 'Reasoning Share (%)',
         hovertemplate: '%{x}<br>Reasoning: %{y:.1f}%<extra></extra>'
       };
@@ -434,23 +438,13 @@ document.addEventListener('DOMContentLoaded', function () {
         },
         yaxis: {
           title: 'Share (%)',
-          range: [0, 100],
+          range: [0, 110],
           gridcolor: 'rgba(207,198,180,0.4)',
           linecolor: 'rgba(207,198,180,0.6)',
           ticksuffix: '%'
         },
-        annotations: [{
-          x: lastMonth,
-          y: lastVal,
-          xref: 'x', yref: 'y',
-          text: lastVal.toFixed(1) + '%',
-          showarrow: true,
-          arrowhead: 2,
-          arrowcolor: '#8b6f47',
-          ax: 30, ay: -30,
-          font: { size: 12, color: '#8b6f47', family: "'IBM Plex Sans', sans-serif" }
-        }],
-        showlegend: false
+        showlegend: false,
+        bargap: 0.25
       });
 
       Plotly.newPlot('chart-reasoning', [trace], layout, cfg);
