@@ -500,9 +500,9 @@ document.addEventListener('DOMContentLoaded', function () {
       var labelArrays = []; // store per-trace label text for toggle
 
       creatorOrder.forEach(function (creator) {
-        if (!D.monthly_creator[creator]) return;
-        var data = D.monthly_creator[creator];
-        var xVals = data.map(function (d) { return d.month; });
+        if (!D.weekly_creator[creator]) return;
+        var data = D.weekly_creator[creator];
+        var xVals = data.map(function (d) { return d.week; });
         var yVals = data.map(function (d) { return d.share; });
         labelArrays.push(yVals.map(function (v) { return v >= 5 ? v.toFixed(0) + '%' : ''; }));
 
@@ -521,7 +521,7 @@ document.addEventListener('DOMContentLoaded', function () {
       });
 
       var layout = Object.assign({}, base, {
-        title: { text: 'Monthly Creator Market Share (% of Total Requests)', font: { size: 13, family: "'EB Garamond', Georgia, serif", color: '#3a2a1a' }, x: 0.01, xanchor: 'left' },
+        title: { text: 'Weekly Creator Market Share (% of Total Requests)', font: { size: 13, family: "'EB Garamond', Georgia, serif", color: '#3a2a1a' }, x: 0.01, xanchor: 'left' },
         barmode: 'stack',
         xaxis: {
           title: '',
