@@ -310,6 +310,38 @@
     .lab-params-panel .control-hint { font-size: 11px; margin-top: 3px; line-height: 1.4; }
     .lab-params-panel .lab-btn { margin-top: 5px; padding: 7px 0; }
     #simulation-chart { padding: 8px; height: 480px; }
+    /* ── Paper Explainer Card ── */
+    .lab-paper-card {
+      display: flex; align-items: center; gap: 16px;
+      max-width: 620px; margin-bottom: 28px;
+      padding: 14px 18px; border: 1px solid var(--border);
+      border-radius: 8px; background: var(--cream);
+      text-decoration: none; color: inherit;
+      transition: background 0.18s, border-color 0.18s, box-shadow 0.18s;
+    }
+    .lab-paper-card:hover {
+      background: var(--cream-dark); border-color: var(--brown-mid);
+      box-shadow: 0 3px 14px rgba(139,111,71,.10);
+    }
+    .lab-paper-icon {
+      flex-shrink: 0; width: 32px; height: 32px;
+      color: var(--brown-mid); opacity: 0.85;
+    }
+    .lab-paper-body { flex: 1; min-width: 0; }
+    .lab-paper-title {
+      font-family: var(--ff-serif); font-size: 15px;
+      color: var(--ink); line-height: 1.3; margin-bottom: 3px;
+    }
+    .lab-paper-sub {
+      font-size: 11.5px; color: var(--ink-faint);
+      letter-spacing: 0.03em; line-height: 1.4;
+    }
+    .lab-paper-arrow {
+      flex-shrink: 0; font-size: 15px; color: var(--brown-mid);
+      opacity: 0.7; transition: opacity 0.18s, transform 0.18s;
+    }
+    .lab-paper-card:hover .lab-paper-arrow { opacity: 1; transform: translate(2px, -2px); }
+
     .lab-insight {
       grid-column: 1 / -1; padding: 14px 24px;
       border-top: 1px solid var(--border); background: var(--cream);
@@ -845,6 +877,20 @@
       Adjust parameters and click <strong>Run</strong> to watch algorithms learn to collude without any explicit coordination.
       <span class="t-zh">完全忠实于 Calvano et al. (2020, <em>AER</em>) 的真实 Q-learning 智能体在浏览器中运行。调整参数后点击<strong>运行</strong>，观察算法如何在毫无显性协调的情况下学会默契合谋。</span>
     </p>
+    <a href="https://hongruiz1109-oss.github.io/calvano2020.html" target="_blank" rel="noopener" class="lab-paper-card fade-in">
+      <svg class="lab-paper-icon" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="6" y="3" width="16" height="22" rx="2"/>
+        <path d="M20 3v6h6"/>
+        <line x1="10" y1="13" x2="19" y2="13"/>
+        <line x1="10" y1="17" x2="19" y2="17"/>
+        <line x1="10" y1="21" x2="15" y2="21"/>
+      </svg>
+      <div class="lab-paper-body">
+        <div class="lab-paper-title">Calvano et al. (2020, <em>AER</em>) — Full Explainer</div>
+        <div class="lab-paper-sub">9 sections · equations · extension results</div>
+      </div>
+      <span class="lab-paper-arrow">↗</span>
+    </a>
     <div class="lab-layout fade-in">
       <div class="lab-presets-panel">
         <div class="lab-controls-title">Try a Scenario<span class="t-zh-i"> · 选择场景</span></div>
