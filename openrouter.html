@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LLM Market Dynamics on OpenRouter — Hongrui Zhu</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=IBM+Plex+Sans:wght@300;400;500&family=IBM+Plex+Mono:wght@400&display=swap" rel="stylesheet">
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+  <script src="assets/js/openrouter_data.js"></script>
+  <style>
+    :root {
+      --cream:      #F4EFE6;
+      --cream-dark: #EBE4D8;
+      --cream-deep: #E0D8C8;
+      --border:     #CFC6B4;
+      --border-lt:  #DDD6C8;
+      --ink:        #1C1812;
+      --ink-mid:    #2E251A;
+      --ink-light:  #4A3D30;
+      --ink-faint:  #6B5E4E;
+      --brown:      #3D2E1E;
+      --brown-mid:  #6B5440;
+      --brown-lt:   #9C7B5A;
+      --serif:      'EB Garamond', Georgia, serif;
+      --sans:       'IBM Plex Sans', 'Helvetica Neue', sans-serif;
+      --mono:       'IBM Plex Mono', monospace;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--cream);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-weight: 400;
+      line-height: 1.75;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: var(--brown-mid); text-decoration: none; border-bottom: 1px solid var(--border); padding-bottom: 1px; }
+    a:hover { color: var(--brown); border-color: var(--brown); }
+
+    /* ── Layout ── */
+    .page { max-width: 860px; margin: 0 auto; padding: 0 40px 80px; }
+
+    /* ── Back link ── */
+    .back {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase;
+      color: var(--ink-faint); border: none; padding: 0;
+      margin: 32px 0 0;
+    }
+    .back:hover { color: var(--brown); border: none; }
+
+    /* ── Hero ── */
+    .hero { padding: 44px 0 48px; border-bottom: 1px solid var(--border-lt); }
+    .hero-tag {
+      font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--brown-lt); margin-bottom: 18px;
+    }
+    h1.hero-title {
+      font-family: var(--serif); font-size: clamp(32px, 5vw, 50px);
+      font-weight: 400; line-height: 1.15; color: var(--ink);
+      margin-bottom: 16px; max-width: 720px;
+    }
+    h1.hero-title em { font-style: italic; color: var(--brown-mid); }
+    .hero-authors {
+      font-size: 15px; color: var(--ink-mid); margin-bottom: 6px;
+    }
+    .hero-pub {
+      font-size: 13px; color: var(--ink-faint); letter-spacing: 0.04em;
+      margin-bottom: 28px;
+    }
+    .hero-abstract {
+      font-family: var(--serif); font-size: 18px; color: var(--ink-mid);
+      line-height: 1.85; max-width: 680px;
+      border-left: 3px solid var(--border); padding-left: 20px;
+    }
+
+    /* ── Stat cards ── */
+    .stat-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 1px; background: var(--border-lt);
+      border: 1px solid var(--border-lt); margin: 40px 0;
+    }
+    .stat-card { background: var(--cream); padding: 22px 18px; }
+    .stat-val {
+      font-family: var(--serif); font-size: 34px; font-weight: 500;
+      color: var(--ink); line-height: 1;
+    }
+    .stat-label { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-faint); margin-top: 6px; }
+    .stat-sub { font-size: 12px; color: var(--brown-lt); margin-top: 4px; }
+
+    /* ── Section ── */
+    .section { padding: 52px 0; border-top: 1px solid var(--border-lt); }
+    .section-num {
+      font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--ink-faint); margin-bottom: 8px;
+    }
+    h2.section-title {
+      font-family: var(--serif); font-size: 32px; font-weight: 400;
+      color: var(--ink); margin-bottom: 24px; line-height: 1.2;
+    }
+    h3.sub-title {
+      font-family: var(--serif); font-size: 22px; font-weight: 400;
+      color: var(--ink); margin: 36px 0 14px; line-height: 1.3;
+    }
+    .body-text { font-size: 16px; color: var(--ink-mid); line-height: 1.85; }
+    .body-text + .body-text { margin-top: 16px; }
+    .body-text strong { color: var(--ink); }
+
+    /* ── Pull quote ── */
+    .pull {
+      background: var(--cream-dark);
+      border-left: 3px solid var(--brown-mid);
+      padding: 16px 22px; margin: 28px 0;
+      border-radius: 0 6px 6px 0;
+    }
+    .pull p {
+      font-family: var(--serif); font-size: 17px; color: var(--ink);
+      line-height: 1.7; margin: 0;
+    }
+    .pull-label {
+      font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--brown-lt); margin-bottom: 6px;
+    }
+
+    /* ── Tag ── */
+    .tag-row { display: flex; flex-wrap: wrap; gap: 6px; margin: 20px 0; }
+    .tag {
+      font-size: 11px; letter-spacing: 0.07em; text-transform: uppercase;
+      padding: 4px 12px; border: 1px solid var(--border);
+      color: var(--ink-light);
+    }
+
+    /* ── Finding box ── */
+    .finding {
+      border: 1px solid var(--border); padding: 24px 28px; margin: 28px 0;
+    }
+    .finding-label {
+      font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--ink-faint); margin-bottom: 10px;
+    }
+    .finding p {
+      font-family: var(--serif); font-size: 18px; color: var(--ink);
+      line-height: 1.7; margin: 0;
+    }
+
+    /* ── Footer ── */
+    footer { border-top: 1px solid var(--border-lt); padding: 28px 0; margin-top: 60px; }
+    .footer-text { font-size: 12px; color: var(--ink-faint); letter-spacing: 0.04em; }
+
+    /* ── Bilingual Chinese ── */
+    .zh {
+      font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      font-size: 13.5px;
+      color: var(--ink-faint);
+      line-height: 1.9;
+      margin-top: 5px;
+      margin-bottom: 0;
+      font-weight: 400;
+    }
+    h2.section-title + .zh { font-size: 15px; margin-bottom: 20px; }
+    h3.sub-title + .zh { margin-bottom: 10px; }
+    .zh + .body-text { margin-top: 16px; }
+    .stat-card .zh { font-size: 10.5px; margin-top: 3px; letter-spacing: 0; text-transform: none; }
+
+    /* ── Chart containers ── */
+    .chart-full { width: 100%; height: 360px; margin: 24px 0; background: var(--cream-dark); border: 1px solid var(--border-lt); border-radius: 4px; }
+    .chart-half-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 24px 0; }
+    .chart-half { height: 340px; background: var(--cream-dark); border: 1px solid var(--border-lt); border-radius: 4px; }
+
+    @media (max-width: 700px) {
+      .chart-half-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 640px) {
+      .page { padding: 0 20px 60px; }
+      .stat-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <a href="index.html" class="back">← Back to Portfolio &nbsp;<span class="zh" style="display:inline;font-size:12px;">← 返回作品集</span></a>
+
+  <!-- ── Hero ── -->
+  <div class="hero">
+    <div class="hero-tag">Original Dataset &nbsp;·&nbsp; OpenRouter × Artificial Analysis &nbsp;·&nbsp; Industrial Economics</div>
+    <p class="zh" style="font-size:11px;color:var(--brown-lt);margin-bottom:14px;">原创数据集 · 产业经济学</p>
+    <h1 class="hero-title">LLM Market Dynamics on OpenRouter</h1>
+    <p class="zh hero-abstract-zh" style="font-family:'PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif;font-size:14px;color:var(--ink-faint);margin-bottom:14px;margin-top:0;">大语言模型市场动态：OpenRouter 平台使用量面板</p>
+    <div class="hero-authors">19-Month API Usage Panel &nbsp;·&nbsp; 400 Models &nbsp;·&nbsp; 57 Creators &nbsp;·&nbsp; 38 Billion Requests</div>
+    <div class="hero-pub">Data: OpenRouter Wayback Machine Archives (2024–2026) + Artificial Analysis Benchmarks</div>
+    <p class="hero-abstract">
+      A longitudinal panel dataset tracking daily API usage for 400 large language models on OpenRouter,
+      spanning July 2024 to February 2026. Merged with Artificial Analysis benchmark scores to study
+      market structure, the adoption of reasoning models, and the relationship between model capability,
+      price, and market share in the emerging LLM platform economy.
+    </p>
+    <p class="zh" style="font-family:'PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif;font-size:14px;color:var(--ink-faint);border-left:3px solid var(--border);padding-left:20px;margin-top:10px;line-height:1.9;">
+      一个纵向面板数据集，追踪 400 个大语言模型在 OpenRouter 平台上从 2024 年 7 月至 2026 年 2 月的每日 API 使用量，并与 Artificial Analysis 基准测试数据合并，用于研究 LLM 平台经济中的市场结构、推理模型的采用曲线，以及模型能力、价格与市场份额之间的关系。
+    </p>
+  </div>
+
+  <!-- ── Key stats ── -->
+  <div class="stat-grid">
+    <div class="stat-card">
+      <div class="stat-val">38.1B</div>
+      <div class="stat-label">Total API Requests</div>
+      <div class="zh stat-label">总 API 请求次数</div>
+      <div class="stat-sub">Jul 2024 – Feb 2026</div>
+      <div class="zh stat-sub">2024年7月 – 2026年2月</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val">400</div>
+      <div class="stat-label">Models Tracked</div>
+      <div class="zh stat-label">追踪模型数</div>
+      <div class="stat-sub">Across 57 creators</div>
+      <div class="zh stat-sub">来自57家创建者</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val">0→60%</div>
+      <div class="stat-label">Reasoning Share</div>
+      <div class="zh stat-label">推理模型使用占比</div>
+      <div class="stat-sub">Jan 2025 → Feb 2026</div>
+      <div class="zh stat-sub">2025年1月至2026年2月</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val">19mo</div>
+      <div class="stat-label">Daily Coverage</div>
+      <div class="zh stat-label">逐日面板时长</div>
+      <div class="stat-sub">Continuous panel</div>
+      <div class="zh stat-sub">连续覆盖19个月</div>
+    </div>
+  </div>
+
+  <div class="tag-row">
+    <span class="tag">Panel Data</span>
+    <span class="tag">LLM Market</span>
+    <span class="tag">Reinforcement Learning</span>
+    <span class="tag">Algorithmic Pricing</span>
+    <span class="tag">Platform Economics</span>
+    <span class="tag">Industrial Organization</span>
+  </div>
+  <div class="zh" style="margin-top:4px;">面板数据 &nbsp;·&nbsp; 大语言模型市场 &nbsp;·&nbsp; 算法定价 &nbsp;·&nbsp; 平台经济学 &nbsp;·&nbsp; 产业组织</div>
+
+  <!-- ── Section 01 ── -->
+  <div class="section">
+    <div class="section-num">01</div>
+    <h2 class="section-title">The Reasoning Revolution</h2>
+    <p class="zh">推理模型的崛起</p>
+
+    <p class="body-text">
+      The most dramatic structural shift in the LLM market over our sample period is the rapid rise of
+      <strong>reasoning models</strong> — systems that produce extended chain-of-thought before answering.
+      In January 2025, reasoning models accounted for under 1% of OpenRouter API requests. By February 2026,
+      they had captured nearly 60% of all traffic, displacing standard models at an extraordinary pace.
+    </p>
+    <p class="zh" style="margin-top:8px;">
+      本样本期内 LLM 市场最显著的结构性变化，是推理模型的急速崛起——这类系统在回答前会产生扩展的思维链过程。2025年1月，推理模型仅占 OpenRouter API 请求的不足1%。到2026年2月，其流量占比已接近60%，以惊人的速度取代了传统模型。
+    </p>
+
+    <div class="chart-full" id="chart-reasoning"></div>
+
+    <div class="finding">
+      <div class="finding-label">Key Finding</div>
+      <p>Reasoning models went from 0% to nearly 60% of all API traffic in 13 months — a structural regime change unprecedented in speed.</p>
+      <p class="zh" style="margin-top:8px;font-size:13px;">推理模型在13个月内从0%攀升至近60%的API流量占比——这是速度史无前例的结构性范式转变。</p>
+    </div>
+  </div>
+
+  <!-- ── Section 02 ── -->
+  <div class="section">
+    <div class="section-num">02</div>
+    <h2 class="section-title">Creator Market Dynamics</h2>
+    <p class="zh">创建者市场格局演变</p>
+
+    <p class="body-text">
+      Google dominates by request volume, powered by its low-cost <strong>Gemini Flash</strong> family
+      targeting high-throughput applications. Anthropic, despite commanding the highest capability ratings,
+      ranks eighth by request count — a textbook illustration of premium-tier positioning in a competitive
+      market. The February 2025 and December 2025 drops in concentration coincide with DeepSeek's R1
+      release and the broader commoditization of frontier capabilities.
+    </p>
+    <p class="zh" style="margin-top:8px;">
+      谷歌凭借面向高吞吐应用的低价 Gemini Flash 系列在请求量上占据主导。Anthropic 尽管能力评分最高，请求量却排名第八——这是竞争市场中高端定位策略的典型体现。2025年2月和12月的集中度下降，分别与 DeepSeek R1 发布以及前沿能力广泛商品化相吻合。
+    </p>
+
+    <div class="chart-full" id="chart-creator"></div>
+
+    <div class="chart-half-grid">
+      <div class="chart-half" id="chart-hhi"></div>
+      <div class="chart-half" id="chart-topmodels"></div>
+    </div>
+  </div>
+
+  <!-- ── Section 03 ── -->
+  <div class="section">
+    <div class="section-num">03</div>
+    <h2 class="section-title">Capability, Price, and Adoption</h2>
+    <p class="zh">能力、价格与市场采用</p>
+
+    <p class="body-text">
+      Mapping model capability (Artificial Analysis Intelligence Index) against adoption reveals a clear
+      segmentation: high-volume models cluster at the lower end of the capability spectrum with minimal
+      pricing, while frontier models attract far fewer requests despite superior benchmarks. The correlation
+      between intelligence index and log-usage is <strong>negative</strong> — the market systematically
+      favors cost efficiency over raw capability.
+    </p>
+    <p class="zh" style="margin-top:8px;">
+      将模型能力（Artificial Analysis 智能指数）与采用率进行映射，揭示出清晰的市场分层：高流量模型集中在能力谱系的低端，定价极低；前沿模型尽管基准测试表现卓越，请求量却少得多。智能指数与对数使用量之间呈负相关——市场系统性地偏好成本效率而非原始能力。
+    </p>
+
+    <div class="chart-half-grid">
+      <div class="chart-half" id="chart-perf"></div>
+      <div class="chart-half" id="chart-price"></div>
+    </div>
+  </div>
+
+  <!-- ── Section 04 ── -->
+  <div class="section">
+    <div class="section-num">04</div>
+    <h2 class="section-title">Data Collection &amp; Methodology</h2>
+    <p class="zh">数据收集与方法说明</p>
+
+    <p class="body-text">
+      The usage panel was assembled from two sources. Primary: 5,167 HTML snapshots from the Wayback
+      Machine archive of <em>openrouter.ai/rankings</em>, covering July 2024 to early 2025, parsed by
+      extracting Next.js RSC payload blocks embedded in the page source. Secondary: the OpenRouter live
+      statistics API (<code style="font-family:var(--mono);font-size:14px;">/api/v1/stats/token-panel</code>),
+      which provides daily model-level counts from February 2025 onward. The two series are merged with
+      API data taking precedence in overlapping dates.
+    </p>
+    <p class="zh" style="margin-top:8px;">
+      使用量面板来自两个数据源。主要来源：从 Wayback Machine 存档的 openrouter.ai/rankings 页面抓取 5,167 个 HTML 快照，覆盖 2024年7月至2025年初，通过提取页面源码中嵌入的 Next.js RSC Payload 数据块进行解析。次要来源：OpenRouter 实时统计 API（/api/v1/stats/token-panel），提供从 2025年2月起的逐日模型级别数据。两组序列取并集，重叠日期以实时数据优先。
+    </p>
+
+    <p class="body-text" style="margin-top:16px;">
+      Model capabilities and pricing are sourced from Artificial Analysis (artificialanalysis.ai),
+      a neutral benchmarking organization. Cross-database matching of 343 OpenRouter model IDs to
+      399 Artificial Analysis entries was performed using a deterministic two-step procedure: first
+      a manual mapping dictionary covering systematic naming differences across the two databases,
+      then exact string matching after standardization. Overall match rate: <strong>74.6%</strong>.
+    </p>
+    <p class="zh" style="margin-top:8px;">
+      模型能力与定价数据来源于中立基准测试机构 Artificial Analysis。将 343 个 OpenRouter 模型 ID 与 399 个 Artificial Analysis 条目进行跨库匹配，采用两步确定性规则：首先是涵盖两库系统性命名差异的手动映射字典，然后是标准化后的精确字符串匹配。总体匹配率为74.6%。
+    </p>
+  </div>
+
+</div><!-- /page -->
+
+<footer>
+  <div class="page" style="padding-top:0;padding-bottom:0;">
+    <p class="footer-text">Dataset assembled by Hongrui ZHU &nbsp;·&nbsp; OpenRouter × Artificial Analysis &nbsp;·&nbsp; PhD Research, Industrial Economics</p>
+    <p class="zh footer-text" style="margin-top:4px;">数据集由朱宏睿构建 · 产业经济学博士研究</p>
+  </div>
+</footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+  function init() {
+    if (typeof OPENROUTER_DATA === 'undefined') {
+      setTimeout(init, 50);
+      return;
+    }
+    renderCharts();
+  }
+
+  init();
+
+  function renderCharts() {
+    var D = OPENROUTER_DATA;
+
+    var base = {
+      paper_bgcolor: 'rgba(0,0,0,0)',
+      plot_bgcolor: 'rgba(0,0,0,0)',
+      font: { family: "'IBM Plex Sans', sans-serif", color: '#3a2a1a', size: 11 },
+      margin: { t: 40, r: 20, b: 50, l: 60 },
+    };
+    var cfg = { responsive: true, displayModeBar: false };
+
+    var creatorColors = {
+      google: '#4285F4',
+      openai: '#10A37F',
+      'meta-llama': '#0866FF',
+      deepseek: '#FF6B35',
+      qwen: '#9B59B6',
+      mistralai: '#E74C3C',
+      'x-ai': '#1C1812',
+      anthropic: '#D97757',
+      Other: '#CFC6B4'
+    };
+
+    var creatorLabels = {
+      google: 'Google',
+      openai: 'OpenAI',
+      'meta-llama': 'Meta',
+      deepseek: 'DeepSeek',
+      qwen: 'Qwen/Alibaba',
+      mistralai: 'Mistral',
+      'x-ai': 'xAI',
+      anthropic: 'Anthropic',
+      Other: 'Other'
+    };
+
+    // ── Chart 1: Reasoning share over time ──
+    (function () {
+      var months = D.monthly_reasoning.map(function (d) { return d.month; });
+      var pct = D.monthly_reasoning.map(function (d) { return d.reasoning_pct; });
+
+      var lastVal = pct[pct.length - 1];
+      var lastMonth = months[months.length - 1];
+
+      var trace = {
+        x: months,
+        y: pct,
+        type: 'scatter',
+        mode: 'lines',
+        fill: 'tozeroy',
+        fillcolor: 'rgba(139,111,71,0.15)',
+        line: { color: '#8b6f47', width: 2.5 },
+        name: 'Reasoning Share (%)',
+        hovertemplate: '%{x}<br>Reasoning: %{y:.1f}%<extra></extra>'
+      };
+
+      var layout = Object.assign({}, base, {
+        height: '100%',
+        title: { text: 'Reasoning Model Share of OpenRouter API Requests (%)', font: { size: 13, family: "'EB Garamond', Georgia, serif", color: '#3a2a1a' }, x: 0.01, xanchor: 'left' },
+        xaxis: {
+          title: '',
+          gridcolor: 'rgba(207,198,180,0.4)',
+          linecolor: 'rgba(207,198,180,0.6)',
+          tickangle: -30
+        },
+        yaxis: {
+          title: 'Share (%)',
+          range: [0, 100],
+          gridcolor: 'rgba(207,198,180,0.4)',
+          linecolor: 'rgba(207,198,180,0.6)',
+          ticksuffix: '%'
+        },
+        annotations: [{
+          x: lastMonth,
+          y: lastVal,
+          xref: 'x', yref: 'y',
+          text: lastVal.toFixed(1) + '%',
+          showarrow: true,
+          arrowhead: 2,
+          arrowcolor: '#8b6f47',
+          ax: 30, ay: -30,
+          font: { size: 12, color: '#8b6f47', family: "'IBM Plex Sans', sans-serif" }
+        }],
+        showlegend: false
+      });
+
+      Plotly.newPlot('chart-reasoning', [trace], layout, cfg);
+    })();
+
+    // ── Chart 2: Creator market share ──
+    (function () {
+      var creatorOrder = ['google', 'openai', 'meta-llama', 'deepseek', 'qwen', 'mistralai', 'x-ai', 'anthropic', 'Other'];
+      var traces = [];
+
+      creatorOrder.forEach(function (creator) {
+        if (!D.monthly_creator[creator]) return;
+        var data = D.monthly_creator[creator];
+        var xVals = data.map(function (d) { return d.month; });
+        var yVals = data.map(function (d) { return d.share; });
+
+        traces.push({
+          x: xVals,
+          y: yVals,
+          type: 'scatter',
+          mode: 'lines',
+          name: creatorLabels[creator] || creator,
+          line: { color: creatorColors[creator] || '#999', width: 2 },
+          hovertemplate: (creatorLabels[creator] || creator) + '<br>%{x}: %{y:.1f}%<extra></extra>'
+        });
+      });
+
+      var layout = Object.assign({}, base, {
+        height: '100%',
+        title: { text: 'Monthly Creator Market Share (% of Total Requests)', font: { size: 13, family: "'EB Garamond', Georgia, serif", color: '#3a2a1a' }, x: 0.01, xanchor: 'left' },
+        xaxis: {
+          title: '',
+          gridcolor: 'rgba(207,198,180,0.4)',
+          linecolor: 'rgba(207,198,180,0.6)',
+          tickangle: -30
+        },
+        yaxis: {
+          title: 'Market Share (%)',
+          gridcolor: 'rgba(207,198,180,0.4)',
+          linecolor: 'rgba(207,198,180,0.6)',
+          ticksuffix: '%',
+          range: [0, 100]
+        },
+        showlegend: true,
+        legend: {
+          orientation: 'h',
+          x: 0, y: 1.12,
+          font: { size: 10 }
+        },
+        margin: { t: 60, r: 20, b: 50, l: 60 }
+      });
+
+      Plotly.newPlot('chart-creator', traces, layout, cfg);
+    })();
+
+    // ── Chart 3: HHI over time ──
+    (function () {
+      var months = D.hhi_monthly.map(function (d) { return d.month; });
+      var hhi = D.hhi_monthly.map(function (d) { return d.hhi; });
+
+      var trace = {
+        x: months,
+        y: hhi,
+        type: 'scatter',
+        mode: 'lines',
+        line: { color: '#c06060', width: 2.5 },
+        name: 'HHI',
+        hovertemplate: '%{x}<br>HHI: %{y:,.0f}<extra></extra>'
+      };
+
+      var layout = Object.assign({}, base, {
+        height: '100%',
+        title: { text: 'Market Concentration (HHI)', font: { size: 13, family: "'EB Garamond', Georgia, serif", color: '#3a2a1a' }, x: 0.01, xanchor: 'left' },
+        xaxis: {
+          title: '',
+          gridcolor: 'rgba(207,198,180,0.4)',
+          linecolor: 'rgba(207,198,180,0.6)',
+          tickangle: -30
+        },
+        yaxis: {
+          title: 'HHI',
+          gridcolor: 'rgba(207,198,180,0.4)',
+          linecolor: 'rgba(207,198,180,0.6)'
+        },
+        shapes: [
+          {
+            type: 'line', x0: months[0], x1: months[months.length - 1],
+            y0: 1500, y1: 1500,
+            line: { color: 'rgba(139,111,71,0.5)', width: 1, dash: 'dash' }
+          },
+          {
+            type: 'line', x0: months[0], x1: months[months.length - 1],
+            y0: 2500, y1: 2500,
+            line: { color: 'rgba(192,96,96,0.5)', width: 1, dash: 'dash' }
+          }
+        ],
+        annotations: [
+          {
+            x: months[0], y: 1500,
+            xref: 'x', yref: 'y',
+            text: 'Competitive (1500)',
+            showarrow: false,
+            xanchor: 'left',
+            font: { size: 9, color: '#8b6f47' },
+            yshift: 6
+          },
+          {
+            x: months[0], y: 2500,
+            xref: 'x', yref: 'y',
+            text: 'Concentrated (2500)',
+            showarrow: false,
+            xanchor: 'left',
+            font: { size: 9, color: '#c06060' },
+            yshift: 6
+          }
+        ],
+        showlegend: false,
+        margin: { t: 36, r: 16, b: 44, l: 56 }
+      });
+
+      Plotly.newPlot('chart-hhi', [trace], layout, cfg);
+    })();
+
+    // ── Chart 4: Top models horizontal bar ──
+    (function () {
+      var models = D.top_models.slice(0, 20);
+      // Sort ascending so top model appears at top of horizontal bar
+      models = models.slice().sort(function (a, b) { return a.total_count - b.total_count; });
+
+      var names = models.map(function (m) {
+        var n = m.display_name || m.model_id;
+        return n.length > 30 ? n.substring(0, 28) + '…' : n;
+      });
+
+      var counts = models.map(function (m) { return m.total_count; });
+      var colors = models.map(function (m) { return creatorColors[m.creator] || '#CFC6B4'; });
+
+      // Format x-axis ticks as B/M
+      var textLabels = counts.map(function (c) {
+        if (c >= 1e9) return (c / 1e9).toFixed(1) + 'B';
+        if (c >= 1e6) return (c / 1e6).toFixed(0) + 'M';
+        return c.toString();
+      });
+
+      var trace = {
+        x: counts,
+        y: names,
+        type: 'bar',
+        orientation: 'h',
+        marker: { color: colors },
+        text: textLabels,
+        textposition: 'outside',
+        textfont: { size: 9 },
+        cliponaxis: false,
+        hovertemplate: '%{y}<br>Requests: %{text}<extra></extra>'
+      };
+
+      var layout = Object.assign({}, base, {
+        height: '100%',
+        title: { text: 'Top 20 Models by Total Requests', font: { size: 13, family: "'EB Garamond', Georgia, serif", color: '#3a2a1a' }, x: 0.01, xanchor: 'left' },
+        xaxis: {
+          title: 'Total Requests',
+          gridcolor: 'rgba(207,198,180,0.4)',
+          linecolor: 'rgba(207,198,180,0.6)',
+          tickformat: '.2s'
+        },
+        yaxis: {
+          title: '',
+          automargin: true,
+          gridcolor: 'rgba(207,198,180,0.4)',
+          linecolor: 'rgba(207,198,180,0.6)',
+          tickfont: { size: 9 }
+        },
+        showlegend: false,
+        margin: { t: 36, r: 60, b: 44, l: 180 }
+      });
+
+      Plotly.newPlot('chart-topmodels', [trace], layout, cfg);
+    })();
+
+    // ── Chart 5: Performance (Intelligence Index) vs Usage ──
+    (function () {
+      var creatorOrder = ['google', 'openai', 'meta-llama', 'deepseek', 'qwen', 'mistralai', 'x-ai', 'anthropic', 'Other'];
+      var byCreator = {};
+
+      D.perf_vs_usage.forEach(function (d) {
+        var c = d.creator;
+        var key = creatorOrder.indexOf(c) >= 0 ? c : 'Other';
+        if (!byCreator[key]) byCreator[key] = [];
+        byCreator[key].push(d);
+      });
+
+      var traces = [];
+      creatorOrder.forEach(function (creator) {
+        if (!byCreator[creator] || byCreator[creator].length === 0) return;
+        var pts = byCreator[creator];
+        traces.push({
+          x: pts.map(function (d) { return d.intelligence_index; }),
+          y: pts.map(function (d) { return d.log_count; }),
+          type: 'scatter',
+          mode: 'markers',
+          name: creatorLabels[creator] || creator,
+          marker: { color: creatorColors[creator] || '#CFC6B4', size: 7, opacity: 0.8 },
+          text: pts.map(function (d) { return d.display_name || d.model_id; }),
+          customdata: pts.map(function (d) { return [d.intelligence_index, d.total_count]; }),
+          hovertemplate: '<b>%{text}</b><br>Intelligence: %{customdata[0]:.1f}<br>Requests: %{customdata[1]:,}<extra></extra>'
+        });
+      });
+
+      var layout = Object.assign({}, base, {
+        height: '100%',
+        title: { text: 'Intelligence vs. Usage', font: { size: 13, family: "'EB Garamond', Georgia, serif", color: '#3a2a1a' }, x: 0.01, xanchor: 'left' },
+        xaxis: {
+          title: 'Intelligence Index (Artificial Analysis)',
+          gridcolor: 'rgba(207,198,180,0.4)',
+          linecolor: 'rgba(207,198,180,0.6)'
+        },
+        yaxis: {
+          title: 'log₁₀(Total Requests)',
+          gridcolor: 'rgba(207,198,180,0.4)',
+          linecolor: 'rgba(207,198,180,0.6)'
+        },
+        showlegend: true,
+        legend: { font: { size: 9 }, itemsizing: 'constant' },
+        margin: { t: 36, r: 16, b: 50, l: 56 }
+      });
+
+      Plotly.newPlot('chart-perf', traces, layout, cfg);
+    })();
+
+    // ── Chart 6: Price vs Intelligence ──
+    (function () {
+      var creatorOrder = ['google', 'openai', 'meta-llama', 'deepseek', 'qwen', 'mistralai', 'x-ai', 'anthropic', 'Other'];
+      var byCreator = {};
+
+      D.price_vs_intelligence.forEach(function (d) {
+        var c = d.creator;
+        var key = creatorOrder.indexOf(c) >= 0 ? c : 'Other';
+        if (!byCreator[key]) byCreator[key] = [];
+        byCreator[key].push(d);
+      });
+
+      // Compute global min/max log_count for marker scaling
+      var allLogCounts = D.price_vs_intelligence.map(function (d) { return d.log_count; });
+      var minLog = Math.min.apply(null, allLogCounts);
+      var maxLog = Math.max.apply(null, allLogCounts);
+
+      function scaleSize(lc) {
+        if (maxLog === minLog) return 10;
+        return 5 + ((lc - minLog) / (maxLog - minLog)) * 15;
+      }
+
+      var traces = [];
+      creatorOrder.forEach(function (creator) {
+        if (!byCreator[creator] || byCreator[creator].length === 0) return;
+        var pts = byCreator[creator];
+        traces.push({
+          x: pts.map(function (d) { return d.intelligence_index; }),
+          y: pts.map(function (d) { return d.price_blended; }),
+          type: 'scatter',
+          mode: 'markers',
+          name: creatorLabels[creator] || creator,
+          marker: {
+            color: creatorColors[creator] || '#CFC6B4',
+            size: pts.map(function (d) { return scaleSize(d.log_count); }),
+            opacity: 0.8
+          },
+          text: pts.map(function (d) { return d.display_name || d.model_id; }),
+          customdata: pts.map(function (d) { return [d.intelligence_index, d.price_blended, d.total_count]; }),
+          hovertemplate: '<b>%{text}</b><br>Intelligence: %{customdata[0]:.1f}<br>Price: $%{customdata[1]:.3f}/M tokens<br>Requests: %{customdata[2]:,}<extra></extra>'
+        });
+      });
+
+      var layout = Object.assign({}, base, {
+        height: '100%',
+        title: { text: 'Price vs. Intelligence', font: { size: 13, family: "'EB Garamond', Georgia, serif", color: '#3a2a1a' }, x: 0.01, xanchor: 'left' },
+        xaxis: {
+          title: 'Intelligence Index',
+          gridcolor: 'rgba(207,198,180,0.4)',
+          linecolor: 'rgba(207,198,180,0.6)'
+        },
+        yaxis: {
+          title: 'Blended Price ($/M tokens)',
+          type: 'log',
+          gridcolor: 'rgba(207,198,180,0.4)',
+          linecolor: 'rgba(207,198,180,0.6)'
+        },
+        showlegend: true,
+        legend: { font: { size: 9 }, itemsizing: 'constant' },
+        margin: { t: 36, r: 16, b: 50, l: 60 }
+      });
+
+      Plotly.newPlot('chart-price', traces, layout, cfg);
+    })();
+  }
+
+});
+</script>
+</body>
+</html>
