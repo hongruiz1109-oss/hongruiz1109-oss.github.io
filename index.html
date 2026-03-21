@@ -282,7 +282,7 @@
     /* ── Agent Lab ── */
     #lab { background: var(--cream-dark); }
     .lab-intro { font-size: 18px; font-weight: 400; color: var(--ink-mid); line-height: 1.85; margin-bottom: 36px; max-width: 620px; }
-    .lab-layout { display: grid; grid-template-columns: 200px 1fr 220px; gap: 0; border: 1px solid var(--border); }
+    .lab-layout { display: grid; grid-template-columns: 200px 440px 220px; gap: 0; border: 1px solid var(--border); }
     .lab-presets-panel { padding: 28px 20px; border-right: 1px solid var(--border); background: var(--cream); }
     .lab-params-panel { padding: 28px 20px; border-left: 1px solid var(--border); background: var(--cream); }
     .lab-controls-title {
@@ -304,7 +304,7 @@
       background: var(--brown); cursor: pointer;
     }
     .control-hint { font-size: 12px; font-weight: 300; color: var(--ink-faint); margin-top: 7px; line-height: 1.5; }
-    #simulation-chart { padding: 8px; min-height: 300px; }
+    #simulation-chart { padding: 8px; height: 440px; }
     .lab-insight {
       grid-column: 1 / -1; padding: 26px 30px;
       border-top: 1px solid var(--border); background: var(--cream);
@@ -594,7 +594,7 @@
 <!-- ── Hero ── -->
 <section id="hero">
   <div class="container">
-    <div class="hero-eyebrow">PhD Researcher · Industrial Economics &nbsp;·&nbsp; 博士研究生 · 产业经济学</div>
+    <div class="hero-eyebrow">PhD Researcher · Industrial Economics<span class="t-zh-i"> &nbsp;·&nbsp; 博士研究生 · 产业经济学</span></div>
     <h1 class="hero-name">Hongrui<br><em>Zhu</em></h1>
     <div class="hero-title">
       PhD Student in Industrial Economics &nbsp;·&nbsp;
@@ -651,14 +651,14 @@
       </p>
     </div>
     <div class="about-tags fade-in">
-      <span class="tag">Algorithmic Pricing · 算法定价</span>
-      <span class="tag">Tacit Collusion · 默契合谋</span>
-      <span class="tag">LLM as Economic Agents · 大语言模型智能体</span>
-      <span class="tag">Consumer Demand Estimation · 消费者需求估计</span>
-      <span class="tag">Platform Economics · 平台经济学</span>
-      <span class="tag">Market Design · 市场设计</span>
-      <span class="tag">Industrial Organization · 产业组织</span>
-      <span class="tag">Antitrust · 反垄断</span>
+      <span class="tag">Algorithmic Pricing<span class="t-zh-i"> · 算法定价</span></span>
+      <span class="tag">Tacit Collusion<span class="t-zh-i"> · 默契合谋</span></span>
+      <span class="tag">LLM as Economic Agents<span class="t-zh-i"> · 大语言模型智能体</span></span>
+      <span class="tag">Consumer Demand Estimation<span class="t-zh-i"> · 消费者需求估计</span></span>
+      <span class="tag">Platform Economics<span class="t-zh-i"> · 平台经济学</span></span>
+      <span class="tag">Market Design<span class="t-zh-i"> · 市场设计</span></span>
+      <span class="tag">Industrial Organization<span class="t-zh-i"> · 产业组织</span></span>
+      <span class="tag">Antitrust<span class="t-zh-i"> · 反垄断</span></span>
     </div>
   </div>
 </section>
@@ -693,8 +693,8 @@
     <a href="semiconductor/semiconductor_gvc.html" class="gvc-card fade-in">
       <div class="gvc-card-inner">
         <div>
-          <div class="gvc-eyebrow">Interactive Data Visualization · 交互式数据可视化</div>
-          <div class="card-title" style="margin-bottom: 8px;">半导体全球价值链 · Semiconductor Global Value Chain</div>
+          <div class="gvc-eyebrow">Interactive Data Visualization<span class="t-zh-i"> · 交互式数据可视化</span></div>
+          <div class="card-title" style="margin-bottom: 8px;"><span class="t-zh-i">半导体全球价值链 · </span>Semiconductor Global Value Chain</div>
           <p class="card-desc">Quarterly bilateral trade flows across 40+ countries, 2020–2024. Explore export &amp; import perspectives by commodity, country, and shock event.<span class="t-zh">40余个经济体双边半导体贸易季度流量，2020–2024。按品类、国家与冲击事件多维探索出口与进口视角。</span></p>
         </div>
         <div class="gvc-arrow">→</div>
@@ -776,25 +776,25 @@
         <span class="paper-status wip">Work in Progress</span>
       </div>
       <div class="paper-title">Simulating Tacit Collusion Under Algorithmic Pricing</div>
-      <div class="paper-subtitle">Algorithmic Collusion in Q-Learning Pricing Agents · 算法定价下的默契合谋模拟</div>
+      <div class="paper-subtitle">Algorithmic Collusion in Q-Learning Pricing Agents<span class="t-zh-i"> · 算法定价下的默契合谋模拟</span></div>
       <div class="paper-blocks">
         <div class="paper-block">
-          <div class="paper-block-label">Research Question · 研究问题</div>
+          <div class="paper-block-label">Research Question<span class="t-zh-i"> · 研究问题</span></div>
           <div class="paper-block-text">How do supra-competitive prices arise in markets dominated by reinforcement learning algorithms — without any explicit human coordination?<span class="t-zh">在强化学习算法主导定价的市场中，超竞争价格如何在无任何人为协调的情况下自发涌现？</span></div>
         </div>
         <div class="paper-block">
-          <div class="paper-block-label">Methodology · 研究方法</div>
+          <div class="paper-block-label">Methodology<span class="t-zh-i"> · 研究方法</span></div>
           <div class="paper-block-text">We build a MARL-based oligopoly sandbox and demonstrate that under specific exploration rates and discount factors, pricing algorithms inevitably converge toward tacit collusion.<span class="t-zh">构建基于多智能体强化学习的寡头市场沙箱，证明在特定探索率与折扣因子下，定价算法必然收敛至默契合谋。</span></div>
         </div>
         <div class="paper-block">
-          <div class="paper-block-label">Policy Relevance · 政策意义</div>
+          <div class="paper-block-label">Policy Relevance<span class="t-zh-i"> · 政策意义</span></div>
           <div class="paper-block-text">Provides antitrust regulators (FTC, SAMR) with a quantitative toolkit for detecting and auditing algorithmic collusion in digital markets.<span class="t-zh">为反垄断监管机构（FTC、市监总局）提供可量化的工具包，用于检测和审计数字市场中的算法合谋行为。</span></div>
         </div>
       </div>
       <div class="paper-links">
         <a href="#" class="paper-link">PDF</a>
         <a href="#" class="paper-link">SSRN</a>
-        <a href="#lab" class="paper-link em">→ Live Simulation · 在线模拟</a>
+        <a href="#lab" class="paper-link em">→ Live Simulation<span class="t-zh-i"> · 在线模拟</span></a>
       </div>
     </div>
 
@@ -803,18 +803,18 @@
         <span class="paper-status review">Under Review</span>
       </div>
       <div class="paper-title">Consumer Demand Estimation with Large Language Model Agents</div>
-      <div class="paper-subtitle">Estimating Consumer Demand via LLM Agents · 基于大语言模型智能体的消费者需求估计</div>
+      <div class="paper-subtitle">Estimating Consumer Demand via LLM Agents<span class="t-zh-i"> · 基于大语言模型智能体的消费者需求估计</span></div>
       <div class="paper-blocks">
         <div class="paper-block">
-          <div class="paper-block-label">Research Question · 研究问题</div>
+          <div class="paper-block-label">Research Question<span class="t-zh-i"> · 研究问题</span></div>
           <div class="paper-block-text">Traditional discrete choice models fail to capture consumer preferences when faced with unstructured textual product information. Can LLMs close this gap?<span class="t-zh">传统离散选择模型难以处理非结构化文本产品信息中的消费者偏好。大语言模型能否填补这一空缺？</span></div>
         </div>
         <div class="paper-block">
-          <div class="paper-block-label">Methodology · 研究方法</div>
+          <div class="paper-block-label">Methodology<span class="t-zh-i"> · 研究方法</span></div>
           <div class="paper-block-text">We construct a population of heterogeneous consumer agents powered by GPT-4, feeding product text descriptions to reconstruct demand curves in a zero-shot setting.<span class="t-zh">构建由 GPT-4 驱动的异质性消费者智能体群体，输入产品文本描述，在零样本条件下重建需求曲线。</span></div>
         </div>
         <div class="paper-block">
-          <div class="paper-block-label">Applications · 应用场景</div>
+          <div class="paper-block-label">Applications<span class="t-zh-i"> · 应用场景</span></div>
           <div class="paper-block-text">Provides e-commerce platforms and dynamic pricing systems with more realistic zero-shot market testing environments, reducing reliance on costly field experiments.<span class="t-zh">为电商平台与动态定价系统提供更真实的零样本市场测试环境，降低对高成本实地实验的依赖。</span></div>
         </div>
       </div>
@@ -842,41 +842,41 @@
     </p>
     <div class="lab-layout fade-in">
       <div class="lab-presets-panel">
-        <div class="lab-controls-title">Try a Scenario · 选择场景</div>
+        <div class="lab-controls-title">Try a Scenario<span class="t-zh-i"> · 选择场景</span></div>
         <div class="lab-presets">
           <button class="lab-preset-btn" onclick="labPreset(2,0.15,0.95)">
-            <span class="lab-preset-name">① Paper Baseline · 论文基准</span>
-            <span class="lab-preset-vals">n=2 · α=0.15 · δ=0.95 — replicates Calvano et al. · 复现原文</span>
+            <span class="lab-preset-name">① Paper Baseline<span class="t-zh-i"> · 论文基准</span></span>
+            <span class="lab-preset-vals">n=2 · α=0.15 · δ=0.95 — replicates Calvano et al.<span class="t-zh-i"> · 复现原文</span></span>
           </button>
           <button class="lab-preset-btn" onclick="labPreset(2,0.15,0.99)">
-            <span class="lab-preset-name">② Patient Agents · 高耐心智能体</span>
-            <span class="lab-preset-vals">n=2 · α=0.15 · δ=0.99 — stronger collusion · 合谋更强</span>
+            <span class="lab-preset-name">② Patient Agents<span class="t-zh-i"> · 高耐心智能体</span></span>
+            <span class="lab-preset-vals">n=2 · α=0.15 · δ=0.99 — stronger collusion<span class="t-zh-i"> · 合谋更强</span></span>
           </button>
           <button class="lab-preset-btn" onclick="labPreset(3,0.15,0.95)">
-            <span class="lab-preset-name">③ Three Firms · 三家竞争</span>
-            <span class="lab-preset-vals">n=3 · α=0.15 · δ=0.95 — collusion weakens · 合谋减弱</span>
+            <span class="lab-preset-name">③ Three Firms<span class="t-zh-i"> · 三家竞争</span></span>
+            <span class="lab-preset-vals">n=3 · α=0.15 · δ=0.95 — collusion weakens<span class="t-zh-i"> · 合谋减弱</span></span>
           </button>
           <button class="lab-preset-btn" onclick="labPreset(2,0.05,0.80)">
-            <span class="lab-preset-name">④ Myopic Agents · 短视智能体</span>
-            <span class="lab-preset-vals">n=2 · α=0.05 · δ=0.80 — near-competitive · 接近竞争均衡</span>
+            <span class="lab-preset-name">④ Myopic Agents<span class="t-zh-i"> · 短视智能体</span></span>
+            <span class="lab-preset-vals">n=2 · α=0.05 · δ=0.80 — near-competitive<span class="t-zh-i"> · 接近竞争均衡</span></span>
           </button>
         </div>
       </div>
       <div id="simulation-chart" style="min-height:300px;"></div>
       <div class="lab-params-panel">
-        <div class="lab-controls-title">Parameters · 参数</div>
+        <div class="lab-controls-title">Parameters<span class="t-zh-i"> · 参数</span></div>
         <div class="control-group">
-          <div class="control-label">Firms (n) · 厂商数 <span class="control-val" id="val-n">2</span></div>
+          <div class="control-label">Firms (n)<span class="t-zh-i"> · 厂商数</span> <span class="control-val" id="val-n">2</span></div>
           <input type="range" id="slider-n" min="2" max="3" value="2" step="1">
           <div class="control-hint">2 or 3 competing algorithms. More firms → harder to sustain coordination.<span class="t-zh">2或3个竞争算法。厂商越多，维持协调越困难。</span></div>
         </div>
         <div class="control-group">
-          <div class="control-label">Learning Rate (α) · 学习率 <span class="control-val" id="val-alpha">0.15</span></div>
+          <div class="control-label">Learning Rate (α)<span class="t-zh-i"> · 学习率</span> <span class="control-val" id="val-alpha">0.15</span></div>
           <input type="range" id="slider-alpha" min="0.05" max="0.30" value="0.15" step="0.01">
           <div class="control-hint">Blends past Q-value (weight 1−α) with new experience (weight α). Paper: 0.15. Lower → cautious; higher → reactive.<span class="t-zh">以权重 (1−α) 保留旧估计、权重 α 吸收新经验。论文取 0.15。偏小→保守稳健，偏大→反应快但噪声大。</span></div>
         </div>
         <div class="control-group">
-          <div class="control-label">Discount Factor (δ) · 折扣因子 <span class="control-val" id="val-delta">0.95</span></div>
+          <div class="control-label">Discount Factor (δ)<span class="t-zh-i"> · 折扣因子</span> <span class="control-val" id="val-delta">0.95</span></div>
           <input type="range" id="slider-delta" min="0.80" max="0.99" value="0.95" step="0.01">
           <div class="control-hint">Weight on future profits. High δ → agents value long-run gains, making tacit collusion self-sustaining: deviating sacrifices too much future payoff.<span class="t-zh">对未来利润的权重。δ 越高，智能体越"重视未来"。高 δ 使默契合谋自我维系——偏离当期得益，但损失的未来收益更多。</span></div>
         </div>
