@@ -98,6 +98,10 @@ def fetch_comtrade(cmd_code, year, flow, api_key, max_records=2500):
     Fetch annual trade flows for a specific HS code from all reporters to all partners.
     flow: "X" (export) or "M" (import)
     Returns parsed JSON or None on error.
+
+    Comtrade Plus uses Azure API Management: the subscription key can be passed
+    as either a query parameter or the Ocp-Apim-Subscription-Key header.
+    We send it both ways for maximum compatibility.
     """
     url = (
         f"{COMTRADE_BASE}/Reporters/all/Types/C/Commodities/{cmd_code}"
@@ -107,10 +111,14 @@ def fetch_comtrade(cmd_code, year, flow, api_key, max_records=2500):
     if api_key:
         url += f"&subscription-key={api_key}"
 
-    req = urllib.request.Request(
-        url,
-        headers={"User-Agent": "portfolio-data-updater/1.0 (github.com/hongruiz1109-oss)"},
-    )
+    headers = {
+        "User-Agent": "portfolio-data-updater/1.0 (github.com/hongruiz1109-oss)",
+        "Accept": "application/json",
+    }
+    if api_key:
+        headers["Ocp-Apim-Subscription-Key"] = api_key
+
+    req = urllib.request.Request(url, headers=headers)
     try:
         with urllib.request.urlopen(req, timeout=60) as resp:
             return json.loads(resp.read().decode("utf-8"))
