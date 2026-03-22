@@ -16,6 +16,7 @@ Usage:
 Required packages: requests, pandas
 """
 
+import gzip
 import json
 import os
 import re
