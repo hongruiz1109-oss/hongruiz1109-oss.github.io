@@ -16,6 +16,11 @@ on:
         required: false
         type: boolean
         default: false
+      backfill:
+        description: 'Backfill all missing dates from RSC history (~90 days)'
+        required: false
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -46,6 +51,9 @@ jobs:
           fi
           if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
             ARGS="$ARGS --dry-run"
+          fi
+          if [ "${{ github.event.inputs.backfill }}" = "true" ]; then
+            ARGS="$ARGS --backfill"
           fi
           python scripts/extend_panel.py $ARGS
 

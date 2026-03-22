@@ -154,30 +154,33 @@ def build_aa_map(panel: pd.DataFrame) -> pd.DataFrame:
 
 
 def build_new_rows(
-    today: str,
+    target_dates: set,
     models: list[dict],
-    token_data: dict,     # model_id → list of RSC records for today
+    token_data: dict,
     aa_map: pd.DataFrame,
     existing_model_ids: set,
+    backfill: bool = False,
 ) -> pd.DataFrame:
     """
-    Assemble today's rows: one row per (model_id, variant) with merged metadata.
+    Assemble rows for all target_dates: one row per (date, model_id, variant).
+    In normal mode (single date), falls back to most recent record if today's
+    data isn't published yet. In backfill mode, only uses exact date matches.
     """
     meta_map = {m["model_id"]: m for m in models}
     rows = []
 
     for mid, records in token_data.items():
-        today_records = [r for r in records if r["date"] == today]
-        if not today_records:
+        matching = [r for r in records if r["date"] in target_dates]
+        if not matching and not backfill:
             # Fall back to most recent record if today's isn't available yet
-            today_records = sorted(records, key=lambda r: r["date"], reverse=True)[:1]
-        if not today_records:
+            matching = sorted(records, key=lambda r: r["date"], reverse=True)[:1]
+        if not matching:
             continue
 
         meta = meta_map.get(mid, {})
-        for rec in today_records:
+        for rec in matching:
             row = {
-                "date":           today,
+                "date":           rec["date"],
                 "model_id":       mid,
                 "count":          rec["count"],
                 "total_completion_tokens":        rec["total_completion_tokens"],
@@ -212,17 +215,18 @@ def build_new_rows(
 # ── Main ──────────────────────────────────────────────────────────────────────
 
 def main():
-    test_mode = "--test" in sys.argv
-    dry_run   = "--dry-run" in sys.argv
+    test_mode = "--test"     in sys.argv
+    dry_run   = "--dry-run"  in sys.argv
+    backfill  = "--backfill" in sys.argv
     today     = date.today().strftime("%Y-%m-%d")
 
-    print(f"=== OpenRouter panel extension — {today} ===")
+    print(f"=== OpenRouter panel extension — {today} {'[BACKFILL]' if backfill else ''} ===")
 
     # Load existing panel
     panel = load_panel()
     existing_dates = set(panel["date"].unique())
 
-    if today in existing_dates:
+    if not backfill and today in existing_dates:
         print(f"[INFO] Today ({today}) already in panel — skipping.")
         return
 
@@ -265,17 +269,30 @@ def main():
         print("[WARN] No token data retrieved — aborting.", file=sys.stderr)
         sys.exit(0)
 
+    # Determine target dates
+    if backfill:
+        all_rsc_dates = {r["date"] for records in token_data.values() for r in records}
+        target_dates = all_rsc_dates - existing_dates
+        print(f"  Backfill: {len(target_dates)} missing dates found "
+              f"({min(target_dates)} → {max(target_dates)})")
+        if not target_dates:
+            print("[INFO] Nothing to backfill — panel is up to date.")
+            return
+    else:
+        target_dates = {today}
+
     # Assemble new rows
     new_df = build_new_rows(
-        today, [parse_meta(m) for m in models],
-        token_data, aa_map, set(panel["model_id"].unique())
+        target_dates, [parse_meta(m) for m in models],
+        token_data, aa_map, set(panel["model_id"].unique()),
+        backfill=backfill,
     )
 
     if new_df.empty:
         print("[WARN] No new rows to add.")
         sys.exit(0)
 
-    print(f"  New rows for {today}: {len(new_df)}")
+    print(f"  New rows: {len(new_df)} across {new_df['date'].nunique()} dates")
 
     if dry_run:
         print("[DRY RUN] Would append rows. Skipping write.")
