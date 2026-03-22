@@ -1,0 +1,70 @@
+name: Update Semiconductor Trade Data
+
+on:
+  schedule:
+    # Run on the 5th of Jan / Apr / Jul / Oct at 10:00 UTC
+    # (Comtrade data for year N typically becomes available in Q2/Q3 of year N+1)
+    - cron: '0 10 5 1,4,7,10 *'
+  workflow_dispatch:
+    inputs:
+      year:
+        description: 'Year to fetch (leave blank for last calendar year)'
+        required: false
+        type: string
+      dry_run:
+        description: 'Dry run — fetch but do not commit'
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30   # Comtrade API calls can be slow
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Fetch and update semiconductor data
+        env:
+          COMTRADE_API_KEY: ${{ secrets.COMTRADE_API_KEY }}
+        run: |
+          ARGS=""
+          if [ -n "${{ github.event.inputs.year }}" ]; then
+            ARGS="$ARGS --year ${{ github.event.inputs.year }}"
+          fi
+          if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
+            ARGS="$ARGS --dry-run"
+          fi
+          python scripts/update_semiconductor.py $ARGS
+
+      - name: Check for changes
+        id: changes
+        run: |
+          if git diff --quiet -- semiconductor/; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "No changes detected — Comtrade data may not have a newer year yet."
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            git diff --stat -- semiconductor/
+          fi
+
+      - name: Commit and push
+        if: |
+          steps.changes.outputs.changed == 'true' &&
+          github.event.inputs.dry_run != 'true'
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add semiconductor/
+          git commit -m "auto: update semiconductor trade data [$(date -u +'%Y-%m-%d')]"
+          git push
