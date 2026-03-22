@@ -271,6 +271,84 @@ MathJax = {
       .ext-charts { grid-template-columns: 1fr; }
       .ext-metrics { grid-template-columns: repeat(3, 1fr); }
     }
+
+    /* ── Scrollytelling ── */
+    .scroll-section { padding-bottom: 0; }
+    .scroll-outer {
+      display: grid;
+      grid-template-columns: 52% 48%;
+      gap: 0;
+      position: relative;
+      margin-top: 32px;
+      align-items: start;
+    }
+    .scroll-graphic {
+      position: sticky;
+      top: 32px;
+      padding-right: 28px;
+    }
+    .scroll-chart-wrap {
+      background: var(--cream-dark);
+      border: 1px solid var(--border-lt);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .scroll-chart-title {
+      font-family: var(--sans);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--brown-lt);
+      text-align: center;
+      padding: 10px 8px 2px;
+      min-height: 28px;
+    }
+    #scroll-chart { width: 100%; height: 320px; }
+    .sdots {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      padding: 8px 0 12px;
+    }
+    .sdot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--border);
+      transition: background 0.3s;
+    }
+    .sdot.active { background: var(--brown-mid); }
+    #scroll-steps .scroll-step {
+      min-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 40px 0 40px 28px;
+      opacity: 0.3;
+      transition: opacity 0.4s ease;
+    }
+    #scroll-steps .scroll-step.is-active { opacity: 1; }
+    .step-tag {
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--brown-lt);
+      margin-bottom: 10px;
+    }
+    .step-title {
+      font-family: var(--serif);
+      font-size: 21px;
+      color: var(--ink);
+      margin-bottom: 14px;
+      line-height: 1.3;
+    }
+    .step-body { font-size: 14.5px; color: var(--ink-mid); line-height: 1.85; }
+    .step-body + .step-body { margin-top: 10px; }
+    .step-body strong { color: var(--ink); }
+    @media (max-width: 700px) {
+      .scroll-outer { grid-template-columns: 1fr; }
+      .scroll-graphic { position: relative; top: 0; padding-right: 0; margin-bottom: 20px; }
+      #scroll-steps .scroll-step { min-height: 55vh; padding: 24px 0; }
+    }
   </style>
 </head>
 <body>
@@ -593,6 +671,87 @@ MathJax = {
       <p class="zh">仅仅无法最优化的算法会被运营者替换。本文中的算法完全有能力更积极地竞争——它们只是选择不这样做，因为其学到的策略使合作成为个体理性的最优选择。</p>
     </div>
   </div>
+
+  <!-- ── Scrollytelling: How Collusion Emerges ── -->
+  <div class="section scroll-section" id="story-section">
+    <div class="section-num">STORY</div>
+    <h2 class="section-title">How Collusion Emerges</h2>
+    <p class="zh">合谋如何一步步涌现</p>
+    <p class="body-text">
+      Scroll through the four phases of Q-learning to see how pricing algorithms — starting with
+      zero knowledge and no communication — independently discover tacit collusion.
+    </p>
+    <p class="zh" style="margin-top:6px;">滚动浏览 Q 学习的四个阶段，观察定价算法如何从零出发，在互不通信的情况下自发走向默契合谋。</p>
+
+    <div class="scroll-outer">
+      <!-- Left column: sticky chart -->
+      <div class="scroll-graphic">
+        <div class="scroll-chart-wrap">
+          <p class="scroll-chart-title" id="scroll-chart-title">Early Training — Random Exploration</p>
+          <div id="scroll-chart"></div>
+          <div class="sdots" id="sdots">
+            <span class="sdot active"></span>
+            <span class="sdot"></span>
+            <span class="sdot"></span>
+            <span class="sdot"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right column: scrolling steps -->
+      <div id="scroll-steps">
+
+        <div class="scroll-step is-active" data-step="0">
+          <div class="step-tag">Phase 1 &nbsp;·&nbsp; Early Training</div>
+          <h3 class="step-title">Exploration: Algorithms Know Nothing</h3>
+          <p class="step-body">
+            At the start, the exploration rate ε ≈ 1. Both algorithms select prices almost at
+            <strong>random</strong>, sweeping the entire price grid to discover which actions generate
+            reward. Prices oscillate chaotically near the <strong>competitive (Nash) benchmark</strong>
+            — there is no coordination, no strategy, only noise.
+          </p>
+          <p class="zh step-body">初始阶段，探索率 ε≈1。两个算法近乎随机地选择价格，遍历整个价格网格以探索哪些行动能带来奖励。价格在竞争（纳什）基准附近剧烈波动——没有协调，没有策略，只有噪声。</p>
+        </div>
+
+        <div class="scroll-step" data-step="1">
+          <div class="step-tag">Phase 2 &nbsp;·&nbsp; Mid Training</div>
+          <h3 class="step-title">The Price War: Undercutting Backfires</h3>
+          <p class="step-body">
+            Algorithms learn that <strong>cutting prices</strong> temporarily boosts market share —
+            so both do it simultaneously. The result is a <strong>price war</strong>: prices crash
+            toward the competitive floor, profits for both collapse. This painful lesson becomes
+            encoded in the Q-matrix as a state to avoid.
+          </p>
+          <p class="zh step-body">算法开始学到降价可以暂时提升市场份额，于是双方同时降价。结果陷入"价格战"：价格双双跌向竞争底线，利润同步崩溃。这一惨痛教训被编码进 Q 矩阵，成为需要回避的状态。</p>
+        </div>
+
+        <div class="scroll-step" data-step="2">
+          <div class="step-tag">Phase 3 &nbsp;·&nbsp; Punishment Learning</div>
+          <h3 class="step-title">Punishment: Retaliation Shapes Strategy</h3>
+          <p class="step-body">
+            Watch the critical moment: <strong>Algorithm 1 deviates</strong>, cutting its price to
+            steal market share. Algorithm 2 immediately retaliates — a sharp price cut that makes
+            the deviation unprofitable. After 5–7 periods of punishment, both forgive and prices
+            recover higher than before. This learned punishment–forgiveness cycle is the engine of collusion.
+          </p>
+          <p class="zh step-body">观察关键时刻：算法 1 背叛降价，抢夺市场份额。算法 2 立即报复——大幅降价使背叛无利可图。经过 5–7 期惩罚后，双方"和解"，价格恢复至比背叛前更高的水平。这一惩罚—宽恕循环是合谋的引擎。</p>
+        </div>
+
+        <div class="scroll-step" data-step="3">
+          <div class="step-tag">Phase 4 &nbsp;·&nbsp; Convergence</div>
+          <h3 class="step-title">Tacit Collusion: High Prices, No Communication</h3>
+          <p class="step-body">
+            The algorithms converge. Both prices settle near the <strong>monopoly benchmark</strong>,
+            achieving a profit gain Δ ≈ 85%. No messages were exchanged. No instructions were given.
+            The collusion is self-enforcing: each algorithm knows that deviation triggers punishment,
+            so cooperation is individually rational — and <em>invisible to regulators</em>.
+          </p>
+          <p class="zh step-body">算法收敛。双方价格稳定在垄断基准附近，利润增益 Δ≈85%。全程无任何通信，无任何指令。合谋是自我执行的：每个算法都知道背叛会触发惩罚，因此合作是个体理性的最优选择——且对监管者不可见。</p>
+        </div>
+
+      </div><!-- /scroll-steps -->
+    </div><!-- /scroll-outer -->
+  </div><!-- /story-section -->
 
   <!-- ── 5. Anatomy ── -->
   <div class="section">
@@ -1031,6 +1190,190 @@ MathJax = {
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
   } else { init(); }
+})();
+</script>
+<script>
+(function () {
+  /* ── Seeded LCG for reproducible simulated data ── */
+  var _s = 2020;
+  function rand() {
+    _s = (Math.imul(1664525, _s) + 1013904223) >>> 0;
+    return _s / 4294967296;
+  }
+  function cl(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+  function r3(v) { return Math.round(v * 1000) / 1000; }
+
+  var pN = 1.473, pM = 1.924, pC = 1.851;
+  var T = 55;
+  var tArr = Array.from({length: T}, function (_, i) { return i + 1; });
+
+  /* Phase 1 — Random exploration */
+  var p1f1 = tArr.map(function () { return r3(cl(pN + (rand() * 1.3 - 0.25) * (pM - pN), pN - 0.07, pM + 0.03)); });
+  var p1f2 = tArr.map(function () { return r3(cl(pN + (rand() * 1.3 - 0.25) * (pM - pN), pN - 0.07, pM + 0.03)); });
+
+  /* Phase 2 — Price war: both crash to Nash around t=22-38, highlighted in red */
+  var p2f1 = [], p2f2 = [];
+  for (var i = 0; i < T; i++) {
+    var earlyT = pN + (pM - pN) * 0.22 * (i / 22);
+    if (i < 20) {
+      p2f1.push(r3(cl(earlyT + (rand() - 0.5) * 0.07, pN - 0.02, pM)));
+      p2f2.push(r3(cl(earlyT + (rand() - 0.5) * 0.07, pN - 0.02, pM)));
+    } else if (i < 37) {
+      var d = (i - 20) / 17;
+      p2f1.push(r3(cl(pN - 0.05 + d * 0.06 + (rand() - 0.5) * 0.04, pN - 0.08, pN + 0.06)));
+      p2f2.push(r3(cl(pN - 0.07 + d * 0.07 + (rand() - 0.5) * 0.04, pN - 0.08, pN + 0.06)));
+    } else {
+      var rec = (i - 37) / 18;
+      p2f1.push(r3(cl(pN + rec * (pM - pN) * 0.28 + (rand() - 0.5) * 0.05, pN, pN + 0.38)));
+      p2f2.push(r3(cl(pN + rec * (pM - pN) * 0.28 + (rand() - 0.5) * 0.05, pN, pN + 0.38)));
+    }
+  }
+
+  /* Phase 3 — Punishment: Firm 1 deviates at i≈20, Firm 2 retaliates i≈22-28 */
+  var base3 = pN + (pC - pN) * 0.52;
+  var p3f1 = [], p3f2 = [];
+  for (var i = 0; i < T; i++) {
+    if (i < 20) {
+      p3f1.push(r3(cl(base3 + (rand() - 0.5) * 0.04, pN + 0.05, pM)));
+      p3f2.push(r3(cl(base3 + (rand() - 0.5) * 0.04, pN + 0.05, pM)));
+    } else if (i < 24) {
+      p3f1.push(r3(cl(pN + 0.01 + rand() * 0.025, pN, pN + 0.06)));
+      p3f2.push(r3(cl(base3 + (rand() - 0.5) * 0.03, pN + 0.05, pM)));
+    } else if (i < 31) {
+      p3f1.push(r3(cl(pN + (i - 23) * 0.013 + rand() * 0.02, pN, base3)));
+      p3f2.push(r3(cl(pN - 0.03 + (i - 23) * 0.016 + rand() * 0.02, pN - 0.05, pN + 0.14)));
+    } else if (i < 41) {
+      var rec3 = (i - 30) / 11;
+      p3f1.push(r3(cl(pN + (base3 - pN) * rec3 * 1.15 + (rand() - 0.5) * 0.03, pN, pM)));
+      p3f2.push(r3(cl(pN + (base3 - pN) * rec3 * 1.15 + (rand() - 0.5) * 0.03, pN, pM)));
+    } else {
+      p3f1.push(r3(cl(base3 + (rand() - 0.5) * 0.038, pN + 0.04, pM)));
+      p3f2.push(r3(cl(base3 + (rand() - 0.5) * 0.038, pN + 0.04, pM)));
+    }
+  }
+
+  /* Phase 4 — Converged near pC */
+  var p4f1 = tArr.map(function () { return r3(cl(pC + (rand() - 0.5) * 0.018, pC - 0.032, pC + 0.032)); });
+  var p4f2 = tArr.map(function () { return r3(cl(pC + (rand() - 0.5) * 0.018, pC - 0.032, pC + 0.032)); });
+
+  /* ── Plotly helpers ── */
+  var baseLayout = {
+    paper_bgcolor: 'rgba(0,0,0,0)',
+    plot_bgcolor: 'rgba(0,0,0,0)',
+    font: { family: "'IBM Plex Sans', sans-serif", color: '#3a2a1a', size: 10 },
+    margin: { t: 10, r: 20, b: 44, l: 48 },
+    xaxis: { title: 'Training Period', gridcolor: 'rgba(207,198,180,0.3)', linecolor: 'rgba(207,198,180,0.5)', zeroline: false },
+    yaxis: { title: 'Price', range: [pN - 0.14, pM + 0.08], gridcolor: 'rgba(207,198,180,0.3)', linecolor: 'rgba(207,198,180,0.5)', zeroline: false },
+    showlegend: true,
+    legend: { x: 0.02, y: 0.98, font: { size: 9 }, bgcolor: 'rgba(255,255,255,0.5)' },
+  };
+
+  var refShapes = [
+    { type: 'line', x0: 0, x1: 1, y0: pN, y1: pN, xref: 'paper', yref: 'y', line: { color: 'rgba(107,163,190,0.75)', width: 1.2, dash: 'dot' } },
+    { type: 'line', x0: 0, x1: 1, y0: pM, y1: pM, xref: 'paper', yref: 'y', line: { color: 'rgba(192,96,96,0.75)', width: 1.2, dash: 'dash' } },
+  ];
+  var refAnno = [
+    { x: 0.98, y: pN, xref: 'paper', yref: 'y', text: 'Nash', showarrow: false, xanchor: 'right', font: { size: 8, color: 'rgba(107,163,190,1)' }, yshift: 7 },
+    { x: 0.98, y: pM, xref: 'paper', yref: 'y', text: 'Monopoly', showarrow: false, xanchor: 'right', font: { size: 8, color: 'rgba(192,96,96,1)' }, yshift: -11 },
+  ];
+
+  function mkTraces(f1, f2) {
+    return [
+      { x: tArr, y: f1, type: 'scatter', mode: 'lines', name: 'Algorithm 1', line: { color: '#8b6f47', width: 2 } },
+      { x: tArr, y: f2, type: 'scatter', mode: 'lines', name: 'Algorithm 2', line: { color: '#4285F4', width: 2, dash: 'dot' } },
+    ];
+  }
+
+  function mkLayout(extra) {
+    var L = {};
+    Object.keys(baseLayout).forEach(function (k) { L[k] = baseLayout[k]; });
+    Object.keys(extra).forEach(function (k) { L[k] = extra[k]; });
+    return L;
+  }
+
+  var chartStates = [
+    {
+      title: 'Early Training — Random Exploration',
+      traces: mkTraces(p1f1, p1f2),
+      layout: mkLayout({ shapes: refShapes, annotations: refAnno }),
+    },
+    {
+      title: 'Mid Training — Price War',
+      traces: mkTraces(p2f1, p2f2),
+      layout: mkLayout({
+        shapes: refShapes.concat([
+          { type: 'rect', x0: 20, x1: 37, y0: pN - 0.14, y1: pM + 0.08, xref: 'x', yref: 'y', fillcolor: 'rgba(192,96,96,0.08)', line: { width: 0 } },
+        ]),
+        annotations: refAnno.concat([
+          { x: 28, y: pN - 0.09, xref: 'x', yref: 'y', text: '← Price War →', showarrow: false, xanchor: 'center', font: { size: 9, color: 'rgba(192,96,96,0.85)' } },
+        ]),
+      }),
+    },
+    {
+      title: 'Punishment Mechanism — Retaliation & Forgiveness',
+      traces: mkTraces(p3f1, p3f2),
+      layout: mkLayout({
+        shapes: refShapes,
+        annotations: refAnno.concat([
+          { x: 21, y: p3f1[20], xref: 'x', yref: 'y', text: 'Alg. 1 deviates', showarrow: true, ax: 2, ay: -38, arrowhead: 2, arrowsize: 0.8, arrowcolor: '#c06060', font: { size: 8, color: '#c06060' }, bgcolor: 'rgba(255,255,255,0.75)', borderpad: 2 },
+          { x: 26, y: p3f2[25], xref: 'x', yref: 'y', text: 'Alg. 2 retaliates', showarrow: true, ax: 36, ay: 4, arrowhead: 2, arrowsize: 0.8, arrowcolor: '#4285F4', font: { size: 8, color: '#4285F4' }, bgcolor: 'rgba(255,255,255,0.75)', borderpad: 2 },
+        ]),
+      }),
+    },
+    {
+      title: 'Convergence — Tacit Collusion Achieved (Δ ≈ 85%)',
+      traces: mkTraces(p4f1, p4f2),
+      layout: mkLayout({
+        shapes: refShapes.concat([
+          { type: 'rect', x0: 0, x1: 1, y0: pC - 0.05, y1: pC + 0.05, xref: 'paper', yref: 'y', fillcolor: 'rgba(66,133,65,0.09)', line: { width: 0 } },
+          { type: 'line', x0: 0, x1: 1, y0: pC, y1: pC, xref: 'paper', yref: 'y', line: { color: 'rgba(66,133,65,0.85)', width: 1.5, dash: 'dash' } },
+        ]),
+        annotations: refAnno.concat([
+          { x: 0.98, y: pC, xref: 'paper', yref: 'y', text: 'Δ ≈ 85%', showarrow: false, xanchor: 'right', font: { size: 8, color: 'rgba(66,133,65,1)' }, yshift: 7 },
+        ]),
+      }),
+    },
+  ];
+
+  var cfg = { responsive: true, displayModeBar: false };
+  var activeStep = 0;
+
+  function activateStep(idx) {
+    if (idx === activeStep && idx !== 0) return;
+    activeStep = idx;
+    var state = chartStates[idx];
+    document.getElementById('scroll-chart-title').textContent = state.title;
+    Plotly.react('scroll-chart', state.traces, state.layout);
+    document.querySelectorAll('#sdots .sdot').forEach(function (dot, i) {
+      dot.classList.toggle('active', i === idx);
+    });
+    document.querySelectorAll('#scroll-steps .scroll-step').forEach(function (el, i) {
+      el.classList.toggle('is-active', i === idx);
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    /* Init chart */
+    Plotly.newPlot('scroll-chart', chartStates[0].traces, chartStates[0].layout, cfg);
+
+    /* IntersectionObserver scroll trigger */
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          activateStep(parseInt(entry.target.getAttribute('data-step'), 10));
+        }
+      });
+    }, { threshold: 0, rootMargin: '-38% 0px -38% 0px' });
+
+    document.querySelectorAll('#scroll-steps .scroll-step').forEach(function (step) {
+      observer.observe(step);
+    });
+
+    /* Dot click shortcut */
+    document.querySelectorAll('#sdots .sdot').forEach(function (dot, i) {
+      dot.addEventListener('click', function () { activateStep(i); });
+    });
+  });
 })();
 </script>
 </body>
