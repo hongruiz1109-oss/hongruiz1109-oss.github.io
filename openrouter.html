@@ -198,8 +198,17 @@
     .gran-btn.active { color: var(--brown); border-color: var(--brown-mid); background: var(--cream-dark); z-index: 1; }
 
     @media (max-width: 640px) {
-      .page { padding: 0 20px 60px; }
+      .page { padding: 0 16px 48px; }
       .stat-grid { grid-template-columns: 1fr 1fr; }
+      .chart-full { height: 290px; }
+      .chart-tall { height: 400px; }
+      .chart-toggle-row { flex-wrap: wrap; margin-top: 16px; }
+      .gran-btn { padding: 7px 13px; font-size: 11px; min-height: 36px; }
+      .chart-label-btn { padding: 7px 13px; font-size: 11px; min-height: 36px; }
+      .chart-title { font-size: 11px; }
+      .section { padding: 36px 0; }
+      .section-title { font-size: 26px; }
+      h1.hero-title { font-size: clamp(24px, 7vw, 36px); }
     }
   </style>
 </head>

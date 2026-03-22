@@ -120,8 +120,17 @@
     }
 
     @media (max-width: 640px) {
-      .nav-inner, .page-header, .chart-controls, .page-footer { padding-left: 20px; padding-right: 20px; }
-      .tab-btn { padding: 10px 14px; font-size: 11px; }
+      .nav-inner, .page-header, .chart-controls, .page-footer { padding-left: 16px; padding-right: 16px; }
+      .tab-btn { padding: 10px 12px; font-size: 11px; min-height: 44px; }
+      h1.page-title { font-size: clamp(20px, 6vw, 28px); }
+      .page-header { padding-top: 28px; padding-bottom: 20px; }
+      .mobile-tip { display: block; }
+    }
+    .mobile-tip {
+      display: none;
+      font-size: 11px; color: var(--ink-faint);
+      text-align: center; padding: 8px 16px 0;
+      letter-spacing: 0.04em;
     }
   </style>
 </head>
@@ -148,6 +157,7 @@
   </div>
 </div>
 
+<p class="mobile-tip">↔ Pinch to zoom · Best viewed on a larger screen</p>
 <div class="chart-controls">
   <div class="tab-bar">
     <button class="tab-btn active" onclick="switchTab('exports', this)">出口视角 · Export</button>
