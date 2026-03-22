@@ -622,7 +622,7 @@ document.addEventListener('DOMContentLoaded', function () {
         var xs = src.data.map(function (d) { return d[src.key]; });
         var x0 = xs[0], x1 = xs[xs.length - 1];
         return Object.assign({}, base, {
-          xaxis: { title: '', gridcolor: 'rgba(207,198,180,0.4)', linecolor: 'rgba(207,198,180,0.6)', tickangle: -30 },
+          xaxis: { title: '', type: 'category', tickmode: 'auto', nticks: 10, gridcolor: 'rgba(207,198,180,0.4)', linecolor: 'rgba(207,198,180,0.6)', tickangle: -30 },
           yaxis: { title: 'HHI', gridcolor: 'rgba(207,198,180,0.4)', linecolor: 'rgba(207,198,180,0.6)' },
           shapes: [
             { type: 'line', x0: x0, x1: x1, y0: 1500, y1: 1500, line: { color: 'rgba(139,111,71,0.5)', width: 1, dash: 'dash' } },
