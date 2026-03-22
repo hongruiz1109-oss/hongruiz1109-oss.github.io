@@ -266,10 +266,12 @@ MathJax = {
     .stat-card .zh { font-size: 10.5px; margin-top: 3px; letter-spacing: 0; text-transform: none; }
 
     .chart-loading {
-      display: flex; align-items: center; justify-content: center;
+      display: none; align-items: center; justify-content: center;
       flex-direction: column; gap: 10px; height: 100%;
       color: var(--ink-faint); font-size: 11px; letter-spacing: 0.07em; text-transform: uppercase;
     }
+    .ext-chart:not(:has(.js-plotly-plot)) .chart-loading,
+    #scroll-chart:not(:has(.js-plotly-plot)) .chart-loading { display: flex; }
     .chart-spinner {
       width: 26px; height: 26px;
       border: 2px solid var(--border);
