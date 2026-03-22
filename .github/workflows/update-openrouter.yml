@@ -1,11 +1,21 @@
-name: Update OpenRouter Model Data
+name: Update OpenRouter Data
 
 on:
   schedule:
-    # Every Monday at 08:00 UTC
-    - cron: '0 8 * * 1'
+    # Every day at 08:00 UTC (daily panel extension)
+    - cron: '0 8 * * *'
   workflow_dispatch:
-    # Allow manual trigger from GitHub Actions UI
+    inputs:
+      test_mode:
+        description: 'Test mode (only 5 models, fast)'
+        required: false
+        type: boolean
+        default: false
+      dry_run:
+        description: 'Dry run (fetch but do not commit)'
+        required: false
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -13,7 +23,7 @@ permissions:
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 20   # ~5 min scrape + 1 min generate
 
     steps:
       - name: Checkout repository
@@ -24,27 +34,52 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Update model data
+      - name: Install dependencies
+        run: pip install -r scripts/requirements.txt
+
+      # ── Step 1: extend panel_final.csv.gz with today's data ─────────────────
+      - name: Extend panel (fetch daily token stats)
+        run: |
+          ARGS=""
+          if [ "${{ github.event.inputs.test_mode }}" = "true" ]; then
+            ARGS="$ARGS --test"
+          fi
+          if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
+            ARGS="$ARGS --dry-run"
+          fi
+          python scripts/extend_panel.py $ARGS
+
+      # ── Step 2: regenerate openrouter_data.js from updated panel ────────────
+      - name: Regenerate visualization data
+        if: github.event.inputs.dry_run != 'true'
+        run: python scripts/generate_viz.py
+
+      # ── Step 3: also refresh price_vs_intelligence from live API ────────────
+      - name: Refresh live model prices
+        if: github.event.inputs.dry_run != 'true'
         env:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
         run: python scripts/update_openrouter.py
 
+      # ── Step 4: commit if anything changed ──────────────────────────────────
       - name: Check for changes
         id: changes
         run: |
-          if git diff --quiet -- assets/js/openrouter_data.js; then
+          if git diff --quiet -- assets/; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
             echo "No changes detected."
           else
             echo "changed=true" >> "$GITHUB_OUTPUT"
-            git diff --stat -- assets/js/openrouter_data.js
+            git diff --stat -- assets/
           fi
 
       - name: Commit and push
-        if: steps.changes.outputs.changed == 'true'
+        if: |
+          steps.changes.outputs.changed == 'true' &&
+          github.event.inputs.dry_run != 'true'
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add assets/js/openrouter_data.js
-          git commit -m "auto: refresh OpenRouter price_vs_intelligence [$(date -u +'%Y-%m-%d')]"
+          git add assets/data/panel_final.csv.gz assets/js/openrouter_data.js
+          git commit -m "auto: extend OpenRouter panel + refresh viz [$(date -u +'%Y-%m-%d')]"
           git push
