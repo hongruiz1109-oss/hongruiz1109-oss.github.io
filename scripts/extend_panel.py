@@ -16,8 +16,6 @@ Usage:
 Required packages: requests, pandas
 """
 
-import gzip
-import io
 import json
 import os
 import re
@@ -55,10 +53,7 @@ def load_panel() -> pd.DataFrame:
 
 def save_panel(df: pd.DataFrame):
     print(f"Saving {PANEL_GZ} …")
-    buf = io.BytesIO()
-    with gzip.GzipFile(fileobj=buf, mode="wb") as gz:
-        df.to_csv(io.TextIOWrapper(gz, encoding="utf-8"), index=False)
-    PANEL_GZ.write_bytes(buf.getvalue())
+    df.to_csv(PANEL_GZ, compression="gzip", index=False)
     print(f"  Saved {PANEL_GZ.stat().st_size / 1e6:.1f} MB compressed, "
           f"{len(df):,} total rows")
 
