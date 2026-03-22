@@ -197,6 +197,21 @@
     .gran-btn:hover { color: var(--brown-mid); border-color: var(--brown-mid); z-index: 1; }
     .gran-btn.active { color: var(--brown); border-color: var(--brown-mid); background: var(--cream-dark); z-index: 1; }
 
+    /* ── Chart loading state ── */
+    .chart-loading {
+      display: flex; align-items: center; justify-content: center;
+      flex-direction: column; gap: 10px; height: 100%;
+      color: var(--ink-faint); font-size: 11px; letter-spacing: 0.07em; text-transform: uppercase;
+    }
+    .chart-spinner {
+      width: 26px; height: 26px;
+      border: 2px solid var(--border-lt);
+      border-top-color: var(--brown-lt);
+      border-radius: 50%;
+      animation: chart-spin 0.85s linear infinite;
+    }
+    @keyframes chart-spin { to { transform: rotate(360deg); } }
+
     @media (max-width: 640px) {
       .page { padding: 0 16px 48px; }
       .stat-grid { grid-template-columns: 1fr 1fr; }
@@ -295,7 +310,7 @@
     </p>
 
     <p class="chart-title">Reasoning Model Share of OpenRouter API Requests (%)</p>
-    <div class="chart-full" id="chart-reasoning" style="margin-top:4px;"></div>
+    <div class="chart-full" id="chart-reasoning" style="margin-top:4px;"><div class="chart-loading"><div class="chart-spinner"></div><span>Loading…</span></div></div>
 
     <div class="finding">
       <div class="finding-label">Key Finding</div>
@@ -329,7 +344,7 @@
       </div>
       <button class="chart-label-btn" id="btn-creator">Labels</button>
     </div>
-    <div class="chart-full" id="chart-creator" style="margin-top:0;"></div>
+    <div class="chart-full" id="chart-creator" style="margin-top:0;"><div class="chart-loading"><div class="chart-spinner"></div><span>Loading…</span></div></div>
 
     <p class="chart-title">Market Concentration (HHI)</p>
     <div class="chart-toggle-row" style="margin-top:6px;">
@@ -339,7 +354,7 @@
         <button class="gran-btn active" id="btn-hhi-monthly">Monthly</button>
       </div>
     </div>
-    <div class="chart-full" id="chart-hhi" style="margin-top:0;"></div>
+    <div class="chart-full" id="chart-hhi" style="margin-top:0;"><div class="chart-loading"><div class="chart-spinner"></div><span>Loading…</span></div></div>
   </div>
 
   <!-- ── Section 03 ── -->
@@ -361,10 +376,10 @@
 
     <p class="chart-title">Intelligence vs. Usage</p>
     <div class="chart-toggle-row" style="margin-top:6px;"><button class="chart-label-btn" id="btn-perf">Labels</button></div>
-    <div class="chart-full" id="chart-perf" style="margin-top:0;"></div>
+    <div class="chart-full" id="chart-perf" style="margin-top:0;"><div class="chart-loading"><div class="chart-spinner"></div><span>Loading…</span></div></div>
     <p class="chart-title">Price vs. Intelligence</p>
     <div class="chart-toggle-row" style="margin-top:6px;"><button class="chart-label-btn" id="btn-price">Labels</button></div>
-    <div class="chart-full" id="chart-price" style="margin-top:0;"></div>
+    <div class="chart-full" id="chart-price" style="margin-top:0;"><div class="chart-loading"><div class="chart-spinner"></div><span>Loading…</span></div></div>
   </div>
 
   <!-- ── Section 04 ── -->

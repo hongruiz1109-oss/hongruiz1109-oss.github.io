@@ -265,6 +265,20 @@ MathJax = {
     .zh + .ext-ext-body { margin-top: 14px; }
     .stat-card .zh { font-size: 10.5px; margin-top: 3px; letter-spacing: 0; text-transform: none; }
 
+    .chart-loading {
+      display: flex; align-items: center; justify-content: center;
+      flex-direction: column; gap: 10px; height: 100%;
+      color: var(--ink-faint); font-size: 11px; letter-spacing: 0.07em; text-transform: uppercase;
+    }
+    .chart-spinner {
+      width: 26px; height: 26px;
+      border: 2px solid var(--border);
+      border-top-color: var(--brown-mid);
+      border-radius: 50%;
+      animation: chart-spin 0.85s linear infinite;
+    }
+    @keyframes chart-spin { to { transform: rotate(360deg); } }
+
     @media (max-width: 640px) {
       .page { padding: 0 16px 48px; }
       .stat-grid { grid-template-columns: 1fr 1fr; }
@@ -695,7 +709,7 @@ MathJax = {
       <div class="scroll-graphic">
         <div class="scroll-chart-wrap">
           <p class="scroll-chart-title" id="scroll-chart-title">Early Training — Random Exploration</p>
-          <div id="scroll-chart"></div>
+          <div id="scroll-chart"><div class="chart-loading"><div class="chart-spinner"></div><span>Loading…</span></div></div>
           <div class="sdots" id="sdots">
             <span class="sdot active"></span>
             <span class="sdot"></span>
@@ -1011,8 +1025,8 @@ MathJax = {
       <div class="ext-metrics" id="ext-metrics"></div>
 
       <div class="ext-charts">
-        <div class="ext-chart" id="ext-bar"></div>
-        <div class="ext-chart" id="ext-box"></div>
+        <div class="ext-chart" id="ext-bar"><div class="chart-loading"><div class="chart-spinner"></div><span>Loading…</span></div></div>
+        <div class="ext-chart" id="ext-box"><div class="chart-loading"><div class="chart-spinner"></div><span>Loading…</span></div></div>
       </div>
 
       <div class="ext-finding">
