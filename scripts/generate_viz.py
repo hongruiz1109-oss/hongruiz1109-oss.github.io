@@ -77,13 +77,13 @@ monthly_reasoning = [
 
 # ── 2. weekly_creator ────────────────────────────────────────────────────────
 print("Building weekly_creator …")
-# Top-8 creators by overall count
+# Top-12 creators by overall count
 top8_creators = (
     df.groupby("creator")["count"].sum()
-    .nlargest(8)
+    .nlargest(12)
     .index.tolist()
 )
-print(f"  top-8 creators: {top8_creators}")
+print(f"  top-12 creators: {top8_creators}")
 
 # Weekly totals
 week_total = (

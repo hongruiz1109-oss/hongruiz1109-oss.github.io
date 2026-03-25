@@ -471,6 +471,10 @@ document.addEventListener('DOMContentLoaded', function () {
       mistralai: '#E74C3C',
       'x-ai': '#1C1812',
       anthropic: '#D97757',
+      'z-ai': '#00ACC1',
+      minimax: '#F06292',
+      'arcee-ai': '#AED581',
+      moonshotai: '#7986CB',
       Other: '#CFC6B4'
     };
 
@@ -483,6 +487,10 @@ document.addEventListener('DOMContentLoaded', function () {
       mistralai: 'Mistral',
       'x-ai': 'xAI',
       anthropic: 'Anthropic',
+      'z-ai': 'Zhipu AI',
+      minimax: 'MiniMax',
+      'arcee-ai': 'Arcee AI',
+      moonshotai: 'Moonshot/Kimi',
       Other: 'Other'
     };
 
@@ -533,7 +541,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // ── Chart 2: Creator market share ──
     (function () { try {
-      var creatorOrder = ['google', 'openai', 'meta-llama', 'deepseek', 'qwen', 'mistralai', 'x-ai', 'anthropic', 'Other'];
+      var creatorOrder = ['google', 'openai', 'meta-llama', 'deepseek', 'qwen', 'mistralai', 'x-ai', 'anthropic', 'z-ai', 'minimax', 'arcee-ai', 'moonshotai', 'Other'];
 
       var creatorLayout = Object.assign({}, base, {
         barmode: 'stack',
@@ -652,7 +660,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // ── Chart 5: Performance (Intelligence Index) vs Usage ──
     (function () { try {
-      var creatorOrder = ['google', 'openai', 'meta-llama', 'deepseek', 'qwen', 'mistralai', 'x-ai', 'anthropic', 'Other'];
+      var creatorOrder = ['google', 'openai', 'meta-llama', 'deepseek', 'qwen', 'mistralai', 'x-ai', 'anthropic', 'z-ai', 'minimax', 'arcee-ai', 'moonshotai', 'Other'];
       var byCreator = {};
 
       D.perf_vs_usage.forEach(function (d) {
@@ -731,7 +739,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // ── Chart 6: Price vs Intelligence ──
     (function () { try {
-      var creatorOrder = ['google', 'openai', 'meta-llama', 'deepseek', 'qwen', 'mistralai', 'x-ai', 'anthropic', 'Other'];
+      var creatorOrder = ['google', 'openai', 'meta-llama', 'deepseek', 'qwen', 'mistralai', 'x-ai', 'anthropic', 'z-ai', 'minimax', 'arcee-ai', 'moonshotai', 'Other'];
       var byCreator = {};
 
       D.price_vs_intelligence.forEach(function (d) {
