@@ -441,6 +441,22 @@
     <p class="zh" style="margin-top:8px;">
       模型能力与定价数据来源于中立基准测试机构 Artificial Analysis。将 343 个 OpenRouter 模型 ID 与 399 个 Artificial Analysis 条目进行跨库匹配，采用两步确定性规则：首先是涵盖两库系统性命名差异的手动映射字典，然后是标准化后的精确字符串匹配。总体匹配率为74.6%。
     </p>
+
+    <p class="body-text" style="margin-top:16px;">
+      In May 2026 OpenRouter removed the per-model daily token feed embedded in its model-page RSC
+      payloads, which had supplied the daily panel above; that series is therefore <strong>frozen as a
+      historical archive at 2026-05-05</strong>. The <strong>Live Market Share</strong> section uses a
+      separate source: the Next.js <strong>server actions</strong> behind <em>openrouter.ai/rankings</em>,
+      which return <strong>weekly token volume</strong> for the top entities plus an “others” residual.
+      Because the action identifiers rotate on every front-end deploy, the collector re-discovers them on
+      each run — parsing the page's JS chunks and classifying each candidate by response shape rather than
+      by name — and aborts loudly if the core series cannot be located, so a broken source can no longer
+      masquerade as a successful update. The reported HHI is computed over the named entities plus the
+      lumped residual, making it an <strong>upper-bound approximation</strong> of true concentration.
+    </p>
+    <p class="zh" style="margin-top:8px;">
+      2026 年 5 月，OpenRouter 移除了模型页 RSC payload 中按模型的每日 token 数据（即上方日级面板的来源），因此该序列<strong>作为历史存档冻结于 2026-05-05</strong>。「实时市场份额」一节改用独立来源：<em>openrouter.ai/rankings</em> 背后的 Next.js <strong>server actions</strong>，返回头部实体 +「others」残差的<strong>每周 token 用量</strong>。由于 action 标识符在每次前端部署后都会变化，采集器在每次运行时<strong>重新发现</strong>它们——解析页面 JS chunk，并按响应的数据形状（而非名称）对候选进行分类——若无法定位核心序列则显式报错退出，从而杜绝失效数据源伪装成成功更新。所示 HHI 在具名实体与合并残差上计算，故为真实集中度的<strong>上界近似</strong>。
+    </p>
   </div>
 
 </div><!-- /page -->
