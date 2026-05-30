@@ -1,5 +1,13 @@
 #!/usr/bin/env python3
 """
+[RETIRED 2026-05] OpenRouter removed the per-model daily token data from the
+model-page RSC payload that this scraper parsed (RSC_PATTERN no longer matches),
+so the daily panel froze at 2026-05-05 while the workflow kept committing fake
+"updates". This script is no longer run by the workflow; the historical panel is
+now a frozen archive and live market share comes from fetch_rankings.py.
+It is kept for reference and now FAILS LOUD (exit 1) instead of silently
+no-opping, in case it is ever run by hand against a still-broken source.
+
 extend_panel.py — Daily incremental update for OpenRouter panel data.
 
 Fetches today's token usage data for all active models via the OpenRouter
@@ -266,8 +274,9 @@ def main():
     print(f"  Fetched data for {n_ok}/{len(models)} models")
 
     if not token_data:
-        print("[WARN] No token data retrieved — aborting.", file=sys.stderr)
-        sys.exit(0)
+        print("[ERROR] No token data retrieved — the model-page RSC feed is gone. "
+              "Use fetch_rankings.py instead.", file=sys.stderr)
+        sys.exit(1)
 
     # Determine target dates
     if backfill:
@@ -289,8 +298,8 @@ def main():
     )
 
     if new_df.empty:
-        print("[WARN] No new rows to add.")
-        sys.exit(0)
+        print("[ERROR] No new rows to add — source returned no fresh dates.", file=sys.stderr)
+        sys.exit(1)
 
     print(f"  New rows: {len(new_df)} across {new_df['date'].nunique()} dates")
 

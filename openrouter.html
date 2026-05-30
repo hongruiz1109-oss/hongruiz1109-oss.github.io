@@ -9,6 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=IBM+Plex+Sans:wght@300;400;500&family=IBM+Plex+Mono:wght@400&display=swap" rel="stylesheet">
   <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
   <script src="assets/js/openrouter_data.js"></script>
+  <script src="assets/js/rankings_live.js"></script>
   <style>
     :root {
       --cream:      #F4EFE6;
@@ -279,6 +280,15 @@
   </div>
   <div class="zh" style="margin-top:4px;">面板数据 &nbsp;·&nbsp; 大语言模型市场 &nbsp;·&nbsp; 算法定价 &nbsp;·&nbsp; 平台经济学 &nbsp;·&nbsp; 产业组织</div>
 
+  <div style="margin-top:22px;padding:14px 18px;border:1px solid rgba(207,198,180,0.7);border-left:3px solid #8b6f47;background:rgba(139,111,71,0.05);border-radius:4px;font-size:13.5px;line-height:1.7;">
+    <strong>Two data regimes.</strong> Sections 01–03 below are a <strong>frozen historical panel</strong>
+    (daily, per-model <em>request</em> counts, all models) covering <strong>2024-07 → 2026-05-05</strong>;
+    OpenRouter retired the per-model daily feed that powered it, so this archive no longer extends.
+    The <strong>Live Market Share</strong> section is a separate, <strong>auto-updating weekly</strong> series
+    (token volume, top entities + an “others” residual) sourced from OpenRouter’s current rankings endpoint.
+    <span class="zh" style="display:block;margin-top:6px;font-size:12.5px;">下方 01–03 为<strong>历史存档面板</strong>（日粒度、按模型、请求数口径，覆盖 2024-07 → 2026-05-05）；OpenRouter 已下线支撑它的按模型日级数据源，故该存档不再延伸。「实时市场份额」一节为独立的<strong>每周自动更新</strong>序列（token 口径、头部实体 +「others」残差），来自 OpenRouter 当前的 rankings 接口。</span>
+  </div>
+
   <!-- ── Section 01 ── -->
   <div class="section">
     <div class="section-num">01</div>
@@ -341,6 +351,41 @@
       </div>
     </div>
     <div class="chart-full" id="chart-hhi" style="margin-top:0;"></div>
+  </div>
+
+  <!-- ── Section LIVE ── -->
+  <div class="section">
+    <div class="section-num" style="color:#2e7d4f;">LIVE</div>
+    <h2 class="section-title">Live Market Share
+      <span style="font-size:11px;font-weight:600;vertical-align:middle;color:#2e7d4f;border:1px solid #2e7d4f;border-radius:10px;padding:2px 9px;margin-left:8px;letter-spacing:.04em;">AUTO-UPDATING · WEEKLY</span>
+    </h2>
+    <p class="zh">实时市场份额（每周自动更新）</p>
+
+    <p class="body-text">
+      This section tracks the latest 12 months of OpenRouter market structure on a <strong>weekly</strong>
+      cadence, measured by <strong>token volume</strong> rather than request count. It is fetched directly
+      from OpenRouter's live rankings endpoint each day, so it stays current to within a week — unlike the
+      frozen historical panel above. Coverage is the <strong>top entities plus an “others” residual</strong>,
+      so the HHI shown is an <em>upper-bound approximation</em> of true concentration.
+    </p>
+    <p class="zh" style="margin-top:8px;">
+      本节以<strong>周</strong>为粒度追踪 OpenRouter 近 12 个月的市场格局，口径为<strong>token 用量</strong>（而非请求数），每日从 OpenRouter 实时 rankings 接口抓取，因此数据始终保持在一周以内的新鲜度。覆盖范围为<strong>头部实体 +「others」残差</strong>，故所示 HHI 为真实集中度的<em>上界近似</em>。
+    </p>
+
+    <p class="chart-title">Creator Market Share — Weekly Token Volume (%)</p>
+    <div class="chart-full" id="chart-live-creator" style="margin-top:4px;"></div>
+
+    <p class="chart-title">Market Concentration (HHI, token-based, approx.)</p>
+    <div class="chart-full" id="chart-live-hhi" style="margin-top:0;"></div>
+
+    <p class="chart-title">Top Models — Latest Week (Token Volume)</p>
+    <div class="chart-full" id="chart-live-models" style="margin-top:0;"></div>
+
+    <div class="finding">
+      <div class="finding-label">Live Snapshot</div>
+      <p id="live-finding">Loading latest week…</p>
+      <p class="zh" id="live-finding-zh" style="margin-top:8px;font-size:13px;"></p>
+    </div>
   </div>
 
   <!-- ── Section 03 ── -->
@@ -830,6 +875,121 @@ document.addEventListener('DOMContentLoaded', function () {
         toggleScatterLabels('chart-price', 'btn-price');
       };
     } catch(e) { console.error('Chart 6 error:', e); } })();
+  }
+
+  // ── Live weekly market share (RANKINGS_LIVE) ──────────────────────────────
+  function initLive() {
+    if (typeof RANKINGS_LIVE === 'undefined') { setTimeout(initLive, 60); return; }
+    try { renderLive(); } catch (e) { console.error('Live charts error:', e); }
+  }
+  initLive();
+
+  function renderLive() {
+    var L = RANKINGS_LIVE;
+    var liveBase = {
+      paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)',
+      font: { family: "'IBM Plex Sans', sans-serif", color: '#3a2a1a', size: 11 },
+      margin: { t: 40, r: 120, b: 60, l: 60 }
+    };
+    var liveCfg = { responsive: true, displayModeBar: false };
+
+    var palette = ['#D97757','#FF6B35','#4285F4','#9B59B6','#10A37F','#F06292',
+                   '#00ACC1','#7986CB','#E74C3C','#AED581','#8b6f47','#1C1812',
+                   '#3F7CAC','#C58940','#5C946E','#A1683A','#6B5B95','#B05A7A'];
+    var brand = { google:'#4285F4', openai:'#10A37F', 'meta-llama':'#0866FF', deepseek:'#FF6B35',
+                  qwen:'#9B59B6', mistralai:'#E74C3C', 'x-ai':'#1C1812', anthropic:'#D97757',
+                  'z-ai':'#00ACC1', minimax:'#F06292', moonshotai:'#7986CB' };
+    var nameMap = { google:'Google', openai:'OpenAI', 'meta-llama':'Meta', deepseek:'DeepSeek',
+                    qwen:'Qwen/Alibaba', mistralai:'Mistral', 'x-ai':'xAI', anthropic:'Anthropic',
+                    'z-ai':'Zhipu AI', minimax:'MiniMax', moonshotai:'Moonshot/Kimi',
+                    tencent:'Tencent', xiaomi:'Xiaomi', openrouter:'OpenRouter', nousresearch:'Nous',
+                    stepfun:'StepFun', microsoft:'Microsoft', nvidia:'NVIDIA', tngtech:'TNG',
+                    'arcee-ai':'Arcee AI', others:'Others' };
+    function label(k){ return nameMap[k] || k; }
+    function colorFor(k, i){ return k === 'others' ? '#CFC6B4' : (brand[k] || palette[i % palette.length]); }
+
+    // Chart A — creator market share (stacked area, weekly)
+    (function () {
+      var pts = L.creator.points, order = L.creator.order;
+      var weeks = pts.map(function (p) { return p.x; });
+      var traces = order.map(function (k, i) {
+        return {
+          x: weeks,
+          y: pts.map(function (p) { return p.shares[k] || 0; }),
+          name: label(k), type: 'scatter', mode: 'none',
+          stackgroup: 'one', groupnorm: 'percent',
+          fillcolor: colorFor(k, i),
+          hovertemplate: label(k) + '<br>%{x}: %{y:.1f}%<extra></extra>'
+        };
+      });
+      var layout = Object.assign({}, liveBase, {
+        xaxis: { type: 'category', tickmode: 'auto', nticks: 10, tickangle: -30,
+                 gridcolor: 'rgba(207,198,180,0.4)', linecolor: 'rgba(207,198,180,0.6)' },
+        yaxis: { title: 'Token Share (%)', range: [0, 100], ticksuffix: '%',
+                 gridcolor: 'rgba(207,198,180,0.4)', linecolor: 'rgba(207,198,180,0.6)' },
+        showlegend: true, legend: { orientation: 'v', x: 1.02, y: 1, xanchor: 'left', font: { size: 10 } }
+      });
+      Plotly.newPlot('chart-live-creator', traces, layout, liveCfg);
+    })();
+
+    // Chart B — HHI over time (token-based, weekly)
+    (function () {
+      var h = L.creator.hhi;
+      var trace = {
+        x: h.map(function (d) { return d.x; }),
+        y: h.map(function (d) { return d.hhi; }),
+        type: 'scatter', mode: 'lines', line: { color: '#8b6f47', width: 2 },
+        fill: 'tozeroy', fillcolor: 'rgba(139,111,71,0.08)',
+        hovertemplate: '%{x}<br>HHI: %{y:.0f}<extra></extra>'
+      };
+      var layout = Object.assign({}, liveBase, {
+        margin: { t: 40, r: 20, b: 60, l: 60 },
+        xaxis: { type: 'category', tickmode: 'auto', nticks: 10, tickangle: -30,
+                 gridcolor: 'rgba(207,198,180,0.4)', linecolor: 'rgba(207,198,180,0.6)' },
+        yaxis: { title: 'HHI', gridcolor: 'rgba(207,198,180,0.4)', linecolor: 'rgba(207,198,180,0.6)' },
+        showlegend: false
+      });
+      Plotly.newPlot('chart-live-hhi', [trace], layout, liveCfg);
+    })();
+
+    // Chart C — top models latest week (horizontal bar)
+    (function () {
+      var tm = L.top_models.slice(0, 12).reverse();
+      var trace = {
+        type: 'bar', orientation: 'h',
+        y: tm.map(function (m) { return m.model_id; }),
+        x: tm.map(function (m) { return m.tokens / 1e9; }),
+        marker: { color: 'rgba(139,111,71,0.75)', line: { color: '#8b6f47', width: 0.5 } },
+        hovertemplate: '%{y}<br>%{x:.1f}B tokens<extra></extra>'
+      };
+      var layout = Object.assign({}, liveBase, {
+        margin: { t: 30, r: 20, b: 50, l: 230 },
+        xaxis: { title: 'Tokens (billions, latest week)', gridcolor: 'rgba(207,198,180,0.4)',
+                 linecolor: 'rgba(207,198,180,0.6)' },
+        yaxis: { automargin: true, tickfont: { size: 9 } },
+        showlegend: false
+      });
+      Plotly.newPlot('chart-live-models', [trace], layout, liveCfg);
+    })();
+
+    // Finding text
+    (function () {
+      var last = L.creator.points[L.creator.points.length - 1];
+      var ranked = Object.keys(last.shares)
+        .filter(function (k) { return k !== 'others'; })
+        .sort(function (a, b) { return last.shares[b] - last.shares[a]; });
+      var hhi = L.creator.hhi[L.creator.hhi.length - 1].hhi;
+      var top3 = ranked.slice(0, 3).map(function (k) {
+        return label(k) + ' ' + last.shares[k].toFixed(1) + '%';
+      });
+      document.getElementById('live-finding').textContent =
+        'Week of ' + last.x + ': ' + top3.join(', ') +
+        '. Token-based HHI ≈ ' + Math.round(hhi) + ' (' +
+        (hhi < 1500 ? 'unconcentrated' : hhi < 2500 ? 'moderately concentrated' : 'highly concentrated') + ').';
+      document.getElementById('live-finding-zh').textContent =
+        last.x + ' 当周：' + top3.join('、') + '；token 口径 HHI ≈ ' + Math.round(hhi) +
+        '（' + (hhi < 1500 ? '低集中度' : hhi < 2500 ? '中等集中度' : '高集中度') + '）。';
+    })();
   }
 
 });

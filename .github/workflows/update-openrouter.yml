@@ -2,22 +2,12 @@ name: Update OpenRouter Data
 
 on:
   schedule:
-    # Every day at 08:00 UTC (daily panel extension)
+    # Every day at 08:00 UTC
     - cron: '0 8 * * *'
   workflow_dispatch:
     inputs:
-      test_mode:
-        description: 'Test mode (only 5 models, fast)'
-        required: false
-        type: boolean
-        default: false
       dry_run:
         description: 'Dry run (fetch but do not commit)'
-        required: false
-        type: boolean
-        default: false
-      backfill:
-        description: 'Backfill all missing dates from RSC history (~90 days)'
         required: false
         type: boolean
         default: false
@@ -25,10 +15,19 @@ on:
 permissions:
   contents: write
 
+# NOTE on data regimes:
+#   • The historical daily panel (assets/data/panel_final.csv.gz +
+#     the time-series in openrouter_data.js) is FROZEN at 2026-05-05.
+#     OpenRouter removed the per-model daily RSC feed that fed extend_panel.py,
+#     so that pipeline (extend_panel.py + generate_viz.py) is no longer run.
+#   • Live weekly market share comes from fetch_rankings.py, which talks to the
+#     OpenRouter /rankings server actions and self-heals the rotating action IDs.
+#   • update_openrouter.py still refreshes live pricing for price_vs_intelligence.
+
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 20   # ~5 min scrape + 1 min generate
+    timeout-minutes: 15
 
     steps:
       - name: Checkout repository
@@ -42,34 +41,23 @@ jobs:
       - name: Install dependencies
         run: pip install -r scripts/requirements.txt
 
-      # ── Step 1: extend panel_final.csv.gz with today's data ─────────────────
-      - name: Extend panel (fetch daily token stats)
+      # ── Step 1: fetch live weekly market share (fail-loud) ───────────────────
+      - name: Fetch live rankings
         run: |
           ARGS=""
-          if [ "${{ github.event.inputs.test_mode }}" = "true" ]; then
-            ARGS="$ARGS --test"
-          fi
           if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
-            ARGS="$ARGS --dry-run"
+            ARGS="--dry-run"
           fi
-          if [ "${{ github.event.inputs.backfill }}" = "true" ]; then
-            ARGS="$ARGS --backfill"
-          fi
-          python scripts/extend_panel.py $ARGS
+          python scripts/fetch_rankings.py $ARGS
 
-      # ── Step 2: regenerate openrouter_data.js from updated panel ────────────
-      - name: Regenerate visualization data
-        if: github.event.inputs.dry_run != 'true'
-        run: python scripts/generate_viz.py
-
-      # ── Step 3: also refresh price_vs_intelligence from live API ────────────
+      # ── Step 2: refresh live model prices for the (frozen) price scatter ─────
       - name: Refresh live model prices
         if: github.event.inputs.dry_run != 'true'
         env:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
         run: python scripts/update_openrouter.py
 
-      # ── Step 4: commit if anything changed ──────────────────────────────────
+      # ── Step 3: commit if anything changed ───────────────────────────────────
       - name: Check for changes
         id: changes
         run: |
@@ -88,6 +76,6 @@ jobs:
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add assets/data/panel_final.csv.gz assets/js/openrouter_data.js
-          git commit -m "auto: extend OpenRouter panel + refresh viz [$(date -u +'%Y-%m-%d')]"
+          git add assets/js/rankings_live.js assets/data/rankings_raw.json assets/js/openrouter_data.js
+          git commit -m "auto: refresh live OpenRouter market share [$(date -u +'%Y-%m-%d')]"
           git push
