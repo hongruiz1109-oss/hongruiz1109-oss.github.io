@@ -6,28 +6,45 @@ Background
 ----------
 Until ~2026-05-05 the project scraped 90 days of *daily, per-model* token
 counts from each model page's embedded RSC payload (see extend_panel.py).
-OpenRouter removed that payload from the model pages, which silently froze the
-daily panel. The equivalent data now lives only behind the /rankings page's
-Next.js **server actions** (the "market share" charts).
+OpenRouter removed that payload, freezing the daily panel. The data then moved
+behind the /rankings page's Next.js **server actions**, which this script used
+to talk to directly (self-healing the rotating action IDs).
 
-This script talks to those server actions directly and produces a *weekly,
-token-based* market-share dataset that can keep updating going forward. It is
-intentionally separate from the frozen historical panel (different cadence,
-different unit: tokens vs. requests, top-N + "others" vs. all models).
+As of ~2026-06 those server actions started rejecting anonymous calls with
+``{"__kind":"ERR","error":{"error":{"message":"Authorization invalid",...}}}``
+(401) / 500, so the action route is dead for logged-out scraping.
 
-Self-healing
-------------
-Server-action IDs rotate on every OpenRouter front-end deploy. We therefore
-re-discover them on each run: fetch /rankings, read its JS chunks, collect all
-`createServerReference("<id>")` IDs that live in chunks mentioning the rankings
-components, call each candidate, and classify by *response shape* (not by name).
-Shape classification is resilient to renames.
+Current source
+--------------
+We now read the **public, anonymous JSON endpoint** that backs the rankings UI:
+
+    GET https://openrouter.ai/api/frontend/rankings/models
+    -> {"data": [{"date","model_permaslug","variant",
+                  "total_prompt_tokens","total_completion_tokens",...}, ...]}
+
+That endpoint only exposes a short rolling window (~3 healthy recent days; the
+oldest day or two come back sparse/partial). To keep producing a *multi-week*
+trend we therefore:
+
+  • FREEZE the pre-outage weekly series (everything the old server-action
+    pipeline had already collected, through its last week) and carry it
+    verbatim;
+  • ACCUMULATE healthy daily snapshots from the public endpoint into
+    rankings_raw.json (idempotent — re-fetching a date overwrites it), and
+    rebuild the recent ("live") weeks from that accumulator on every run.
+
+So history is preserved, and the live tail re-grows one day at a time. There is
+an unavoidable gap across the outage weeks (2026-06-01) where no healthy daily
+data was captured; the chart simply has no point there.
+
+Creator series is derived by aggregating models on their ``creator/...`` prefix.
 
 Fail-loud
 ---------
-Any failure to discover or fetch the two core series (creator + model token
-time series) exits non-zero so the GitHub Action turns red instead of
-committing a fake "update".
+A transport/parse failure or an empty endpoint response exits non-zero so the
+GitHub Action turns red instead of silently shipping stale data. A *successful*
+fetch that merely adds no new healthy day is a no-op (the commit step sees no
+diff), not an error.
 
 Usage:
     python scripts/fetch_rankings.py            # fetch + write rankings_live.js
@@ -35,10 +52,9 @@ Usage:
 """
 
 import json
-import re
 import sys
-import time
-from datetime import datetime, timezone
+from collections import defaultdict
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
 import requests
@@ -47,99 +63,100 @@ ROOT = Path(__file__).parent.parent
 OUT_JS = ROOT / "assets" / "js" / "rankings_live.js"
 OUT_RAW = ROOT / "assets" / "data" / "rankings_raw.json"
 
-RANKINGS_URL = "https://openrouter.ai/rankings"
-BASE = "https://openrouter.ai"
+MODELS_URL = "https://openrouter.ai/api/frontend/rankings/models"
 UA = (
     "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
     "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
 )
-HEADERS = {"User-Agent": UA}
+HEADERS = {"User-Agent": UA, "Accept": "application/json"}
 
-# Chunks that mention any of these markers are scanned for server-action IDs.
-# (Markers are the rankings client-component names registered via e.s([...]).)
-COMPONENT_MARKERS = (
-    "ModelRankings", "WeeklyActivity", "AppRankings",
-    "Benchmark", "benchmark", "Rankings",
-)
+# A day is "healthy" (complete enough to bucket) only if it clears both bars.
+# The endpoint occasionally returns a near-empty straggler row for an old date
+# (a couple of models, ~1e7 tokens); those must not pollute a weekly bucket.
+MIN_MODELS_PER_DAY = 50
+MIN_TOKENS_PER_DAY = 1e12
 
-CHUNK_RE = re.compile(r'/_next/static/chunks/[^"\\]+\.js')
-ACTION_RE = re.compile(r'createServerReference\)\("([0-9a-f]{32,})"')
+TOP_N = 9  # named entities per week; the rest collapse into an "others" bucket
 
 
-# ── server-action discovery ──────────────────────────────────────────────────
+# ── public endpoint ──────────────────────────────────────────────────────────
 
-def discover_action_ids(session: requests.Session) -> list[str]:
-    """Collect candidate server-action IDs from the rankings page chunks."""
-    page = session.get(RANKINGS_URL, headers=HEADERS, timeout=30)
-    page.raise_for_status()
-    chunks = sorted(set(CHUNK_RE.findall(page.text)))
-    print(f"  rankings page: {len(chunks)} JS chunks")
+def fetch_daily(session: requests.Session) -> dict[str, dict[str, float]]:
+    """Return {date: {model_permaslug: tokens}} from the public rankings feed.
 
-    ids: list[str] = []
-    seen: set[str] = set()
-    for c in chunks:
-        try:
-            t = session.get(BASE + c, headers=HEADERS, timeout=30).text
-        except Exception:
-            continue
-        if not any(m in t for m in COMPONENT_MARKERS):
-            continue
-        for aid in ACTION_RE.findall(t):
-            if aid not in seen:
-                seen.add(aid)
-                ids.append(aid)
-    print(f"  discovered {len(ids)} candidate action IDs in rankings chunks")
-    if not ids:
-        sys.exit("[FATAL] No server-action IDs found — OpenRouter page structure changed.")
-    return ids
-
-
-def call_action(session: requests.Session, action_id: str, body: str = "[]"):
-    """Invoke a Next.js server action; return the parsed payload (flight row 1)."""
-    r = session.post(
-        RANKINGS_URL,
-        headers={**HEADERS, "Next-Action": action_id,
-                 "Content-Type": "text/plain;charset=UTF-8"},
-        data=body, timeout=30,
-    )
-    if r.status_code != 200:
-        return None
-    m = re.search(r'\n1:(.*)', r.text, re.S)
-    if not m:
-        return None
+    Tokens = prompt + completion, summed across a model's variants. Fail-loud
+    on transport/parse error or an empty payload.
+    """
     try:
-        return json.loads(m.group(1))
-    except json.JSONDecodeError:
-        return None
+        r = session.get(MODELS_URL, headers=HEADERS, timeout=60)
+        r.raise_for_status()
+        rows = r.json().get("data")
+    except Exception as e:  # noqa: BLE001 — any failure here must turn the run red
+        sys.exit(f"[FATAL] Could not fetch {MODELS_URL}: {e}")
+
+    if not isinstance(rows, list) or not rows:
+        sys.exit("[FATAL] rankings/models returned no data — endpoint changed?")
+
+    daily: dict[str, dict[str, float]] = defaultdict(lambda: defaultdict(float))
+    for row in rows:
+        d = (row.get("date") or "")[:10]
+        slug = row.get("model_permaslug")
+        if not d or not slug:
+            continue
+        tok = (row.get("total_prompt_tokens") or 0) + (row.get("total_completion_tokens") or 0)
+        daily[d][slug] += tok
+    return {d: dict(m) for d, m in daily.items()}
 
 
-# ── shape classifiers ─────────────────────────────────────────────────────────
-
-def _is_token_series(payload) -> list | None:
-    """Return the [{x, ys:{key: tokens}}] list if payload looks like one."""
-    data = payload.get("data") if isinstance(payload, dict) else payload
-    if not isinstance(data, list) or not data:
-        return None
-    p0 = data[0]
-    if not (isinstance(p0, dict) and "x" in p0 and isinstance(p0.get("ys"), dict)):
-        return None
-    return data
+def healthy_days(daily: dict[str, dict[str, float]]) -> dict[str, dict[str, float]]:
+    """Keep only days complete enough to trust (drops sparse straggler dates)."""
+    out = {}
+    for d, models in daily.items():
+        if len(models) >= MIN_MODELS_PER_DAY and sum(models.values()) >= MIN_TOKENS_PER_DAY:
+            out[d] = models
+    return out
 
 
-def classify(payload):
-    """Classify a server-action payload into 'creator' / 'model' / 'bench' / None."""
-    if isinstance(payload, dict) and "intelligence" in payload:
-        return "bench", payload
-    series = _is_token_series(payload)
-    if series is not None:
-        keys = list(series[-1]["ys"].keys())
-        # model series keys are "creator/model"; creator series keys are bare.
-        slashed = sum("/" in k for k in keys)
-        return ("model" if slashed >= max(1, len(keys) // 2) else "creator"), series
-    return None, None
+# ── weekly bucketing ──────────────────────────────────────────────────────────
+
+def week_start(day: str) -> str:
+    """Monday (ISO date string) of the week containing `day` (YYYY-MM-DD)."""
+    dt = date.fromisoformat(day)
+    return (dt - timedelta(days=dt.weekday())).isoformat()
 
 
-# ── transforms ─────────────────────────────────────────────────────────────────
+def topn_ys(totals: dict[str, float], others_label: str) -> dict[str, float]:
+    """Reduce {entity: tokens} to top-N named entities + a residual bucket."""
+    items = sorted(totals.items(), key=lambda kv: kv[1], reverse=True)
+    ys = dict(items[:TOP_N])
+    ys[others_label] = sum(v for _, v in items[TOP_N:])
+    return ys
+
+
+def build_live_weeks(daily: dict[str, dict[str, float]], frozen_last_week: str):
+    """Build model + creator weekly top-N series from accumulated daily data.
+
+    Only weeks strictly newer than `frozen_last_week` are emitted, so the live
+    tail attaches cleanly after the frozen history with no overlap. The frozen
+    boundary week keeps its richer pre-outage value rather than being rebuilt
+    from a partial day.
+    """
+    wk_model: dict[str, dict[str, float]] = defaultdict(lambda: defaultdict(float))
+    wk_creator: dict[str, dict[str, float]] = defaultdict(lambda: defaultdict(float))
+    for day, models in daily.items():
+        wk = week_start(day)
+        if wk <= frozen_last_week:
+            continue
+        for slug, tok in models.items():
+            wk_model[wk][slug] += tok
+            wk_creator[wk][slug.split("/", 1)[0]] += tok
+
+    model = [{"x": wk, "ys": topn_ys(wk_model[wk], "Others")} for wk in sorted(wk_model)]
+    creator = [{"x": wk, "ys": topn_ys(wk_creator[wk], "others")} for wk in sorted(wk_creator)]
+    return creator, model
+
+
+# ── shares / HHI (unchanged) ──────────────────────────────────────────────────
 
 def shares_from_series(series: list, other_keys=("others", "Others", "other")) -> dict:
     """Convert a token time series into per-key % shares + weekly HHI.
@@ -148,20 +165,16 @@ def shares_from_series(series: list, other_keys=("others", "Others", "other")) -
     treated as a single block — an upper bound on true concentration, since the
     long tail is lumped. Labelled approximate in the UI.
     """
-    points = []
-    hhi = []
-    keys = set()
+    points, hhi, keys = [], [], set()
     for pt in series:
         ys = pt["ys"]
         total = sum(ys.values())
         if total <= 0:
             continue
-        row = {k: round(v / total * 100, 4) for k, v in ys.items()}
-        points.append({"x": pt["x"], "shares": row})
+        points.append({"x": pt["x"], "shares": {k: round(v / total * 100, 4) for k, v in ys.items()}})
         keys.update(ys.keys())
         hhi.append({"x": pt["x"],
                     "hhi": round(sum((v / total) ** 2 for v in ys.values()) * 10000, 2)})
-    # stable key ordering by latest share, "others" last
     latest = points[-1]["shares"] if points else {}
     named = sorted((k for k in keys if k.lower() not in other_keys),
                    key=lambda k: latest.get(k, 0), reverse=True)
@@ -169,70 +182,63 @@ def shares_from_series(series: list, other_keys=("others", "Others", "other")) -
     return {"order": named + others, "points": points, "hhi": hhi}
 
 
-def bench_table(payload: dict) -> list:
-    """Flatten the benchmark payload to [{slug, name, intelligence}]."""
-    out = []
-    for row in payload.get("intelligence", []):
-        slug = row.get("openrouter_slug") or row.get("heuristic_openrouter_slug") or row.get("uid")
-        out.append({
-            "slug": slug,
-            "name": row.get("aa_name") or row.get("uid"),
-            "intelligence": row.get("score"),
-        })
-    return out
+# ── raw store (frozen history + accumulating daily) ───────────────────────────
+
+def load_store() -> tuple[list, list, dict]:
+    """Return (frozen_creator, frozen_model, daily) from rankings_raw.json.
+
+    Migrates the legacy schema (top-level ``creator``/``model`` weekly series
+    written by the old server-action pipeline) into the frozen baseline.
+    """
+    if not OUT_RAW.exists():
+        return [], [], {}
+    raw = json.loads(OUT_RAW.read_text(encoding="utf-8"))
+    if "frozen_model" in raw:  # current schema
+        return raw.get("frozen_creator", []), raw.get("frozen_model", []), raw.get("daily", {})
+    # legacy schema → freeze whatever weekly series it carried
+    return raw.get("creator", []), raw.get("model", []), {}
 
 
-# ── main ────────────────────────────────────────────────────────────────────────
+# ── main ──────────────────────────────────────────────────────────────────────
 
 def main():
     dry_run = "--dry-run" in sys.argv
     print(f"=== OpenRouter live rankings fetch — {datetime.now(timezone.utc):%Y-%m-%d %H:%M UTC} ===")
 
     session = requests.Session()
-    action_ids = discover_action_ids(session)
+    fetched = fetch_daily(session)
+    fresh = healthy_days(fetched)
+    print(f"  endpoint: {len(fetched)} day(s), {len(fresh)} healthy "
+          f"({', '.join(sorted(fresh)) or 'none'})")
 
-    # Collect ALL candidates per kind, then keep the most complete one. Several
-    # category-specific rankings (audio/image/tool…) share the same shape but
-    # cover fewer weeks/entities; the global series has the widest coverage.
-    cands = {"creator": [], "model": [], "bench": []}
-    for aid in action_ids:
-        payload = call_action(session, aid)
-        if payload is None:
-            continue
-        kind, data = classify(payload)
-        if kind in cands:
-            cands[kind].append((aid, data, payload))
-        time.sleep(0.3)
+    frozen_creator, frozen_model, daily = load_store()
+    # Boundary = last week already present in the frozen baseline. Derived so it
+    # tracks however far the pre-outage pipeline got (and any future re-freeze),
+    # rather than a brittle constant.
+    frozen_last_week = max(
+        (frozen_creator[-1]["x"] if frozen_creator else ""),
+        (frozen_model[-1]["x"] if frozen_model else ""),
+    )
+    print(f"  frozen history: creator {len(frozen_creator)}w / model {len(frozen_model)}w "
+          f"(through {frozen_last_week or 'n/a'})")
 
-    def best_series(items):
-        # rank by #weeks, then #entities in the latest week
-        return max(items, key=lambda it: (len(it[1]), len(it[1][-1]["ys"])), default=None)
+    # Accumulate: idempotently overwrite each healthy day's snapshot.
+    before = len(daily)
+    daily.update(fresh)
+    print(f"  accumulated daily snapshots: {before} → {len(daily)}")
 
-    best_creator = best_series(cands["creator"])
-    best_model = best_series(cands["model"])
-    best_bench = max(cands["bench"],
-                     key=lambda it: len(it[2].get("intelligence", [])), default=None)
+    live_creator, live_model = build_live_weeks(daily, frozen_last_week)
+    print(f"  live weeks rebuilt: creator {len(live_creator)} / model {len(live_model)}"
+          + (f" (latest {live_model[-1]['x']})" if live_model else ""))
 
-    if not best_creator or not best_model:
-        sys.exit("[FATAL] Could not locate creator/model token series — aborting (no fake update).")
-
-    raw = {}
-    creator = best_creator[1]; raw["creator_action"] = best_creator[0]
-    model = best_model[1];     raw["model_action"] = best_model[0]
-    bench = best_bench[2] if best_bench else None
-    if best_bench:
-        raw["bench_action"] = best_bench[0]
-    print(f"  [creator] {best_creator[0][:12]} — {len(creator)} weeks, "
-          f"{len(creator[-1]['ys'])} entities, latest {creator[-1]['x']}")
-    print(f"  [model]   {best_model[0][:12]} — {len(model)} weeks, "
-          f"{len(model[-1]['ys'])} entities, latest {model[-1]['x']}")
-    if bench:
-        print(f"  [bench]   {best_bench[0][:12]} — {len(bench.get('intelligence', []))} models")
+    creator = frozen_creator + live_creator
+    model = frozen_model + live_model
+    if not creator or not model:
+        sys.exit("[FATAL] No creator/model series available (frozen + live both empty).")
 
     creator_shares = shares_from_series(creator)
     model_shares = shares_from_series(model)
 
-    # latest-week top models (tokens) for the bar chart
     last = model[-1]["ys"]
     top_models = [{"model_id": k, "tokens": v}
                   for k, v in sorted(last.items(), key=lambda kv: kv[1], reverse=True)
@@ -244,23 +250,33 @@ def main():
             "week_min": creator[0]["x"],
             "week_max": creator[-1]["x"],
             "unit": "tokens",
-            "note": "Weekly token-based market share from the OpenRouter /rankings "
-                    "server actions. Top entities + an 'others' residual bucket. "
-                    "Distinct from the frozen daily request panel.",
+            "note": "Weekly token-based market share. History through "
+                    f"{frozen_last_week} is frozen from the former /rankings "
+                    "server-action feed; newer weeks are rebuilt from the public "
+                    "openrouter.ai/api/frontend/rankings/models endpoint and "
+                    "accumulate daily. Top entities + an 'others' residual bucket.",
         },
         "creator": creator_shares,
         "model": model_shares,
         "top_models": top_models,
-        "benchmark": bench_table(bench) if bench else [],
+        "benchmark": [],  # intelligence feed is auth-gated; unused by the page
     }
 
     if dry_run:
         print(json.dumps(out["meta"], ensure_ascii=False, indent=2))
-        print(f"[DRY RUN] creator entities: {out['creator']['order']}")
+        print(f"[DRY RUN] creator order: {out['creator']['order']}")
+        print(f"[DRY RUN] {len(creator)} creator weeks {creator[0]['x']} → {creator[-1]['x']}")
         return
 
-    OUT_RAW.write_text(json.dumps(raw | {"creator": creator, "model": model}, ensure_ascii=False),
-                       encoding="utf-8")
+    OUT_RAW.write_text(json.dumps({
+        "schema": 2,
+        "source": MODELS_URL,
+        "frozen_last_week": frozen_last_week,
+        "frozen_creator": frozen_creator,
+        "frozen_model": frozen_model,
+        "daily": daily,
+    }, ensure_ascii=False), encoding="utf-8")
+
     js = ("// Auto-generated by scripts/fetch_rankings.py — do not edit by hand\n"
           f"// generated: {out['meta']['generated_at']}  |  weeks: "
           f"{out['meta']['week_min']} → {out['meta']['week_max']}\n"
